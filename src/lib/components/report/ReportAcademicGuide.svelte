@@ -89,13 +89,13 @@
 					<h4 class="text-sm font-bold text-gray-800 mb-2">Student Snapshot</h4>
 					<p class="text-xs text-gray-700 font-medium mb-2">{data.teacher.snapshot.headline}</p>
 					<div class="flex flex-wrap gap-1.5">
-						<span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600">
+						<span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600">
 							{data.teacher.snapshot.approach}
 						</span>
-						<span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-violet-50 text-violet-600">
+						<span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-violet-50 text-violet-600">
 							{data.teacher.snapshot.motivationType}
 						</span>
-						<span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+						<span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
 							{data.teacher.snapshot.regulationLevel} regulation
 						</span>
 					</div>
@@ -111,7 +111,7 @@
 									<span class="w-2 h-2 rounded-full {priorityDot(tip.priority)} mt-1.5 shrink-0"></span>
 									<div>
 										<p class="text-xs text-gray-700 leading-relaxed">{tip.tip}</p>
-										<p class="text-[10px] text-gray-400 mt-0.5">{tip.evidence}</p>
+										<p class="text-xs text-gray-400 mt-0.5">{tip.evidence}</p>
 									</div>
 								</div>
 							{/each}
@@ -124,7 +124,7 @@
 					<h4 class="text-sm font-bold text-gray-800 mb-2">Motivation Levers</h4>
 					<div class="space-y-2 mb-2">
 						<div>
-							<div class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider mb-1">Do more</div>
+							<div class="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1">Do more</div>
 							{#each data.teacher.motivationLevers.doMore as item}
 								<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1">
 									<span class="text-emerald-400 mt-0.5 shrink-0">+</span>{item}
@@ -132,7 +132,7 @@
 							{/each}
 						</div>
 						<div>
-							<div class="text-[10px] font-bold text-red-600 uppercase tracking-wider mb-1">Avoid</div>
+							<div class="text-xs font-bold text-red-600 uppercase tracking-wider mb-1">Avoid</div>
 							{#each data.teacher.motivationLevers.avoid as item}
 								<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1">
 									<span class="text-red-400 mt-0.5 shrink-0">-</span>{item}
@@ -140,13 +140,13 @@
 							{/each}
 						</div>
 					</div>
-					<p class="text-[10px] text-gray-400">{data.teacher.motivationLevers.evidence}</p>
+					<p class="text-xs text-gray-400">{data.teacher.motivationLevers.evidence}</p>
 				</div>
 
 				<!-- Exam Support -->
 				<div class="bg-white rounded-2xl shadow-sm p-4 print-break-avoid">
 					<h4 class="text-sm font-bold text-gray-800 mb-2">Exam Support</h4>
-					<span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 mb-2 inline-block">
+					<span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 mb-2 inline-block">
 						{data.teacher.examSupport.barrier}
 					</span>
 					<div class="space-y-1.5 mt-1">
@@ -157,7 +157,7 @@
 						{/each}
 					</div>
 					{#if data.teacher.examSupport.evidence}
-						<p class="text-[10px] text-gray-400 mt-2">{data.teacher.examSupport.evidence}</p>
+						<p class="text-xs text-gray-400 mt-2">{data.teacher.examSupport.evidence}</p>
 					{/if}
 				</div>
 
@@ -170,10 +170,10 @@
 								<div>
 									<div class="flex items-center gap-2 mb-0.5">
 										<span class="text-xs font-semibold text-gray-900">{sn.subject}</span>
-										<span class="text-[10px] font-semibold px-2 py-0.5 rounded-full {alignmentColor(sn.alignment)}">
+										<span class="text-xs font-semibold px-2 py-0.5 rounded-full {alignmentColor(sn.alignment)}">
 											{alignmentLabel(sn.alignment)}
 										</span>
-										<span class="text-[10px] text-gray-400">P:{sn.passion} C:{sn.confidence}</span>
+										<span class="text-xs text-gray-400">P:{sn.passion} C:{sn.confidence}</span>
 									</div>
 									<p class="text-xs text-gray-600">{sn.note}</p>
 								</div>
@@ -189,8 +189,8 @@
 						{#each data.teacher.warningSignals as w}
 							<div>
 								<p class="text-xs text-red-900 font-medium">{w.signal}</p>
-								<p class="text-[10px] text-red-700 mt-0.5"><strong>Means:</strong> {w.meaning}</p>
-								<p class="text-[10px] text-red-700"><strong>Action:</strong> {w.action}</p>
+								<p class="text-xs text-red-700 mt-0.5"><strong>Means:</strong> {w.meaning}</p>
+								<p class="text-xs text-red-700"><strong>Action:</strong> {w.action}</p>
 							</div>
 						{/each}
 					</div>
@@ -218,7 +218,7 @@
 								<span class="text-emerald-500 mt-0.5 shrink-0">+</span>
 								<div>
 									<span class="text-xs font-semibold text-gray-900">{s.area}</span>
-									<span class="text-[10px] text-emerald-600 ml-1">{s.score}</span>
+									<span class="text-xs text-emerald-600 ml-1">{s.score}</span>
 									<p class="text-xs text-gray-600">{s.detail}</p>
 								</div>
 							</div>
@@ -233,12 +233,12 @@
 						<div class="space-y-2">
 							{#each data.parent.concerns as c}
 								<div class="flex items-start gap-2">
-									<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded {severityColor(c.severity)} shrink-0 mt-0.5">
+									<span class="text-xs font-semibold px-1.5 py-0.5 rounded {severityColor(c.severity)} shrink-0 mt-0.5">
 										{c.severity}
 									</span>
 									<div>
 										<span class="text-xs font-semibold text-gray-900">{c.area}</span>
-										<span class="text-[10px] text-gray-400 ml-1">{c.score}</span>
+										<span class="text-xs text-gray-400 ml-1">{c.score}</span>
 										<p class="text-xs text-gray-600">{c.detail}</p>
 									</div>
 								</div>
@@ -252,16 +252,16 @@
 					<h4 class="text-sm font-bold text-gray-800 mb-2">Home Study Guide</h4>
 					<div class="space-y-2.5">
 						<div>
-							<div class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider mb-0.5">Environment</div>
+							<div class="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-0.5">Environment</div>
 							<p class="text-xs text-gray-700">{data.parent.homeStudy.environment}</p>
 						</div>
 						<div>
-							<div class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider mb-0.5">Schedule</div>
+							<div class="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-0.5">Schedule</div>
 							<p class="text-xs text-gray-700">{data.parent.homeStudy.schedule}</p>
 						</div>
 						{#if data.parent.homeStudy.tips.length > 0}
 							<div>
-								<div class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider mb-0.5">Tips</div>
+								<div class="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-0.5">Tips</div>
 								{#each data.parent.homeStudy.tips as tip}
 									<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1">
 										<span class="text-emerald-400 mt-0.5 shrink-0">→</span>{tip}
@@ -279,10 +279,10 @@
 						{#each data.parent.conversations as c}
 							<div>
 								<div class="flex items-center gap-1.5 mb-0.5">
-									<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-600">{c.category}</span>
+									<span class="text-xs font-semibold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-600">{c.category}</span>
 								</div>
 								<p class="text-xs text-gray-900 font-medium italic">"{c.opener}"</p>
-								<p class="text-[10px] text-gray-500 mt-0.5">{c.why}</p>
+								<p class="text-xs text-gray-500 mt-0.5">{c.why}</p>
 							</div>
 						{/each}
 					</div>
@@ -295,7 +295,7 @@
 						{#each data.parent.warningSignals as w}
 							<div>
 								<p class="text-xs text-red-900 font-medium">{w.signal}</p>
-								<p class="text-[10px] text-red-700 mt-0.5"><strong>Action:</strong> {w.action}</p>
+								<p class="text-xs text-red-700 mt-0.5"><strong>Action:</strong> {w.action}</p>
 							</div>
 						{/each}
 					</div>
@@ -308,7 +308,7 @@
 						{#each data.parent.celebrationSignals as c}
 							<div>
 								<p class="text-xs text-emerald-900 font-medium">{c.signal}</p>
-								<p class="text-[10px] text-emerald-700 mt-0.5">{c.meaning}</p>
+								<p class="text-xs text-emerald-700 mt-0.5">{c.meaning}</p>
 							</div>
 						{/each}
 					</div>
@@ -342,8 +342,8 @@
 						<div class="min-w-0">
 							<p class="text-sm font-semibold text-gray-900">{step.action}</p>
 							<div class="flex items-center gap-2 mt-0.5">
-								<span class="text-[10px] font-semibold {whoColor(step.who)}">{whoLabel(step.who)}</span>
-								<span class="text-[10px] text-gray-400">{step.timeframe}</span>
+								<span class="text-xs font-semibold {whoColor(step.who)}">{whoLabel(step.who)}</span>
+								<span class="text-xs text-gray-400">{step.timeframe}</span>
 							</div>
 							<p class="text-xs text-gray-500 mt-0.5">{step.why}</p>
 						</div>

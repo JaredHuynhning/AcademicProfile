@@ -34,7 +34,7 @@
 
 			<p class="text-sm text-gray-700 leading-relaxed mb-2">{data.grit.overallNarrative}</p>
 			<div class="flex items-start gap-1.5 mt-1">
-				<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded {data.grit.overall.classification === 'strength' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+				<span class="text-xs font-semibold px-1.5 py-0.5 rounded {data.grit.overall.classification === 'strength' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
 					{data.grit.overall.classification === 'strength' ? 'Strength' : 'Needs Work'}
 				</span>
 			</div>
@@ -44,7 +44,7 @@
 				<div class="bg-gray-50 rounded-lg p-3">
 					<span class="font-semibold text-gray-700">Perseverance:</span> {data.grit.perseveranceNarrative}
 					<div class="flex items-start gap-1.5 mt-2">
-						<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded {data.grit.perseverance.classification === 'strength' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+						<span class="text-xs font-semibold px-1.5 py-0.5 rounded {data.grit.perseverance.classification === 'strength' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
 							{data.grit.perseverance.classification === 'strength' ? 'Strength' : 'Needs Work'}
 						</span>
 					</div>
@@ -53,7 +53,7 @@
 				<div class="bg-gray-50 rounded-lg p-3">
 					<span class="font-semibold text-gray-700">Goal Consistency:</span> {data.grit.consistencyNarrative}
 					<div class="flex items-start gap-1.5 mt-2">
-						<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded {data.grit.consistency.classification === 'strength' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+						<span class="text-xs font-semibold px-1.5 py-0.5 rounded {data.grit.consistency.classification === 'strength' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
 							{data.grit.consistency.classification === 'strength' ? 'Strength' : 'Needs Work'}
 						</span>
 					</div>
@@ -113,7 +113,7 @@
 				<div class="bg-gray-50 rounded-lg p-3">
 					<span class="font-semibold text-gray-700">Concentration:</span> {data.focus.concentrationNarrative}
 					<div class="flex items-start gap-1.5 mt-2">
-						<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded {data.focus.concentration.classification === 'strength' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+						<span class="text-xs font-semibold px-1.5 py-0.5 rounded {data.focus.concentration.classification === 'strength' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
 							{data.focus.concentration.classification === 'strength' ? 'Strength' : 'Needs Work'}
 						</span>
 					</div>
@@ -122,7 +122,7 @@
 				<div class="bg-gray-50 rounded-lg p-3">
 					<span class="font-semibold text-gray-700">Procrastination:</span> {data.focus.procrastinationNarrative}
 					<div class="flex items-start gap-1.5 mt-2">
-						<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded {data.focus.procrastination.classification === 'strength' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+						<span class="text-xs font-semibold px-1.5 py-0.5 rounded {data.focus.procrastination.classification === 'strength' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
 							{data.focus.procrastination.classification === 'strength' ? 'Strength' : 'Needs Work'}
 						</span>
 					</div>
@@ -187,7 +187,7 @@
 				<div class="bg-gray-50 rounded-lg p-3">
 					<span class="font-semibold text-gray-700">Vitality:</span>
 					<div class="flex items-start gap-1.5 mt-2">
-						<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded {data.energy.vitality.classification === 'strength' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+						<span class="text-xs font-semibold px-1.5 py-0.5 rounded {data.energy.vitality.classification === 'strength' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
 							{data.energy.vitality.classification === 'strength' ? 'Strength' : 'Needs Work'}
 						</span>
 					</div>
@@ -196,7 +196,7 @@
 				<div class="bg-gray-50 rounded-lg p-3">
 					<span class="font-semibold text-gray-700">Net Energy:</span>
 					<div class="flex items-start gap-1.5 mt-2">
-						<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded {data.energy.netEnergy.classification === 'strength' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+						<span class="text-xs font-semibold px-1.5 py-0.5 rounded {data.energy.netEnergy.classification === 'strength' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
 							{data.energy.netEnergy.classification === 'strength' ? 'Strength' : 'Needs Work'}
 						</span>
 					</div>

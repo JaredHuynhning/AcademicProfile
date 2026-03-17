@@ -83,7 +83,7 @@
 						{m.label}: {m.score}/5 ({m.level})
 					</span>
 					{#if m.classification}
-						<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded self-center {m.classification === 'strength' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+						<span class="text-xs font-semibold px-1.5 py-0.5 rounded self-center {m.classification === 'strength' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
 							{m.classification === 'strength' ? 'Strength' : 'Needs Work'}
 						</span>
 					{/if}
@@ -93,7 +93,7 @@
 			<div class="space-y-1 mb-4">
 				{#each Object.entries(data.motivationScores) as [key, m]}
 					{#if m.tip}
-						<p class="text-[10px] text-gray-500 italic flex items-start gap-1.5">
+						<p class="text-xs text-gray-500 italic flex items-start gap-1.5">
 							<span class="font-semibold text-gray-600 shrink-0">{m.label}:</span> {m.tip}
 						</p>
 					{/if}
@@ -163,11 +163,11 @@
 							<p class="text-xs text-gray-500">{r.desc}</p>
 							{#if r.classification}
 								<div class="flex items-center gap-1.5 mt-1">
-									<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded {r.classification === 'strength' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+									<span class="text-xs font-semibold px-1.5 py-0.5 rounded {r.classification === 'strength' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
 										{r.classification === 'strength' ? 'Strength' : 'Needs Work'}
 									</span>
 								</div>
-								<p class="text-[10px] text-gray-500 mt-0.5 italic">{r.tip}</p>
+								<p class="text-xs text-gray-500 mt-0.5 italic">{r.tip}</p>
 							{/if}
 						</div>
 					</div>

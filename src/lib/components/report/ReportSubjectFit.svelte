@@ -40,7 +40,7 @@
 
 					{#if subject.strengths?.length > 0}
 						<div class="mt-2">
-							<h4 class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider mb-1">Strengths</h4>
+							<h4 class="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1">Strengths</h4>
 							{#each subject.strengths as s}
 								<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-0.5"><span class="text-emerald-500 mt-0.5 shrink-0">+</span>{s}</p>
 							{/each}
@@ -48,7 +48,7 @@
 					{/if}
 					{#if subject.weaknesses?.length > 0}
 						<div class="mt-2">
-							<h4 class="text-[10px] font-bold text-amber-700 uppercase tracking-wider mb-1">Weaknesses</h4>
+							<h4 class="text-xs font-bold text-amber-700 uppercase tracking-wider mb-1">Weaknesses</h4>
 							{#each subject.weaknesses as w}
 								<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-0.5"><span class="text-amber-500 mt-0.5 shrink-0">-</span>{w}</p>
 							{/each}
@@ -56,7 +56,7 @@
 					{/if}
 					{#if subject.actions?.length > 0}
 						<div class="mt-2">
-							<h4 class="text-[10px] font-bold text-blue-700 uppercase tracking-wider mb-1">What To Do</h4>
+							<h4 class="text-xs font-bold text-blue-700 uppercase tracking-wider mb-1">What To Do</h4>
 							{#each subject.actions as a}
 								<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-0.5"><span class="text-blue-500 mt-0.5 shrink-0">→</span>{a}</p>
 							{/each}
