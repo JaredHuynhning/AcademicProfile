@@ -178,7 +178,7 @@ body {
 	}
 
 	.report-section {
-		font-size: 11px;
+		font-size: 12px;
 	}
 
 	.report-section h2 {
@@ -191,7 +191,9 @@ body {
 
 	.report-section p,
 	.report-section li,
-	.report-section span {
+	.report-section span,
+	.report-section div {
+		font-size: max(12px, inherit);
 		line-height: 1.4;
 	}
 }
