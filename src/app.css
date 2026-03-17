@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	--dim-H: #14b8a6;
+	--dim-E: #f43f5e;
+	--dim-X: #f97316;
+	--dim-A: #22c55e;
+	--dim-C: #3b82f6;
+	--dim-O: #8b5cf6;
+}
+
+body {
+	font-family: 'Inter', system-ui, sans-serif;
+	background: linear-gradient(135deg, #fef9f0 0%, #f0f4ff 50%, #fdf2f8 100%);
+	min-height: 100vh;
+}
+
+.print-only {
+	display: none;
+}
+
+@media print {
+	@page {
+		margin: 1.5cm;
+		size: A4;
+	}
+
+	body {
+		background: white;
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+
+	* {
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+
+	.no-print {
+		display: none !important;
+	}
+
+	.print-only {
+		display: block !important;
+	}
+
+	.dimension-details {
+		display: block !important;
+	}
+
+	.dimension-toggle-arrow {
+		display: none !important;
+	}
+
+	.print-break-before {
+		page-break-before: always;
+	}
+
+	.print-break-avoid {
+		page-break-inside: avoid;
+	}
+
+	header, footer {
+		display: none !important;
+	}
+
+	/* Remove shadows and decorative styles */
+	.shadow-sm, .shadow-md, .shadow-lg {
+		box-shadow: none !important;
+	}
+
+	/* Ensure score bars and colored elements print correctly */
+	div[style*="background"] {
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+
+	svg {
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+
+	.radar-chart-container {
+		display: flex;
+		justify-content: center;
+	}
+}
