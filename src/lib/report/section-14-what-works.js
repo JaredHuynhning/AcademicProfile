@@ -152,14 +152,18 @@ export function generateWhatWorks(results) {
 			profile: tp.profile,
 			structureScore: tp.structure,
 			warmthScore: tp.warmth,
-			insights: teacherInsights
+			insights: teacherInsights,
+			strengths: teacherInsights.filter((i) => i.type === 'strength').map((i) => i.text),
+			weaknesses: teacherInsights.filter((i) => i.type === 'weakness').map((i) => i.text)
 		},
 		response: {
 			...responseType,
 			carrotScore: tp.carrot,
 			stickScore: tp.stick,
 			type: tp.responseType,
-			insights: responseInsights
+			insights: responseInsights,
+			strengths: responseInsights.filter((i) => i.type === 'strength').map((i) => i.text),
+			weaknesses: responseInsights.filter((i) => i.type === 'weakness').map((i) => i.text)
 		},
 		examBarrier: {
 			...barrierDiagnosis,
@@ -170,7 +174,9 @@ export function generateWhatWorks(results) {
 				anxiety: eb.anxiety,
 				timeManagement: eb.timeManagement
 			},
-			insights: examInsights
+			insights: examInsights,
+			strengths: examInsights.filter((i) => i.type === 'strength').map((i) => i.text),
+			weaknesses: examInsights.filter((i) => i.type === 'weakness').map((i) => i.text)
 		}
 	};
 }

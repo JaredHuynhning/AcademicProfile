@@ -60,10 +60,15 @@ const APPROACH_DESC = {
 			'Natural critical thinking and evidence-based reasoning',
 			'Intrinsic interest makes learning feel less like "work"'
 		],
-		tips: [
-			'Challenge yourself with open-ended research projects',
-			'Teach concepts to others, explaining deepens your understanding',
-			'Use concept maps to visualise connections between ideas'
+		weaknesses: [
+			'May overthink problems and get stuck in analysis paralysis',
+			'Can be slow to complete work when seeking perfect understanding',
+			'May neglect exam technique in favour of deeper exploration'
+		],
+		actions: [
+			'Set time limits for research and analysis to avoid overthinking',
+			'Practice past exam papers under timed conditions to sharpen technique',
+			'Use concept maps to visualise connections between ideas without getting lost in detail'
 		]
 	},
 	strategic: {
@@ -75,9 +80,14 @@ const APPROACH_DESC = {
 			'Self-monitoring ensures consistent progress',
 			'Adaptable, changes methods when something isn\'t working'
 		],
-		tips: [
-			'Pair your planning skills with deeper questioning',
-			'Avoid over-optimising for grades at the expense of genuine understanding',
+		weaknesses: [
+			'May focus too much on grades over genuine understanding',
+			'Can miss creative connections by sticking rigidly to the syllabus',
+			'Risk of burnout from constant optimisation and self-monitoring'
+		],
+		actions: [
+			'Pair your planning skills with deeper questioning — ask "why?" not just "what\'s on the test?"',
+			'Allow yourself unstructured exploration time in subjects you enjoy',
 			'Share your organisational strategies with classmates who struggle'
 		]
 	},
@@ -90,11 +100,16 @@ const APPROACH_DESC = {
 			'Gets through required work efficiently',
 			'May excel in subjects requiring rote knowledge'
 		],
-		tips: [
+		weaknesses: [
+			'Memorising without understanding limits long-term retention',
+			'Struggles with unfamiliar question formats that require application',
+			'Knowledge doesn\'t transfer well between subjects or to real life'
+		],
+		actions: [
 			'Try asking "why?" and "how?" about what you memorise, even one question per topic',
 			'Connect study topics to things you actually care about',
 			'Work with a study partner who can discuss ideas, not just review notes',
-			'Start with practice problems before memorising, understanding comes from doing'
+			'Start with practice problems before memorising — understanding comes from doing'
 		]
 	}
 };
@@ -238,6 +253,63 @@ function generateRegulationAssessment(selfReg) {
 }
 
 /**
+ * Generate category-level motivation strengths, weaknesses, and actions.
+ */
+function generateMotivationSW(motivation) {
+	const strengths = [];
+	const weaknesses = [];
+	const actions = [];
+
+	if (motivation.intrinsic.score >= 3.0) {
+		strengths.push('Genuine curiosity drives your learning. This is the most sustainable form of motivation.');
+	} else {
+		weaknesses.push('Low intrinsic motivation means subjects feel like obligations, not interests.');
+		actions.push('Find one personally interesting angle in each subject. Even a single question that puzzles you can shift how you feel about a topic.');
+	}
+
+	if (motivation.identified.score >= 3.0) {
+		strengths.push('You see the value in education for your future goals.');
+	} else {
+		weaknesses.push('You haven\'t connected school to your personal goals yet.');
+		actions.push('Talk to someone about what you want to do after school. Then find one link between that goal and what you\'re studying now.');
+	}
+
+	if (motivation.external.score >= 4.0) {
+		weaknesses.push('You rely heavily on external rewards and pressure. This works short-term but burns out.');
+		actions.push('Before each study session, find one reason YOU want to learn this, beyond grades.');
+	}
+
+	if (motivation.amotivation.score >= 2.5) {
+		weaknesses.push('Signs of disconnection from learning are emerging.');
+		actions.push('Have an honest conversation with someone you trust about what would make school feel worthwhile.');
+	} else if (motivation.amotivation.score < 2.0) {
+		strengths.push('You see clear purpose in your learning.');
+	}
+
+	return { strengths, weaknesses, actions };
+}
+
+/**
+ * Generate category-level regulation strengths, weaknesses, and actions.
+ */
+function generateRegulationSW(regulationItems) {
+	const strengths = [];
+	const weaknesses = [];
+	const actions = [];
+
+	for (const r of regulationItems) {
+		if (r.classification === 'strength') {
+			strengths.push(`${r.label}: ${r.score}/5. ${r.tip}`);
+		} else {
+			weaknesses.push(`${r.label}: ${r.score}/5. ${r.desc}`);
+			actions.push(r.tip);
+		}
+	}
+
+	return { strengths, weaknesses, actions };
+}
+
+/**
  * Generate the full study profile report section.
  * @param {object} results - Full results with dimensions and studyProfile
  * @returns {object|null} Section data, or null if no studyProfile
@@ -248,6 +320,7 @@ export function generateStudyProfile(results) {
 	const sp = results.studyProfile;
 	const approach = APPROACH_DESC[sp.dominantApproach];
 	const motivation = MOTIVATION_DESC[sp.motivationProfile];
+	const regulation = generateRegulationAssessment(sp.selfRegulation);
 
 	return {
 		// Study Approaches
@@ -285,10 +358,12 @@ export function generateStudyProfile(results) {
 			}
 		},
 		sdi: sp.motivation.sdi,
+		motivationStrengthsWeaknesses: generateMotivationSW(sp.motivation),
 
 		// Self-Regulation
 		regulationStrength: sp.regulationStrength,
-		regulation: generateRegulationAssessment(sp.selfRegulation),
+		regulation,
+		regulationStrengthsWeaknesses: generateRegulationSW(regulation),
 
 		// Cross-system insights
 		crossInsights: generateCrossInsights(results.dimensions, sp)

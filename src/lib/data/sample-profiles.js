@@ -2,7 +2,7 @@ export const sampleProfiles = [
 	{
 		"id": "sample-sophie-turner",
 		"name": "Sophie Turner",
-		"date": "2026-03-16T13:00:00.000Z",
+		"date": "2026-03-17T13:00:00.000Z",
 		"results": {
 			"dimensions": {
 				"H": {
@@ -356,7 +356,7 @@ export const sampleProfiles = [
 	{
 		"id": "sample-kai-tanaka",
 		"name": "Kai Tanaka",
-		"date": "2026-03-09T13:00:00.000Z",
+		"date": "2026-03-10T13:00:00.000Z",
 		"results": {
 			"dimensions": {
 				"H": {
@@ -710,7 +710,7 @@ export const sampleProfiles = [
 	{
 		"id": "sample-amira-hassan",
 		"name": "Amira Hassan",
-		"date": "2026-03-02T13:00:00.000Z",
+		"date": "2026-03-03T13:00:00.000Z",
 		"results": {
 			"dimensions": {
 				"H": {
@@ -1064,7 +1064,7 @@ export const sampleProfiles = [
 	{
 		"id": "sample-marcus-williams",
 		"name": "Marcus Williams",
-		"date": "2026-02-23T13:00:00.000Z",
+		"date": "2026-02-24T13:00:00.000Z",
 		"results": {
 			"dimensions": {
 				"H": {
@@ -1418,7 +1418,7 @@ export const sampleProfiles = [
 	{
 		"id": "sample-zara-patel",
 		"name": "Zara Patel",
-		"date": "2026-02-16T13:00:00.000Z",
+		"date": "2026-02-17T13:00:00.000Z",
 		"results": {
 			"dimensions": {
 				"H": {
@@ -1772,7 +1772,7 @@ export const sampleProfiles = [
 	{
 		"id": "sample-leo-fernandez",
 		"name": "Leo Fernandez",
-		"date": "2026-02-09T13:00:00.000Z",
+		"date": "2026-02-10T13:00:00.000Z",
 		"results": {
 			"dimensions": {
 				"H": {

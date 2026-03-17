@@ -126,26 +126,90 @@ export function generateAcademicCharacter(results) {
 	const procLevel = lp.focus.procrastination.level;
 	const energyLevel = lp.energy.netEnergy.level;
 
+	const gritPerseverance = withClassification(lp.grit.perseverance, 'perseverance');
+	const gritConsistency = withClassification(lp.grit.consistency, 'consistency');
+	const focusConcentration = withClassification(lp.focus.concentration, 'concentration');
+	const focusProcrastination = withClassification(lp.focus.procrastination, 'procrastination');
+	const energyVitality = withClassification(lp.energy.vitality, 'vitality');
+	const energyNetEnergy = withClassification(lp.energy.netEnergy, 'netEnergy');
+
+	const gritStrengths = [];
+	const gritWeaknesses = [];
+	const gritActions = [];
+	if (gritPerseverance.classification === 'strength') {
+		gritStrengths.push(`Perseverance (${gritPerseverance.score}/5): You push through challenges and keep going when things get tough.`);
+	} else {
+		gritWeaknesses.push(`Perseverance (${gritPerseverance.score}/5): You tend to give up when tasks get difficult or take too long.`);
+		gritActions.push(gritPerseverance.tip);
+	}
+	if (gritConsistency.classification === 'strength') {
+		gritStrengths.push(`Goal Consistency (${gritConsistency.score}/5): You stick with your commitments and see projects through.`);
+	} else {
+		gritWeaknesses.push(`Goal Consistency (${gritConsistency.score}/5): You shift between interests and struggle to maintain long-term focus.`);
+		gritActions.push(gritConsistency.tip);
+	}
+
+	const focusStrengths = [];
+	const focusWeaknesses = [];
+	const focusActions = [];
+	if (focusConcentration.classification === 'strength') {
+		focusStrengths.push(`Concentration (${focusConcentration.score}/5): You can sustain attention on your work for extended periods.`);
+	} else {
+		focusWeaknesses.push(`Concentration (${focusConcentration.score}/5): You find it hard to focus, especially during study. Distractions pull you away easily.`);
+		focusActions.push(focusConcentration.tip);
+	}
+	if (focusProcrastination.classification === 'strength') {
+		focusStrengths.push(`Starting tasks (${focusProcrastination.score}/5): You get going without needing to be pushed.`);
+	} else {
+		focusWeaknesses.push(`Procrastination (${focusProcrastination.score}/5): You consistently put off starting work, even when you know it's important.`);
+		focusActions.push(focusProcrastination.tip);
+	}
+
+	const energyStrengths = [];
+	const energyWeaknesses = [];
+	const energyActions = [];
+	if (energyVitality.classification === 'strength') {
+		energyStrengths.push(`Vitality (${energyVitality.score}/5): You generally feel energised and alert for learning.`);
+	} else {
+		energyWeaknesses.push(`Vitality (${energyVitality.score}/5): You often feel low energy, which limits how much you can absorb.`);
+		energyActions.push(energyVitality.tip);
+	}
+	if (energyNetEnergy.classification === 'strength') {
+		energyStrengths.push(`Overall energy (${energyNetEnergy.score}/5): Your energy levels support sustained learning.`);
+	} else {
+		energyWeaknesses.push(`Overall energy (${energyNetEnergy.score}/5): You feel drained, which affects your ability to study effectively.`);
+		energyActions.push(energyNetEnergy.tip);
+	}
+
 	return {
 		grit: {
 			overall: withClassification(lp.grit.overall, 'overall'),
-			perseverance: withClassification(lp.grit.perseverance, 'perseverance'),
-			consistency: withClassification(lp.grit.consistency, 'consistency'),
+			perseverance: gritPerseverance,
+			consistency: gritConsistency,
 			perseveranceNarrative: GRIT_NARRATIVES[gritLevel].perseverance,
 			consistencyNarrative: GRIT_NARRATIVES[gritLevel].consistency,
-			overallNarrative: GRIT_NARRATIVES[gritLevel].combined
+			overallNarrative: GRIT_NARRATIVES[gritLevel].combined,
+			strengths: gritStrengths,
+			weaknesses: gritWeaknesses,
+			actions: gritActions
 		},
 		focus: {
-			concentration: withClassification(lp.focus.concentration, 'concentration'),
-			procrastination: withClassification(lp.focus.procrastination, 'procrastination'),
+			concentration: focusConcentration,
+			procrastination: focusProcrastination,
 			concentrationNarrative: FOCUS_NARRATIVES.concentration[concLevel],
-			procrastinationNarrative: FOCUS_NARRATIVES.procrastination[procLevel]
+			procrastinationNarrative: FOCUS_NARRATIVES.procrastination[procLevel],
+			strengths: focusStrengths,
+			weaknesses: focusWeaknesses,
+			actions: focusActions
 		},
 		energy: {
-			netEnergy: withClassification(lp.energy.netEnergy, 'netEnergy'),
-			vitality: withClassification(lp.energy.vitality, 'vitality'),
+			netEnergy: energyNetEnergy,
+			vitality: energyVitality,
 			depletion: lp.energy.depletion,
-			narrative: ENERGY_NARRATIVES[energyLevel]
+			narrative: ENERGY_NARRATIVES[energyLevel],
+			strengths: energyStrengths,
+			weaknesses: energyWeaknesses,
+			actions: energyActions
 		},
 		crossRef: generateCrossRef(results.dimensions, lp)
 	};

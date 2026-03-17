@@ -22,21 +22,27 @@
 					Warmth preference: {data.teacher.warmthScore}/5
 				</span>
 			</div>
-			{#if data.teacher.insights?.length > 0}
-				<div class="flex flex-wrap gap-1.5 mb-3">
-					{#each data.teacher.insights as ins}
-						<div class="flex items-start gap-1.5 text-xs">
-							<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded shrink-0 {ins.type === 'strength' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
-								{ins.type === 'strength' ? 'Strength' : 'Needs Work'}
-							</span>
-							<span class="text-gray-600">{ins.text}</span>
-						</div>
+			<p class="text-sm text-gray-700 leading-relaxed mb-3">{data.teacher.desc}</p>
+
+			{#if data.teacher.strengths?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1.5">Strengths</h4>
+					{#each data.teacher.strengths as s}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1"><span class="text-emerald-500 mt-0.5 shrink-0">+</span>{s}</p>
 					{/each}
 				</div>
 			{/if}
-			<p class="text-sm text-gray-700 leading-relaxed mb-3">{data.teacher.desc}</p>
-			<div class="bg-blue-50 rounded-lg p-3">
-				<p class="text-xs text-blue-800"><strong>For tutors & parents:</strong> {data.teacher.tutorTip}</p>
+			{#if data.teacher.weaknesses?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-amber-700 uppercase tracking-wider mb-1.5">Weaknesses</h4>
+					{#each data.teacher.weaknesses as w}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1"><span class="text-amber-500 mt-0.5 shrink-0">-</span>{w}</p>
+					{/each}
+				</div>
+			{/if}
+
+			<div class="bg-blue-50 rounded-lg p-3 mt-3">
+				<p class="text-xs text-blue-800"><strong>What To Do:</strong> {data.teacher.tutorTip}</p>
 			</div>
 		</div>
 
@@ -53,21 +59,27 @@
 					Accountability response: {data.response.stickScore}/5
 				</span>
 			</div>
-			{#if data.response.insights?.length > 0}
-				<div class="flex flex-wrap gap-1.5 mb-3">
-					{#each data.response.insights as ins}
-						<div class="flex items-start gap-1.5 text-xs">
-							<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded shrink-0 {ins.type === 'strength' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
-								{ins.type === 'strength' ? 'Strength' : 'Needs Work'}
-							</span>
-							<span class="text-gray-600">{ins.text}</span>
-						</div>
+			<p class="text-sm text-gray-700 leading-relaxed mb-3">{data.response.desc}</p>
+
+			{#if data.response.strengths?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1.5">Strengths</h4>
+					{#each data.response.strengths as s}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1"><span class="text-emerald-500 mt-0.5 shrink-0">+</span>{s}</p>
 					{/each}
 				</div>
 			{/if}
-			<p class="text-sm text-gray-700 leading-relaxed mb-3">{data.response.desc}</p>
-			<div class="bg-amber-50 rounded-lg p-3">
-				<p class="text-xs text-amber-800"><strong>Strategy:</strong> {data.response.strategy}</p>
+			{#if data.response.weaknesses?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-amber-700 uppercase tracking-wider mb-1.5">Weaknesses</h4>
+					{#each data.response.weaknesses as w}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1"><span class="text-amber-500 mt-0.5 shrink-0">-</span>{w}</p>
+					{/each}
+				</div>
+			{/if}
+
+			<div class="bg-amber-50 rounded-lg p-3 mt-3">
+				<p class="text-xs text-amber-800"><strong>What To Do:</strong> {data.response.strategy}</p>
 			</div>
 		</div>
 
@@ -90,23 +102,28 @@
 					Time Mgmt: {data.examBarrier.scores.timeManagement}/5
 				</span>
 			</div>
-			{#if data.examBarrier.insights?.length > 0}
-				<div class="flex flex-wrap gap-1.5 mb-3">
-					{#each data.examBarrier.insights as ins}
-						<div class="flex items-start gap-1.5 text-xs">
-							<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded shrink-0 {ins.type === 'strength' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
-								{ins.type === 'strength' ? 'Strength' : 'Needs Work'}
-							</span>
-							<span class="text-gray-600">{ins.text}</span>
-						</div>
+			<p class="text-sm text-gray-700 leading-relaxed mb-4">{data.examBarrier.desc}</p>
+
+			{#if data.examBarrier.strengths?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1.5">Strengths</h4>
+					{#each data.examBarrier.strengths as s}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1"><span class="text-emerald-500 mt-0.5 shrink-0">+</span>{s}</p>
 					{/each}
 				</div>
 			{/if}
-			<p class="text-sm text-gray-700 leading-relaxed mb-4">{data.examBarrier.desc}</p>
+			{#if data.examBarrier.weaknesses?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-amber-700 uppercase tracking-wider mb-1.5">Weaknesses</h4>
+					{#each data.examBarrier.weaknesses as w}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1"><span class="text-amber-500 mt-0.5 shrink-0">-</span>{w}</p>
+					{/each}
+				</div>
+			{/if}
 
 			{#if data.examBarrier.strategies?.length > 0}
-				<div class="bg-emerald-50 rounded-lg p-4">
-					<h4 class="text-xs font-bold text-emerald-800 mb-2">Action Steps</h4>
+				<div class="bg-emerald-50 rounded-lg p-4 mt-3">
+					<h4 class="text-xs font-bold text-emerald-800 mb-2">What To Do</h4>
 					<ul class="space-y-1.5">
 						{#each data.examBarrier.strategies as strategy}
 							<li class="text-xs text-emerald-700 flex items-start gap-1.5">

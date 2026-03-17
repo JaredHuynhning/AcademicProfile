@@ -79,6 +79,27 @@ export function generateSubjectFit(results) {
 		const passionClassification = subject.passion >= 3.5 ? 'strength' : 'weakness';
 		const confidenceClassification = subject.confidence >= 3.5 ? 'strength' : 'weakness';
 
+		const passionTip = PASSION_TIPS[key][passionClassification];
+		const confidenceTip = CONFIDENCE_TIPS[key][confidenceClassification];
+
+		const strengths = [];
+		const weaknesses = [];
+		const actions = [];
+
+		if (passionClassification === 'strength') {
+			strengths.push(`Passion (${subject.passion}/5): You genuinely enjoy this subject.`);
+		} else {
+			weaknesses.push(`Interest (${subject.passion}/5): This subject doesn't engage you right now.`);
+			actions.push(passionTip);
+		}
+
+		if (confidenceClassification === 'strength') {
+			strengths.push(`Confidence (${subject.confidence}/5): You believe you can do well here.`);
+		} else {
+			weaknesses.push(`Confidence (${subject.confidence}/5): You doubt your ability in this subject.`);
+			actions.push(confidenceTip);
+		}
+
 		return {
 			key,
 			...meta,
@@ -88,9 +109,12 @@ export function generateSubjectFit(results) {
 			alignmentLabel: formatAlignment(subject.alignment),
 			passionClassification,
 			confidenceClassification,
-			passionTip: PASSION_TIPS[key][passionClassification],
-			confidenceTip: CONFIDENCE_TIPS[key][confidenceClassification],
-			narrative
+			passionTip,
+			confidenceTip,
+			narrative,
+			strengths,
+			weaknesses,
+			actions
 		};
 	});
 

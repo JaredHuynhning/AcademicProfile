@@ -34,28 +34,38 @@
 				{/each}
 			</div>
 
-			<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-				<div>
-					<h4 class="text-sm font-semibold text-green-700 mb-2">Strengths</h4>
-					<ul class="space-y-1">
-						{#each data.approach.strengths as s}
-							<li class="text-sm text-gray-700 flex items-start gap-1.5">
-								<span class="text-green-500 mt-0.5">+</span>{s}
-							</li>
-						{/each}
-					</ul>
+			{#if data.approach.strengths?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1.5">Strengths</h4>
+					{#each data.approach.strengths as s}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1">
+							<span class="text-emerald-500 mt-0.5 shrink-0">+</span>{s}
+						</p>
+					{/each}
 				</div>
-				<div>
-					<h4 class="text-sm font-semibold text-blue-700 mb-2">Tips</h4>
-					<ul class="space-y-1">
-						{#each data.approach.tips as t}
-							<li class="text-sm text-gray-700 flex items-start gap-1.5">
-								<span class="text-blue-500 mt-0.5">→</span>{t}
-							</li>
-						{/each}
-					</ul>
+			{/if}
+
+			{#if data.approach.weaknesses?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-amber-700 uppercase tracking-wider mb-1.5">Weaknesses</h4>
+					{#each data.approach.weaknesses as w}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1">
+							<span class="text-amber-500 mt-0.5 shrink-0">-</span>{w}
+						</p>
+					{/each}
 				</div>
-			</div>
+			{/if}
+
+			{#if data.approach.actions?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-blue-700 uppercase tracking-wider mb-1.5">What To Do</h4>
+					{#each data.approach.actions as a}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1">
+							<span class="text-blue-500 mt-0.5 shrink-0">→</span>{a}
+						</p>
+					{/each}
+				</div>
+			{/if}
 		</div>
 
 		<!-- B. Motivation Profile -->
@@ -97,6 +107,39 @@
 				</span>
 				<span class="text-gray-500 ml-1">(range: -12 to +15)</span>
 			</div>
+
+			{#if data.motivationStrengthsWeaknesses?.strengths?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1.5">Strengths</h4>
+					{#each data.motivationStrengthsWeaknesses.strengths as s}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1">
+							<span class="text-emerald-500 mt-0.5 shrink-0">+</span>{s}
+						</p>
+					{/each}
+				</div>
+			{/if}
+
+			{#if data.motivationStrengthsWeaknesses?.weaknesses?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-amber-700 uppercase tracking-wider mb-1.5">Weaknesses</h4>
+					{#each data.motivationStrengthsWeaknesses.weaknesses as w}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1">
+							<span class="text-amber-500 mt-0.5 shrink-0">-</span>{w}
+						</p>
+					{/each}
+				</div>
+			{/if}
+
+			{#if data.motivationStrengthsWeaknesses?.actions?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-blue-700 uppercase tracking-wider mb-1.5">What To Do</h4>
+					{#each data.motivationStrengthsWeaknesses.actions as a}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1">
+							<span class="text-blue-500 mt-0.5 shrink-0">→</span>{a}
+						</p>
+					{/each}
+				</div>
+			{/if}
 		</div>
 
 		<!-- C. Self-Regulation -->
@@ -130,6 +173,39 @@
 					</div>
 				{/each}
 			</div>
+
+			{#if data.regulationStrengthsWeaknesses?.strengths?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1.5">Strengths</h4>
+					{#each data.regulationStrengthsWeaknesses.strengths as s}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1">
+							<span class="text-emerald-500 mt-0.5 shrink-0">+</span>{s}
+						</p>
+					{/each}
+				</div>
+			{/if}
+
+			{#if data.regulationStrengthsWeaknesses?.weaknesses?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-amber-700 uppercase tracking-wider mb-1.5">Weaknesses</h4>
+					{#each data.regulationStrengthsWeaknesses.weaknesses as w}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1">
+							<span class="text-amber-500 mt-0.5 shrink-0">-</span>{w}
+						</p>
+					{/each}
+				</div>
+			{/if}
+
+			{#if data.regulationStrengthsWeaknesses?.actions?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-blue-700 uppercase tracking-wider mb-1.5">What To Do</h4>
+					{#each data.regulationStrengthsWeaknesses.actions as a}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1">
+							<span class="text-blue-500 mt-0.5 shrink-0">→</span>{a}
+						</p>
+					{/each}
+				</div>
+			{/if}
 		</div>
 
 		<!-- D. Cross-System Insights (HEXACO × Study Profile) -->

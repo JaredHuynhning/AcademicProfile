@@ -60,6 +60,39 @@
 					<p class="text-xs text-gray-600 mt-1 italic">{data.grit.consistency.tip}</p>
 				</div>
 			</div>
+
+			{#if data.grit.strengths?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1.5">Strengths</h4>
+					{#each data.grit.strengths as s}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1">
+							<span class="text-emerald-500 mt-0.5 shrink-0">+</span>{s}
+						</p>
+					{/each}
+				</div>
+			{/if}
+
+			{#if data.grit.weaknesses?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-amber-700 uppercase tracking-wider mb-1.5">Weaknesses</h4>
+					{#each data.grit.weaknesses as w}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1">
+							<span class="text-amber-500 mt-0.5 shrink-0">-</span>{w}
+						</p>
+					{/each}
+				</div>
+			{/if}
+
+			{#if data.grit.actions?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-blue-700 uppercase tracking-wider mb-1.5">What To Do</h4>
+					{#each data.grit.actions as a}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1">
+							<span class="text-blue-500 mt-0.5 shrink-0">&rarr;</span>{a}
+						</p>
+					{/each}
+				</div>
+			{/if}
 		</div>
 
 		<!-- Focus & Procrastination -->
@@ -96,6 +129,39 @@
 					<p class="text-xs text-gray-600 mt-1 italic">{data.focus.procrastination.tip}</p>
 				</div>
 			</div>
+
+			{#if data.focus.strengths?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1.5">Strengths</h4>
+					{#each data.focus.strengths as s}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1">
+							<span class="text-emerald-500 mt-0.5 shrink-0">+</span>{s}
+						</p>
+					{/each}
+				</div>
+			{/if}
+
+			{#if data.focus.weaknesses?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-amber-700 uppercase tracking-wider mb-1.5">Weaknesses</h4>
+					{#each data.focus.weaknesses as w}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1">
+							<span class="text-amber-500 mt-0.5 shrink-0">-</span>{w}
+						</p>
+					{/each}
+				</div>
+			{/if}
+
+			{#if data.focus.actions?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-blue-700 uppercase tracking-wider mb-1.5">What To Do</h4>
+					{#each data.focus.actions as a}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1">
+							<span class="text-blue-500 mt-0.5 shrink-0">&rarr;</span>{a}
+						</p>
+					{/each}
+				</div>
+			{/if}
 		</div>
 
 		<!-- Energy & Stamina -->
@@ -137,6 +203,39 @@
 					<p class="text-xs text-gray-600 mt-1 italic">{data.energy.netEnergy.tip}</p>
 				</div>
 			</div>
+
+			{#if data.energy.strengths?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1.5">Strengths</h4>
+					{#each data.energy.strengths as s}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1">
+							<span class="text-emerald-500 mt-0.5 shrink-0">+</span>{s}
+						</p>
+					{/each}
+				</div>
+			{/if}
+
+			{#if data.energy.weaknesses?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-amber-700 uppercase tracking-wider mb-1.5">Weaknesses</h4>
+					{#each data.energy.weaknesses as w}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1">
+							<span class="text-amber-500 mt-0.5 shrink-0">-</span>{w}
+						</p>
+					{/each}
+				</div>
+			{/if}
+
+			{#if data.energy.actions?.length > 0}
+				<div class="mt-3">
+					<h4 class="text-xs font-bold text-blue-700 uppercase tracking-wider mb-1.5">What To Do</h4>
+					{#each data.energy.actions as a}
+						<p class="text-xs text-gray-700 flex items-start gap-1.5 mb-1">
+							<span class="text-blue-500 mt-0.5 shrink-0">&rarr;</span>{a}
+						</p>
+					{/each}
+				</div>
+			{/if}
 		</div>
 
 		<!-- Cross-System Reference -->
