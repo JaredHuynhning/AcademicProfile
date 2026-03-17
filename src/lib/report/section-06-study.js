@@ -116,14 +116,14 @@ function buildSubjectStrategies(dims) {
 function buildSTEM(dims) {
 	const strategies = [];
 	if (isHigh(dims.C.score)) {
-		strategies.push('Work through practice problems systematically — build from easy to hard');
+		strategies.push('Work through practice problems systematically, build from easy to hard');
 		strategies.push('Create formula sheets and procedure checklists for each topic');
 	} else {
 		strategies.push('Start with practice problems to identify gaps, then study targeted theory');
 		strategies.push('Use video tutorials to make abstract concepts more tangible');
 	}
 	if (isHigh(dims.O.score)) {
-		strategies.push('Explore the "why" behind formulas — understanding derivations aids memory');
+		strategies.push('Explore the "why" behind formulas, understanding derivations aids memory');
 	} else {
 		strategies.push('Focus on mastering procedures first, then build conceptual understanding');
 	}
@@ -138,10 +138,10 @@ function buildSTEM(dims) {
 function buildHumanities(dims) {
 	const strategies = [];
 	if (isHigh(dims.O.score)) {
-		strategies.push('Explore multiple perspectives and interpretations — your curiosity is an asset here');
+		strategies.push('Explore multiple perspectives and interpretations, your curiosity is an asset here');
 		strategies.push('Write comparative essays that connect different ideas and time periods');
 	} else {
-		strategies.push('Focus on key themes and arguments — use structured essay templates');
+		strategies.push('Focus on key themes and arguments, use structured essay templates');
 		strategies.push('Create timelines and fact sheets to organise information clearly');
 	}
 	if (isHigh(dims.E.score)) {
@@ -150,7 +150,7 @@ function buildHumanities(dims) {
 	if (isHigh(dims.C.score)) {
 		strategies.push('Build a vocabulary notebook with structured definitions and usage examples');
 	} else {
-		strategies.push('Use flashcard apps for vocabulary — they provide structure without feeling rigid');
+		strategies.push('Use flashcard apps for vocabulary, they provide structure without feeling rigid');
 	}
 	return strategies;
 }
@@ -159,7 +159,7 @@ function buildCreative(dims) {
 	const strategies = [];
 	if (isHigh(dims.O.score)) {
 		strategies.push('Let yourself experiment freely first, then refine and edit');
-		strategies.push('Keep an inspiration journal — collect ideas from everywhere');
+		strategies.push('Keep an inspiration journal, collect ideas from everywhere');
 	} else {
 		strategies.push('Start with clear guidelines and templates, then personalise');
 		strategies.push('Study examples of excellent work to understand standards');
@@ -183,16 +183,16 @@ function buildExamPrep(dims) {
 	if (isHigh(dims.C.score)) {
 		plan.timeline = [
 			{ week: '4 weeks before', action: 'Create a detailed revision timetable covering all topics' },
-			{ week: '3 weeks before', action: 'First pass through all material — identify weak areas' },
+			{ week: '3 weeks before', action: 'First pass through all material, identify weak areas' },
 			{ week: '2 weeks before', action: 'Deep dive into weak areas with practice questions' },
 			{ week: '1 week before', action: 'Full practice papers under timed conditions' },
-			{ week: 'Final days', action: 'Light review of key summaries — no new material' }
+			{ week: 'Final days', action: 'Light review of key summaries, no new material' }
 		];
 	} else {
 		plan.timeline = [
-			{ week: '4 weeks before', action: 'List all topics to cover — honest audit of what you know' },
+			{ week: '4 weeks before', action: 'List all topics to cover, honest audit of what you know' },
 			{ week: '3 weeks before', action: 'Focus on understanding (not memorising) the hardest topics' },
-			{ week: '2 weeks before', action: 'Start practice questions — learn by doing' },
+			{ week: '2 weeks before', action: 'Start practice questions, learn by doing' },
 			{ week: '1 week before', action: 'Create one-page summaries for each topic' },
 			{ week: 'Final days', action: 'Review summaries and get a good night\'s sleep' }
 		];
@@ -201,18 +201,18 @@ function buildExamPrep(dims) {
 	// Day before
 	if (isHigh(dims.E.score)) {
 		plan.dayBefore = [
-			'Light review only — no new material',
+			'Light review only, no new material',
 			'Prepare everything you need (pens, ID, water)',
 			'Do something relaxing in the evening',
 			'Practice deep breathing or a calming routine',
-			'Go to bed at your normal time — avoid late cramming'
+			'Go to bed at your normal time, avoid late cramming'
 		];
 	} else {
 		plan.dayBefore = [
 			'Quick review of key summaries',
 			'Prepare all materials and logistics',
 			'Light exercise to reduce tension',
-			'Early night — sleep is more valuable than last-minute study'
+			'Early night, sleep is more valuable than last-minute study'
 		];
 	}
 
@@ -223,7 +223,7 @@ function buildExamPrep(dims) {
 			'Use a calming technique before entering the room',
 			'Read through the entire paper before starting',
 			'Start with questions you feel confident about to build momentum',
-			'If anxiety spikes, pause for 3 deep breaths — you are prepared'
+			'If anxiety spikes, pause for 3 deep breaths, you are prepared'
 		];
 	} else {
 		plan.dayOf = [
@@ -243,7 +243,7 @@ function buildTimeManagement(dims) {
 			style: 'Structured Planner',
 			description: 'You naturally organise your time well. Build on this with formal planning tools.',
 			tools: ['Weekly study planner (paper or digital)', 'Subject-specific checklists', 'Colour-coded calendar blocking'],
-			warning: 'Watch for over-planning — leave some buffer time for the unexpected.'
+			warning: 'Watch for over-planning. Leave some buffer time for the unexpected.'
 		};
 	}
 	if (isLow(dims.C.score)) {
@@ -251,7 +251,7 @@ function buildTimeManagement(dims) {
 			style: 'Sprint Worker',
 			description: 'You work in bursts of energy rather than steady schedules. Design your system around this reality.',
 			tools: ['Pomodoro timer app', 'Simple daily "top 3 tasks" list', 'Visual countdown to deadlines'],
-			warning: 'Start assignments the day they are set — even just 10 minutes of planning prevents last-minute panic.'
+			warning: 'Start assignments the day they are set. Even just 10 minutes of planning prevents last-minute panic.'
 		};
 	}
 	return {
@@ -274,7 +274,7 @@ function buildWeeklyPlan(dims) {
 				: 'Quick 15-min review of key takeaways, then a break before study',
 			evening: cHigh
 				? 'Complete homework, prepare for tomorrow, organised notes review'
-				: 'Tackle one assignment or study task — use a timer to maintain focus'
+				: 'Tackle one assignment or study task, use a timer to maintain focus'
 		},
 		weekend: {
 			saturday: xHigh
@@ -282,7 +282,7 @@ function buildWeeklyPlan(dims) {
 				: oHigh
 					? 'Creative study session (mind maps, projects), explore topics of interest'
 					: 'Practice problems or revision of the week\'s hardest topic',
-			sunday: 'Light review and planning for the week ahead — prepare materials and set goals'
+			sunday: 'Light review and planning for the week ahead, prepare materials and set goals'
 		}
 	};
 }

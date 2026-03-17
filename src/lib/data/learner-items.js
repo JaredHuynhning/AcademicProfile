@@ -15,13 +15,13 @@ export const learnerItems = [
 
 	// Perseverance of effort (3 items)
 	{ id: 91, text: 'I finish whatever I begin, even when it gets really hard.', domain: 'grit', subscale: 'perseverance', reverse: false },
-	{ id: 92, text: 'Setbacks and failures don\'t discourage me — I bounce back quickly.', domain: 'grit', subscale: 'perseverance', reverse: false },
+	{ id: 92, text: 'When things go wrong, I don\'t get too down about it — I bounce back quickly.', domain: 'grit', subscale: 'perseverance', reverse: false },
 	{ id: 93, text: 'I am a hard worker — I keep going when others would stop.', domain: 'grit', subscale: 'perseverance', reverse: false },
 
 	// Consistency of interest (3 items, all reverse)
 	{ id: 94, text: 'I often set a goal but later choose to pursue a different one instead.', domain: 'grit', subscale: 'consistency', reverse: true },
 	{ id: 95, text: 'I find it hard to stay focused on projects that take more than a few weeks.', domain: 'grit', subscale: 'consistency', reverse: true },
-	{ id: 96, text: 'I sometimes get obsessed with an idea or project but quickly lose interest.', domain: 'grit', subscale: 'consistency', reverse: true },
+	{ id: 96, text: 'I sometimes get really into an idea or project but then quickly lose interest.', domain: 'grit', subscale: 'consistency', reverse: true },
 
 	// ─── Domain 5: Focus & Procrastination (IDs 97-102) — ASRS + APS-S ─
 

@@ -25,7 +25,7 @@ const PATTERNS = [
 			"You have plenty of energy and enthusiasm, but it scatters in too many directions. Without a clear target and consistent follow-through, your natural vitality dissipates before it can produce results.",
 		oneThing: {
 			action: 'Set one 30-day goal and track it daily',
-			why: "Your energy is your superpower — it just needs a channel. One clear goal gives your vitality something to push against, and daily tracking builds the consistency muscle you're missing."
+			why: "Your energy is your superpower: it just needs a channel. One clear goal gives your vitality something to push against, and daily tracking builds the consistency muscle you're missing."
 		},
 		score(lp, sp, dims) {
 			const evidence = [];
@@ -61,7 +61,7 @@ const PATTERNS = [
 			"Your high standards are working against you. You care deeply about quality, but the gap between \"perfect\" and \"good enough\" creates anxiety that leads to procrastination and avoidance. You'd rather not start than risk falling short.",
 		oneThing: {
 			action: 'Submit one "good enough" draft this week without editing it',
-			why: "Perfectionism disguises itself as quality — but it's actually fear. Deliberately submitting imperfect work teaches your brain that \"done\" beats \"perfect\", and the world doesn't end when you let go."
+			why: "Perfectionism disguises itself as quality, but it's actually fear. Deliberately submitting imperfect work teaches your brain that \"done\" beats \"perfect\", and the world doesn't end when you let go."
 		},
 		score(lp, sp, dims) {
 			const evidence = [];
@@ -99,10 +99,10 @@ const PATTERNS = [
 		title: 'Engagement-Dependent Learner',
 		icon: '🎯',
 		diagnosis:
-			"You're capable of brilliant focus and deep learning — but only when the topic genuinely interests you. When it doesn't, you disengage almost completely. This isn't laziness; your brain is wired to chase curiosity, and it struggles to manufacture interest artificially.",
+			"You're capable of brilliant focus and deep learning, but only when the topic genuinely interests you. When it doesn't, you disengage almost completely. This isn't laziness; your brain is wired to chase curiosity, and it struggles to manufacture interest artificially.",
 		oneThing: {
 			action: 'Find one genuinely puzzling question about your most boring subject',
-			why: "Engagement isn't about the subject — it's about the question. Even the driest topic has unsolved puzzles. One good question can unlock the same focus you bring to subjects you love."
+			why: "Engagement isn't about the subject: it's about the question. Even the driest topic has unsolved puzzles. One good question can unlock the same focus you bring to subjects you love."
 		},
 		score(lp, sp, dims) {
 			const evidence = [];
@@ -141,9 +141,9 @@ const PATTERNS = [
 		title: 'Confidence Deficit',
 		icon: '🛡️',
 		diagnosis:
-			"You consistently underestimate your own abilities. Multiple subjects show confidence gaps — you can probably do more than you think, but self-doubt holds you back. This creates a vicious cycle: anxiety reduces performance, which \"confirms\" your low self-belief.",
+			"You consistently underestimate your own abilities. Multiple subjects show confidence gaps: you can probably do more than you think, but self-doubt holds you back. This creates a vicious cycle: anxiety reduces performance, which \"confirms\" your low self-belief.",
 		oneThing: {
-			action: "Keep a 'proof journal' — write down one competence win per day",
+			action: "Keep a 'proof journal', write down one competence win per day",
 			why: "Your brain has a negativity bias that ignores evidence of competence. A proof journal forces you to notice what you're actually good at, slowly rewiring the self-doubt reflex."
 		},
 		score(lp, sp, dims) {
@@ -194,10 +194,10 @@ const PATTERNS = [
 		title: 'Motivation Mismatch',
 		icon: '🔄',
 		diagnosis:
-			"Your current motivation is almost entirely external — grades, rewards, avoiding trouble. You haven't found a personal connection to what you're studying. This makes learning feel like a chore rather than something meaningful, and external motivation burns out fast.",
+			"Your current motivation is almost entirely external, grades, rewards, avoiding trouble. You haven't found a personal connection to what you're studying. This makes learning feel like a chore rather than something meaningful, and external motivation burns out fast.",
 		oneThing: {
 			action: 'Have a real conversation with someone about what actually matters to you',
-			why: "External motivation is borrowed fuel — it runs out. You need to discover YOUR reason for learning, even if it's unconventional. That starts with honest self-reflection, not more study tips."
+			why: "External motivation is borrowed fuel: it runs out. You need to discover YOUR reason for learning, even if it's unconventional. That starts with honest self-reflection, not more study tips."
 		},
 		score(lp, sp, dims) {
 			const evidence = [];
@@ -236,10 +236,10 @@ const PATTERNS = [
 		title: 'Burnout Risk',
 		icon: '🔥',
 		diagnosis:
-			"You're running on fumes but won't stop. Your grit and perseverance are impressive, but they're masking a dangerous energy deficit. High anxiety compounds the drain. If you keep pushing without recovery, your performance will eventually collapse — and it won't come back quickly.",
+			"You're running on fumes but won't stop. Your grit and perseverance are impressive, but they're masking a dangerous energy deficit. High anxiety compounds the drain. If you keep pushing without recovery, your performance will eventually collapse, and it won't come back quickly.",
 		oneThing: {
-			action: 'Take one full day off this week — as medicine, not as laziness',
-			why: "Your biggest risk isn't falling behind — it's breaking down. Rest isn't the opposite of productivity; it's the foundation. One deliberate rest day now prevents weeks of forced rest later."
+			action: 'Take one full day off this week, as medicine, not as laziness',
+			why: "Your biggest risk isn't falling behind: it's breaking down. Rest isn't the opposite of productivity; it's the foundation. One deliberate rest day now prevents weeks of forced rest later."
 		},
 		score(lp, sp, dims) {
 			const evidence = [];
@@ -273,7 +273,7 @@ const PATTERNS = [
 		title: 'Social Learner Stuck Solo',
 		icon: '👥',
 		diagnosis:
-			"You're a naturally social person who learns best through discussion and collaboration — but you're not using those strengths. Whether it's shyness about asking for help or lack of study partners, you're trying to learn alone when your brain is wired for learning together.",
+			"You're a naturally social person who learns best through discussion and collaboration, but you're not using those strengths. Whether it's shyness about asking for help or lack of study partners, you're trying to learn alone when your brain is wired for learning together.",
 		oneThing: {
 			action: 'Join or start one study group this week',
 			why: "You process information by talking through it. Studying alone forces you to work against your natural wiring. One study group session will accomplish more than three hours of solo revision."
@@ -311,10 +311,10 @@ const PATTERNS = [
 		title: 'Capable But Checked Out',
 		icon: '😴',
 		diagnosis:
-			"You have the ability to succeed — your self-efficacy is adequate and you're not lacking in intelligence. But you've mentally checked out. You go through the motions with surface-level engagement while feeling fundamentally disconnected from the purpose of learning.",
+			"You have the ability to succeed: your self-efficacy is adequate and you're not lacking in intelligence. But you've mentally checked out. You go through the motions with surface-level engagement while feeling fundamentally disconnected from the purpose of learning.",
 		oneThing: {
-			action: 'Go deep on one topic this week — not for marks, but purely for yourself',
-			why: "You're not lazy — you're disengaged. The antidote isn't discipline; it's rekindling genuine curiosity. Pick something you're even slightly curious about and explore it without any academic pressure."
+			action: 'Go deep on one topic this week, not for marks, but purely for yourself',
+			why: "You're not lazy: you're disengaged. The antidote isn't discipline; it's rekindling genuine curiosity. Pick something you're even slightly curious about and explore it without any academic pressure."
 		},
 		score(lp, sp, dims) {
 			const evidence = [];
@@ -346,59 +346,59 @@ const PATTERNS = [
 
 const SYNTHESIS_TEMPLATES = {
 	'energy-without-direction+engagement-dependent':
-		"You have genuine energy and curiosity, but both are scattered. When a subject catches your interest, you light up — when it doesn't, you bounce to something else. The core challenge isn't motivation; it's directing your natural enthusiasm into sustained effort, especially on topics that don't immediately excite you.",
+		"You have genuine energy and curiosity, but both are scattered. When a subject catches your interest, you light up; when it doesn't, you bounce to something else. The core challenge isn't motivation; it's directing your natural enthusiasm into sustained effort, especially on topics that don't immediately excite you.",
 	'burnout-risk':
-		"You're pushing yourself hard — perhaps too hard. Your determination is admirable, but without adequate recovery, even the strongest engine overheats. The priority right now isn't working harder; it's building in genuine rest before your body forces it.",
+		"You're pushing yourself hard, perhaps too hard. Your determination is admirable, but without adequate recovery, even the strongest engine overheats. The priority right now isn't working harder; it's building in genuine rest before your body forces it.",
 	'motivation-mismatch+energy-without-direction':
 		"You have the energy to succeed but lack a personal connection to your studies. You're being driven by external pressures rather than internal purpose, and without that anchor, your natural vitality scatters rather than builds momentum.",
 	'capable-but-checked-out+engagement-dependent':
-		"You have real intellectual firepower that only activates when you're genuinely curious. Right now, most of your studying is surface-level autopilot. The fix isn't more discipline — it's finding ways to make learning feel meaningful again, starting with the subjects where you already have a spark.",
+		"You have real intellectual firepower that only activates when you're genuinely curious. Right now, most of your studying is surface-level autopilot. The fix isn't more discipline: it's finding ways to make learning feel meaningful again, starting with the subjects where you already have a spark.",
 	'confidence-deficit+motivation-mismatch':
-		"Low confidence and external motivation are feeding each other in a negative cycle. You don't believe you can succeed, so you rely on external pressure to keep going — but external motivation without self-belief is exhausting and fragile. Building genuine confidence is the key that unlocks everything else.",
+		"Low confidence and external motivation are feeding each other in a negative cycle. You don't believe you can succeed, so you rely on external pressure to keep going, but external motivation without self-belief is exhausting and fragile. Building genuine confidence is the key that unlocks everything else.",
 	'perfectionism-paralysis':
-		"Your standards are sky-high but your output is stuck. The perfectionism-anxiety cycle has you trapped: the more you care about quality, the harder it becomes to start. Breaking this pattern requires deliberately practicing \"good enough\" — not as a compromise, but as a skill.",
+		"Your standards are sky-high but your output is stuck. The perfectionism-anxiety cycle has you trapped: the more you care about quality, the harder it becomes to start. Breaking this pattern requires deliberately practicing \"good enough\", not as a compromise, but as a skill.",
 	'social-learner-stuck-solo':
-		"You're wired for collaborative learning but studying in isolation. Your social strengths are going unused, and solitary study is working against your natural grain. The solution isn't studying harder alone — it's studying smarter together.",
+		"You're wired for collaborative learning but studying in isolation. Your social strengths are going unused, and solitary study is working against your natural grain. The solution isn't studying harder alone: it's studying smarter together.",
 	'engagement-dependent':
-		"Your engagement is highly selective — brilliant when curious, absent when not. This isn't a discipline problem; it's a curiosity problem. The goal isn't to force yourself to care about everything, but to find the interesting angle in every subject.",
+		"Your engagement is highly selective, brilliant when curious, absent when not. This isn't a discipline problem; it's a curiosity problem. The goal isn't to force yourself to care about everything, but to find the interesting angle in every subject.",
 	'energy-without-direction':
 		"You have fuel but no map. Your energy levels are strong, but without planning and consistency, that energy dissipates across too many directions. One clear goal with daily tracking would transform your scattered effort into focused progress.",
 	'confidence-deficit':
 		"Self-doubt is the thread running through your academic experience. Despite evidence of ability, you consistently underestimate what you can do. The anxiety this creates undermines your performance, creating a self-fulfilling prophecy that needs to be deliberately broken.",
 	'motivation-mismatch':
-		"You're going through the motions because someone told you to, not because you want to. External motivation alone is unsustainable — you need to find a personal connection to your learning before burnout sets in.",
+		"You're going through the motions because someone told you to, not because you want to. External motivation alone is unsustainable. You need to find a personal connection to your learning before burnout sets in.",
 	'capable-but-checked-out':
-		"You have the ability but not the engagement. Your self-efficacy is intact, which means this isn't about capability — it's about meaning. Something has disconnected you from the purpose of learning, and surface-level studying is the symptom, not the cause."
+		"You have the ability but not the engagement. Your self-efficacy is intact, which means this isn't about capability: it's about meaning. Something has disconnected you from the purpose of learning, and surface-level studying is the symptom, not the cause."
 };
 
 const ACTION_PLANS = {
 	'energy-without-direction': [
 		{ priority: 1, action: 'Set one specific 30-day goal with daily tracking', impact: 'Channels scattered energy into measurable progress', timeframe: 'This week' },
-		{ priority: 2, action: 'Use a weekly planner — block study time for specific subjects', impact: 'Builds the planning habit your profile is missing', timeframe: 'This month' },
-		{ priority: 3, action: 'Review and adjust goals monthly — celebrate what stuck', impact: 'Develops long-term consistency through reflection', timeframe: 'This term' }
+		{ priority: 2, action: 'Use a weekly planner, block study time for specific subjects', impact: 'Builds the planning habit your profile is missing', timeframe: 'This month' },
+		{ priority: 3, action: 'Review and adjust goals monthly, celebrate what stuck', impact: 'Develops long-term consistency through reflection', timeframe: 'This term' }
 	],
 	'perfectionism-paralysis': [
 		{ priority: 1, action: 'Submit one assignment without a final editing pass', impact: 'Breaks the perfectionism-procrastination cycle', timeframe: 'This week' },
-		{ priority: 2, action: 'Set time limits on tasks — when the timer ends, move on', impact: 'Teaches "good enough" as a skill, not a failure', timeframe: 'This month' },
-		{ priority: 3, action: 'Track effort vs outcome — perfectionism rarely improves grades', impact: 'Evidence-based reality check on diminishing returns', timeframe: 'This term' }
+		{ priority: 2, action: 'Set time limits on tasks, when the timer ends, move on', impact: 'Teaches "good enough" as a skill, not a failure', timeframe: 'This month' },
+		{ priority: 3, action: 'Track effort vs outcome, perfectionism rarely improves grades', impact: 'Evidence-based reality check on diminishing returns', timeframe: 'This term' }
 	],
 	'engagement-dependent': [
 		{ priority: 1, action: 'Find one intriguing question per boring subject', impact: 'Leverages your natural curiosity as an engagement tool', timeframe: 'This week' },
 		{ priority: 2, action: 'Connect uninteresting subjects to topics you love', impact: 'Cross-pollination makes dry subjects personally relevant', timeframe: 'This month' },
-		{ priority: 3, action: "Build a 'curiosity portfolio' — track questions and discoveries across all subjects", impact: 'Trains engagement as a transferable skill', timeframe: 'This term' }
+		{ priority: 3, action: "Build a 'curiosity portfolio', track questions and discoveries across all subjects", impact: 'Trains engagement as a transferable skill', timeframe: 'This term' }
 	],
 	'confidence-deficit': [
-		{ priority: 1, action: "Start a daily 'proof journal' — one thing you did well today", impact: 'Counteracts negativity bias with concrete evidence', timeframe: 'This week' },
-		{ priority: 2, action: 'Attempt one challenge slightly above your comfort zone — with support', impact: 'Controlled success experiences rebuild self-belief', timeframe: 'This month' },
+		{ priority: 1, action: "Start a daily 'proof journal', one thing you did well today", impact: 'Counteracts negativity bias with concrete evidence', timeframe: 'This week' },
+		{ priority: 2, action: 'Attempt one challenge slightly above your comfort zone, with support', impact: 'Controlled success experiences rebuild self-belief', timeframe: 'This month' },
 		{ priority: 3, action: 'Ask teachers for specific, targeted feedback (not just grades)', impact: 'Replaces vague self-doubt with actionable information', timeframe: 'This term' }
 	],
 	'motivation-mismatch': [
 		{ priority: 1, action: 'Have an honest conversation about what you actually care about', impact: "Surfaces intrinsic values that external rewards can't replace", timeframe: 'This week' },
 		{ priority: 2, action: 'Connect one study topic to a personal goal or interest', impact: 'Bridges the gap between external requirements and internal purpose', timeframe: 'This month' },
-		{ priority: 3, action: 'Explore one new subject or skill purely for fun — no grades involved', impact: 'Rebuilds the experience of learning for its own sake', timeframe: 'This term' }
+		{ priority: 3, action: 'Explore one new subject or skill purely for fun, no grades involved', impact: 'Rebuilds the experience of learning for its own sake', timeframe: 'This term' }
 	],
 	'burnout-risk': [
-		{ priority: 1, action: 'Schedule one full rest day this week — no study, no guilt', impact: "Prevents the crash that's building from chronic depletion", timeframe: 'This week' },
+		{ priority: 1, action: 'Schedule one full rest day this week, no study, no guilt', impact: "Prevents the crash that's building from chronic depletion", timeframe: 'This week' },
 		{ priority: 2, action: 'Reduce study hours by 20% and track whether grades actually drop', impact: 'Tests the assumption that more hours = better results', timeframe: 'This month' },
 		{ priority: 3, action: 'Build a sustainable study rhythm with regular breaks and recovery', impact: 'Replaces the grind-crash cycle with steady, maintainable effort', timeframe: 'This term' }
 	],
@@ -408,9 +408,9 @@ const ACTION_PLANS = {
 		{ priority: 3, action: 'Build a regular collaborative study routine for exam preparation', impact: 'Leverages your social nature for sustained academic benefit', timeframe: 'This term' }
 	],
 	'capable-but-checked-out': [
-		{ priority: 1, action: 'Pick one topic and go genuinely deep — not for marks, just for you', impact: 'Rekindling curiosity is the antidote to disengagement', timeframe: 'This week' },
+		{ priority: 1, action: 'Pick one topic and go genuinely deep, not for marks, just for you', impact: 'Rekindling curiosity is the antidote to disengagement', timeframe: 'This week' },
 		{ priority: 2, action: 'Replace one hour of surface studying with active recall or teaching others', impact: 'Shifts from autopilot to genuine engagement with material', timeframe: 'This month' },
-		{ priority: 3, action: 'Explore what "success" means to you — beyond grades and credentials', impact: 'Reconnects learning to personal purpose and meaning', timeframe: 'This term' }
+		{ priority: 3, action: 'Explore what "success" means to you, beyond grades and credentials', impact: 'Reconnects learning to personal purpose and meaning', timeframe: 'This term' }
 	]
 };
 

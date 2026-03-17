@@ -91,19 +91,19 @@ function buildInstructionTips(sp, lp) {
 	// Study approach
 	if (sp?.dominantApproach === 'surface') {
 		tips.push({
-			tip: "Use questioning techniques before giving answers — ask 'why does this work?' not just 'what is the answer?' This student defaults to memorising rather than understanding.",
+			tip: "Use questioning techniques before giving answers, ask 'why does this work?' not just 'what is the answer?' This student defaults to memorising rather than understanding.",
 			evidence: `Surface approach: ${sp.studyApproaches.surface.score.toFixed(1)}/5, Deep: ${sp.studyApproaches.deep.score.toFixed(1)}/5`,
 			priority: 'high'
 		});
 	} else if (sp?.dominantApproach === 'deep') {
 		tips.push({
-			tip: 'Provide extension materials and open-ended problems — this student craves depth and will disengage with pure repetition.',
+			tip: 'Provide extension materials and open-ended problems: this student craves depth and will disengage with pure repetition.',
 			evidence: `Deep approach: ${sp.studyApproaches.deep.score.toFixed(1)}/5`,
 			priority: 'medium'
 		});
 	} else if (sp?.dominantApproach === 'strategic') {
 		tips.push({
-			tip: "Challenge beyond grade optimisation — push for genuine understanding, not just 'what's on the test.' They'll rise to it.",
+			tip: "Challenge beyond grade optimisation, push for genuine understanding, not just 'what's on the test.' They'll rise to it.",
 			evidence: `Strategic approach: ${sp.studyApproaches.strategic.score.toFixed(1)}/5`,
 			priority: 'medium'
 		});
@@ -112,7 +112,7 @@ function buildInstructionTips(sp, lp) {
 	// Self-regulation gaps
 	if (sp?.selfRegulation?.planning?.score < 2.5) {
 		tips.push({
-			tip: 'Provide explicit study plans and checkpoint deadlines — this student lacks internal planning structures and will benefit from externally imposed milestones.',
+			tip: 'Provide explicit study plans and checkpoint deadlines: this student lacks internal planning structures and will benefit from externally imposed milestones.',
 			evidence: `Planning: ${sp.selfRegulation.planning.score.toFixed(1)}/5`,
 			priority: 'high'
 		});
@@ -133,14 +133,14 @@ function buildInstructionTips(sp, lp) {
 	}
 	if (sp?.selfRegulation?.testAnxiety?.score >= 3.5) {
 		tips.push({
-			tip: "Offer practice tests under realistic conditions — familiarity reduces anxiety more than reassurance. Never draw public attention to their nervousness.",
+			tip: "Offer practice tests under realistic conditions, familiarity reduces anxiety more than reassurance. Never draw public attention to their nervousness.",
 			evidence: `Test anxiety: ${sp.selfRegulation.testAnxiety.score.toFixed(1)}/5`,
 			priority: 'high'
 		});
 	}
 	if (sp?.selfRegulation?.helpSeeking?.score < 2.5) {
 		tips.push({
-			tip: "Proactively check understanding — this student won't ask for help even when stuck. Brief private check-ins during independent work are essential.",
+			tip: "Proactively check understanding: this student won't ask for help even when stuck. Brief private check-ins during independent work are essential.",
 			evidence: `Help-seeking: ${sp.selfRegulation.helpSeeking.score.toFixed(1)}/5`,
 			priority: 'medium'
 		});
@@ -149,7 +149,7 @@ function buildInstructionTips(sp, lp) {
 	// Energy
 	if (lp?.energy?.netEnergy?.score < 2.5) {
 		tips.push({
-			tip: "Schedule demanding cognitive tasks for the start of class — this student's energy depletes rapidly. Avoid placing high-stakes assessments late in the day.",
+			tip: "Schedule demanding cognitive tasks for the start of class: this student's energy depletes rapidly. Avoid placing high-stakes assessments late in the day.",
 			evidence: `Net energy: ${lp.energy.netEnergy.score.toFixed(1)}/5`,
 			priority: 'high'
 		});
@@ -167,7 +167,7 @@ function buildInstructionTips(sp, lp) {
 	// Combinations
 	if (sp?.dominantApproach === 'surface' && sp?.motivationProfile === 'controlled') {
 		tips.push({
-			tip: "This student is going through the motions. Find one topic where they show even slight curiosity and use it as an entry point to deeper engagement. Force won't work — connection might.",
+			tip: "This student is going through the motions. Find one topic where they show even slight curiosity and use it as an entry point to deeper engagement. Force won't work, connection might.",
 			evidence: `Surface approach + controlled motivation`,
 			priority: 'high'
 		});
@@ -188,32 +188,32 @@ function buildInstructionTips(sp, lp) {
 const MOTIVATION_LEVERS = {
 	'self-determined': {
 		doMore: [
-			'Give autonomy and choice — they thrive when trusted to direct their own learning',
+			'Give autonomy and choice: they thrive when trusted to direct their own learning',
 			'Connect content to bigger questions and ideas that spark genuine curiosity'
 		],
 		avoid: [
 			'Over-structuring or micromanaging their process',
-			'Reducing feedback to grades only — they care about understanding'
+			'Reducing feedback to grades only: they care about understanding'
 		]
 	},
 	moderate: {
 		doMore: [
-			"Connect content to their interests and personal goals — show why it matters for THEIR future",
-			'Use identified motivation — they value education in principle, help them see the bridge to practice'
+			"Connect content to their interests and personal goals, show why it matters for THEIR future",
+			'Use identified motivation: they value education in principle. Help them see the bridge to practice'
 		],
 		avoid: [
 			'Pure external pressure without meaning',
-			"Assuming disengagement means they don't care — they're searching for relevance"
+			"Assuming disengagement means they don't care, they're searching for relevance"
 		]
 	},
 	controlled: {
 		doMore: [
-			'Find ANY intrinsic spark — one interesting angle per topic can shift everything',
+			'Find ANY intrinsic spark, one interesting angle per topic can shift everything',
 			'Bridge from external to identified: help them see how subjects connect to things they actually value'
 		],
 		avoid: [
-			"More external pressure — it's already maxed out and diminishing returns have set in",
-			'Punishment for disengagement — it confirms that school is a chore, not a choice'
+			"More external pressure: it's already maxed out and diminishing returns have set in",
+			'Punishment for disengagement: it confirms that school is a chore, not a choice'
 		]
 	}
 };
@@ -226,12 +226,12 @@ function buildMotivationLevers(sp) {
 	if (sp?.motivation?.amotivation?.score >= 3.0) {
 		return {
 			doMore: [
-				"Rebuild purpose before content — one small win per lesson to reconnect them with competence",
+				"Rebuild purpose before content, one small win per lesson to reconnect them with competence",
 				"Find what they ARE interested in outside school and create bridges to curriculum"
 			],
 			avoid: [
-				"Punishment for disengagement — amotivation is often quiet despair, not laziness",
-				"Assuming they're choosing not to try — they may have stopped believing effort matters"
+				"Punishment for disengagement, amotivation is often quiet despair, not laziness",
+				"Assuming they're choosing not to try: they may have stopped believing effort matters"
 			],
 			evidence: `Amotivation: ${sp.motivation.amotivation.score.toFixed(1)}/5, Intrinsic: ${sp.motivation.intrinsic.score.toFixed(1)}/5`
 		};
@@ -249,15 +249,15 @@ const EXAM_STRATEGIES = {
 	anxiety: {
 		label: 'Exam Anxiety',
 		strategies: [
-			'Allow extra time or accommodations if possible — this student likely knows more than their exam results show',
+			'Allow extra time or accommodations if possible: this student likely knows more than their exam results show',
 			'Offer regular practice tests under timed conditions to build familiarity',
-			'Never comment publicly on visible anxiety — check in privately afterwards'
+			'Never comment publicly on visible anxiety, check in privately afterwards'
 		]
 	},
 	'time-management': {
 		label: 'Time Management',
 		strategies: [
-			'Teach exam pacing explicitly — allocate time per section and practise with a visible clock',
+			'Teach exam pacing explicitly, allocate time per section and practise with a visible clock',
 			'Provide timed mock sections regularly so pacing becomes automatic',
 			'Suggest starting with questions they know for momentum before tackling harder ones'
 		]
@@ -266,22 +266,22 @@ const EXAM_STRATEGIES = {
 		label: 'External Attribution',
 		strategies: [
 			"After each assessment, do a structured debrief: 'what was in your control?'",
-			'Share marking criteria BEFORE the test — transparency reduces blame',
+			'Share marking criteria BEFORE the test, transparency reduces blame',
 			'Frame results as feedback on specific skills, not judgement of ability'
 		]
 	},
 	preparation: {
 		label: 'Preparation-Focused',
 		strategies: [
-			"This student's attributions are healthy — focus on study quality (active recall, spaced repetition) not quantity",
+			"This student's attributions are healthy, focus on study quality (active recall, spaced repetition) not quantity",
 			'Help them identify specific weak topics through diagnostic tests rather than broad revision',
-			'Encourage them to create practice exams from their notes — active generation beats passive review'
+			'Encourage them to create practice exams from their notes, active generation beats passive review'
 		]
 	},
 	none: {
 		label: 'No Dominant Barrier',
 		strategies: [
-			'No single exam barrier dominates — continue reinforcing balanced exam strategies',
+			'No single exam barrier dominates, continue reinforcing balanced exam strategies',
 			'Check in occasionally on pacing, anxiety levels, and preparation quality to catch emerging issues'
 		]
 	}
@@ -299,10 +299,10 @@ function buildExamSupport(lp) {
 }
 
 const SUBJECT_NOTES = {
-	aligned: 'Strong engagement — challenge with extension work, enrichment opportunities, and deeper projects.',
-	'passion-gap': "Capable but not engaged — find the hook that connects this subject to their interests. They can do the work; they need a reason to care.",
-	'confidence-gap': "Interested but self-doubting — build confidence through incremental success and specific praise. They want to do well; they need to believe they can.",
-	disengaged: "Neither interested nor confident — a priority area. Consider alternative formats, real-world connections, or temporary reduced expectations while rebuilding engagement."
+	aligned: 'Strong engagement, challenge with extension work, enrichment opportunities, and deeper projects.',
+	'passion-gap': "Capable but not engaged, find the hook that connects this subject to their interests. They can do the work; they need a reason to care.",
+	'confidence-gap': "Interested but self-doubting, build confidence through incremental success and specific praise. They want to do well; they need to believe they can.",
+	disengaged: "Neither interested nor confident, a priority area. Consider alternative formats, real-world connections, or temporary reduced expectations while rebuilding engagement."
 };
 
 function buildSubjectNotes(lp) {
@@ -322,21 +322,21 @@ function buildTeacherWarnings(lp, sp, rootCause) {
 	if (rootCause?.primaryPattern?.id === 'burnout-risk') {
 		warnings.push({
 			signal: 'Declining work quality despite continued long hours, physical complaints, withdrawal from peers',
-			meaning: 'Energy depletion masking as reduced effort — they are trying but running on empty',
+			meaning: 'Energy depletion masking as reduced effort: they are trying but running on empty',
 			action: 'Have a private conversation about workload. This student needs permission to rest, not pressure to perform.'
 		});
 	}
 	if (rootCause?.primaryPattern?.id === 'capable-but-checked-out') {
 		warnings.push({
 			signal: "Minimum effort, copying, surface responses, 'I don't care' attitude",
-			meaning: 'Disengagement masking frustration or loss of purpose — not laziness',
+			meaning: 'Disengagement masking frustration or loss of purpose, not laziness',
 			action: 'One-on-one conversation: "I notice you can do this. What would make it worth your effort?"'
 		});
 	}
 	if (sp?.selfRegulation?.testAnxiety?.score >= 4.0) {
 		warnings.push({
 			signal: 'Physical distress before assessments, performance far below classwork quality, avoidance',
-			meaning: 'Clinical-level test anxiety — exam results significantly underrepresent ability',
+			meaning: 'Clinical-level test anxiety, exam results significantly underrepresent ability',
 			action: 'Refer for anxiety support. Consider formal accommodations. Supplement exams with alternative assessments.'
 		});
 	}
@@ -349,8 +349,8 @@ function buildTeacherWarnings(lp, sp, rootCause) {
 	}
 	if (sp?.motivation?.amotivation?.score >= 3.5) {
 		warnings.push({
-			signal: 'Complete disengagement — not disruptive, just absent. Copying, minimal responses, avoidance of all effort',
-			meaning: 'Has stopped believing effort leads to outcomes — this is closer to learned helplessness than defiance',
+			signal: 'Complete disengagement. Not disruptive, just absent. Copying, minimal responses, avoidance of all effort',
+			meaning: 'Has stopped believing effort leads to outcomes, this is closer to learned helplessness than defiance',
 			action: 'Priority referral. Find one intrinsic connection point. Do NOT increase external pressure.'
 		});
 	}
@@ -358,7 +358,7 @@ function buildTeacherWarnings(lp, sp, rootCause) {
 	// Default for healthy profiles
 	if (warnings.length === 0) {
 		warnings.push({
-			signal: 'Any sudden shift from their baseline behaviour — declining grades, social withdrawal, irritability, or loss of interest',
+			signal: 'Any sudden shift from their baseline behaviour, declining grades, social withdrawal, irritability, or loss of interest',
 			meaning: 'Even high performers can struggle silently',
 			action: 'Brief private check-in: "I noticed something seems different. Is everything okay?"'
 		});
@@ -380,13 +380,13 @@ function buildParentSummary(sp, lp, urgency) {
 
 	// Add key strength
 	if (lp?.grit?.overall?.score >= 3.5) {
-		summary += ` A notable strength is their persistence (grit: ${lp.grit.overall.score.toFixed(1)}/5) — they follow through when they commit.`;
+		summary += ` A notable strength is their persistence (grit: ${lp.grit.overall.score.toFixed(1)}/5): they follow through when they commit.`;
 	} else if (sp?.motivation?.intrinsic?.score >= 3.5) {
-		summary += ` A notable strength is their genuine curiosity (intrinsic motivation: ${sp.motivation.intrinsic.score.toFixed(1)}/5) — they learn because they want to.`;
+		summary += ` A notable strength is their genuine curiosity (intrinsic motivation: ${sp.motivation.intrinsic.score.toFixed(1)}/5): they learn because they want to.`;
 	} else if (sp?.selfRegulation?.selfEfficacy?.score >= 3.5) {
 		summary += ` They believe in their own ability (self-efficacy: ${sp.selfRegulation.selfEfficacy.score.toFixed(1)}/5), which is a strong foundation to build on.`;
 	} else if (lp?.energy?.vitality?.score >= 3.5) {
-		summary += ` They have good energy and vitality (${lp.energy.vitality.score.toFixed(1)}/5) — the fuel is there, even if direction needs work.`;
+		summary += ` They have good energy and vitality (${lp.energy.vitality.score.toFixed(1)}/5), the fuel is there, even if direction needs work.`;
 	}
 
 	// Add urgency-appropriate framing
@@ -404,7 +404,7 @@ function buildParentSummary(sp, lp, urgency) {
 }
 
 const STRENGTH_CHECKS = [
-	{ key: 'grit', get: (sp, lp) => lp?.grit?.overall?.score, threshold: 3.5, area: 'Persistence', detail: 'When they commit to something, they follow through — even when it gets hard' },
+	{ key: 'grit', get: (sp, lp) => lp?.grit?.overall?.score, threshold: 3.5, area: 'Persistence', detail: 'When they commit to something, they follow through. Even when it gets hard' },
 	{ key: 'deep', get: (sp) => sp?.studyApproaches?.deep?.score, threshold: 3.5, area: 'Deep understanding', detail: 'They naturally seek to understand, not just memorise' },
 	{ key: 'efficacy', get: (sp) => sp?.selfRegulation?.selfEfficacy?.score, threshold: 3.5, area: 'Self-belief', detail: 'They believe they can succeed when they try' },
 	{ key: 'intrinsic', get: (sp) => sp?.motivation?.intrinsic?.score, threshold: 3.5, area: 'Genuine curiosity', detail: 'They study because they find it interesting, not just for grades' },
@@ -413,8 +413,8 @@ const STRENGTH_CHECKS = [
 	{ key: 'energy', get: (sp, lp) => lp?.energy?.netEnergy?.score, threshold: 3.5, area: 'Energy', detail: 'They generally feel alert and energised for learning' },
 	{ key: 'planning', get: (sp) => sp?.selfRegulation?.planning?.score, threshold: 3.5, area: 'Organisation', detail: 'They plan their study time and manage deadlines effectively' },
 	{ key: 'effort', get: (sp) => sp?.selfRegulation?.effortRegulation?.score, threshold: 3.5, area: 'Effort regulation', detail: 'They push through when work is difficult or boring' },
-	{ key: 'strategic', get: (sp) => sp?.studyApproaches?.strategic?.score, threshold: 3.5, area: 'Strategic studying', detail: 'They are intentional about how they study — organised and goal-focused' },
-	{ key: 'helpSeeking', get: (sp) => sp?.selfRegulation?.helpSeeking?.score, threshold: 3.5, area: 'Help-seeking', detail: 'They ask for help when they need it — a sign of confidence and maturity' }
+	{ key: 'strategic', get: (sp) => sp?.studyApproaches?.strategic?.score, threshold: 3.5, area: 'Strategic studying', detail: 'They are intentional about how they study, organised and goal-focused' },
+	{ key: 'helpSeeking', get: (sp) => sp?.selfRegulation?.helpSeeking?.score, threshold: 3.5, area: 'Help-seeking', detail: 'They ask for help when they need it, a sign of confidence and maturity' }
 ];
 
 function buildParentStrengths(sp, lp) {
@@ -441,16 +441,16 @@ function buildParentStrengths(sp, lp) {
 
 const CONCERN_CHECKS = [
 	{ get: (sp) => sp?.selfRegulation?.testAnxiety?.score, op: '>=', val: 4.0, severity: 'urgent', area: 'Severe test anxiety', detail: 'Exam results likely underrepresent their true ability significantly' },
-	{ get: (sp) => sp?.selfRegulation?.testAnxiety?.score, op: '>=', val: 3.5, severity: 'act', area: 'Test anxiety', detail: 'Nervousness is affecting exam performance — practice and familiarity will help' },
-	{ get: (sp, lp) => lp?.energy?.netEnergy?.score, op: '<', val: 2.0, severity: 'urgent', area: 'Very low energy', detail: 'They may be running on empty — check sleep, health, and overall demands' },
+	{ get: (sp) => sp?.selfRegulation?.testAnxiety?.score, op: '>=', val: 3.5, severity: 'act', area: 'Test anxiety', detail: 'Nervousness is affecting exam performance, practice and familiarity will help' },
+	{ get: (sp, lp) => lp?.energy?.netEnergy?.score, op: '<', val: 2.0, severity: 'urgent', area: 'Very low energy', detail: 'They may be running on empty, check sleep, health, and overall demands' },
 	{ get: (sp, lp) => lp?.energy?.netEnergy?.score, op: '<', val: 2.5, severity: 'act', area: 'Low energy', detail: 'They often feel drained, which limits how much they can absorb and retain' },
-	{ get: (sp) => sp?.motivation?.amotivation?.score, op: '>=', val: 3.5, severity: 'urgent', area: 'Academic disengagement', detail: "They've disconnected from the purpose of learning — this needs attention" },
+	{ get: (sp) => sp?.motivation?.amotivation?.score, op: '>=', val: 3.5, severity: 'urgent', area: 'Academic disengagement', detail: "They've disconnected from the purpose of learning, this needs attention" },
 	{ get: (sp) => sp?.motivation?.amotivation?.score, op: '>=', val: 2.5, severity: 'act', area: 'Weakening motivation', detail: 'Signs of disconnection from learning are emerging' },
-	{ get: (sp, lp) => lp?.grit?.overall?.score, op: '<', val: 2.5, severity: 'act', area: 'Low persistence', detail: 'They give up quickly when things get difficult — needs structured support to build follow-through' },
-	{ get: (sp) => sp?.selfRegulation?.selfEfficacy?.score, op: '<', val: 2.5, severity: 'act', area: 'Low self-belief', detail: "They don't believe they can succeed — this undermines effort before they start" },
-	{ get: (sp) => sp?.selfRegulation?.helpSeeking?.score, op: '<', val: 2.5, severity: 'watch', area: 'Reluctance to ask for help', detail: "They won't ask for help even when struggling — encourage it as a strength, not a weakness" },
-	{ get: (sp) => sp?.selfRegulation?.planning?.score, op: '<', val: 2.5, severity: 'act', area: 'Weak planning', detail: 'They struggle to organise study time — external structure and visual planners help' },
-	{ get: (sp, lp) => lp?.focus?.procrastination?.score, op: '<', val: 2.5, severity: 'act', area: 'Procrastination', detail: 'Starting tasks is a major barrier — the 2-minute rule and small first steps can help' }
+	{ get: (sp, lp) => lp?.grit?.overall?.score, op: '<', val: 2.5, severity: 'act', area: 'Low persistence', detail: 'They give up quickly when things get difficult, needs structured support to build follow-through' },
+	{ get: (sp) => sp?.selfRegulation?.selfEfficacy?.score, op: '<', val: 2.5, severity: 'act', area: 'Low self-belief', detail: "They don't believe they can succeed, this undermines effort before they start" },
+	{ get: (sp) => sp?.selfRegulation?.helpSeeking?.score, op: '<', val: 2.5, severity: 'watch', area: 'Reluctance to ask for help', detail: "They won't ask for help even when struggling, encourage it as a strength, not a weakness" },
+	{ get: (sp) => sp?.selfRegulation?.planning?.score, op: '<', val: 2.5, severity: 'act', area: 'Weak planning', detail: 'They struggle to organise study time, external structure and visual planners help' },
+	{ get: (sp, lp) => lp?.focus?.procrastination?.score, op: '<', val: 2.5, severity: 'act', area: 'Procrastination', detail: 'Starting tasks is a major barrier, the 2-minute rule and small first steps can help' }
 ];
 
 function buildParentConcerns(sp, lp) {
@@ -471,7 +471,7 @@ function buildParentConcerns(sp, lp) {
 		if (disengaged.length >= 2) {
 			concerns.push({
 				area: 'Subject disengagement',
-				detail: `Disengaged from ${disengaged.length} subjects — neither interested nor confident. Explore alternative formats or connections to their interests.`,
+				detail: `Disengaged from ${disengaged.length} subjects, neither interested nor confident. Explore alternative formats or connections to their interests.`,
 				score: `${disengaged.length} subjects`,
 				severity: 'act'
 			});
@@ -492,7 +492,7 @@ function buildParentConcerns(sp, lp) {
 		if (weakest) {
 			concerns.push({
 				area: weakest.area,
-				detail: `This is their weakest area — even strong students benefit from support here.`,
+				detail: `This is their weakest area, even strong students benefit from support here.`,
 				score: `${weakestVal.toFixed(1)}/5`,
 				severity: 'watch'
 			});
@@ -512,38 +512,38 @@ function buildHomeStudy(sp, lp) {
 	const lowEnergy = lp?.energy?.netEnergy?.score < 2.5;
 
 	if (lowConc || lowProc) {
-		environment = 'Create a dedicated, phone-free study zone with minimal distractions. Consider sitting with them for the first few minutes of each session to help them start — getting going is the hardest part.';
+		environment = 'Create a dedicated, phone-free study zone with minimal distractions. Consider sitting with them for the first few minutes of each session to help them start, getting going is the hardest part.';
 	} else if (lowEnergy) {
 		environment = "Protect their study environment from overstimulation. A quiet, comfortable space with good lighting matters more for them than for most students. Avoid study sessions after energy-draining activities.";
 	} else {
-		environment = 'They can largely manage their own study space. Ensure a consistent, comfortable area exists and trust their process — over-monitoring a capable student can backfire.';
+		environment = 'They can largely manage their own study space. Ensure a consistent, comfortable area exists and trust their process, over-monitoring a capable student can backfire.';
 	}
 
 	// Schedule based on approach + energy
 	if (sp?.dominantApproach === 'surface' && lowEnergy) {
-		schedule = "Short, focused blocks (20-25 minutes max) with genuine breaks between them. Quality over quantity — one focused session beats three unfocused hours. Don't push evening study when they're already drained.";
+		schedule = "Short, focused blocks (20-25 minutes max) with genuine breaks between them. Quality over quantity, one focused session beats three unfocused hours. Don't push evening study when they're already drained.";
 	} else if (sp?.dominantApproach === 'strategic' || sp?.selfRegulation?.planning?.score >= 3.5) {
-		schedule = "They likely manage their own schedule reasonably well. A weekly check-in is better than daily monitoring — ask what they're working on, not whether they've studied.";
+		schedule = "They likely manage their own schedule reasonably well. A weekly check-in is better than daily monitoring: ask what they're working on, not whether they've studied.";
 	} else if (sp?.selfRegulation?.planning?.score < 2.5) {
-		schedule = "They need externally imposed structure until they build their own. Set fixed study times visible in the household routine — consistency matters more than duration.";
+		schedule = "They need externally imposed structure until they build their own. Set fixed study times visible in the household routine, consistency matters more than duration.";
 	} else {
-		schedule = "A regular routine helps but doesn't need to be rigid. Help them plan the week ahead on Sunday evening — even 5 minutes of planning prevents a week of scrambling.";
+		schedule = "A regular routine helps but doesn't need to be rigid. Help them plan the week ahead on Sunday evening, even 5 minutes of planning prevents a week of scrambling.";
 	}
 
 	// Tips pool
-	if (lowEnergy) tips.push('Protect sleep above all else — consistent bedtime and wake time, even on weekends');
-	if (lowProc) tips.push("Use the '2-minute rule': commit to just 2 minutes of starting — momentum usually carries them further");
-	if (lp?.grit?.overall?.score < 2.5) tips.push('Celebrate FINISHING things, not starting them — persistence is built through acknowledged follow-through');
-	if (sp?.selfRegulation?.testAnxiety?.score >= 3.5) tips.push("Before exams, focus conversation on what they DO know, not what they don't — anchor to competence, not fear");
-	if (sp?.motivation?.amotivation?.score >= 2.5) tips.push("Don't ask 'did you study?' — instead ask 'what did you find interesting today?' Reframe learning as discovery, not duty");
-	if (sp?.dominantApproach === 'surface') tips.push("When they study, ask them to explain one thing they learned in their own words — this shifts from memorising to understanding");
-	if (lp?.focus?.concentration?.score < 2.5) tips.push('Remove phone from study area entirely — even a visible phone reduces concentration by up to 20%');
-	if (sp?.selfRegulation?.selfEfficacy?.score < 2.5) tips.push("After a setback, say 'that was hard' not 'you should have tried harder' — validate difficulty before discussing improvement");
+	if (lowEnergy) tips.push('Protect sleep above all else, consistent bedtime and wake time, even on weekends');
+	if (lowProc) tips.push("Use the '2-minute rule': commit to just 2 minutes of starting, momentum usually carries them further");
+	if (lp?.grit?.overall?.score < 2.5) tips.push('Celebrate FINISHING things, not starting them: persistence is built through acknowledged follow-through');
+	if (sp?.selfRegulation?.testAnxiety?.score >= 3.5) tips.push("Before exams, focus conversation on what they DO know, not what they don't. Anchor to competence, not fear");
+	if (sp?.motivation?.amotivation?.score >= 2.5) tips.push("Don't ask 'did you study?' Instead, ask 'what did you find interesting today?' Reframe learning as discovery, not duty");
+	if (sp?.dominantApproach === 'surface') tips.push("When they study, ask them to explain one thing they learned in their own words, this shifts from memorising to understanding");
+	if (lp?.focus?.concentration?.score < 2.5) tips.push('Remove phone from study area entirely, even a visible phone reduces concentration by up to 20%');
+	if (sp?.selfRegulation?.selfEfficacy?.score < 2.5) tips.push("After a setback, say 'that was hard' not 'you should have tried harder', validate difficulty before discussing improvement");
 
 	// Ensure at least 2 tips
 	if (tips.length < 2) {
 		tips.push('Regular, brief conversations about learning (not grades) build a healthy relationship with school');
-		if (tips.length < 2) tips.push('Model your own learning at home — let them see you reading, problem-solving, or working through something difficult');
+		if (tips.length < 2) tips.push('Model your own learning at home, let them see you reading, problem-solving, or working through something difficult');
 	}
 
 	return { environment, schedule, tips: tips.slice(0, 4) };
@@ -553,13 +553,13 @@ function buildConversations(sp, lp, rootCause) {
 	const convos = [];
 
 	if (sp?.dominantApproach === 'surface') {
-		convos.push({ opener: "What's one thing from school today that actually surprised you?", why: "Redirects from 'did you study' to genuine curiosity — the first step away from surface learning", category: 'Curiosity' });
+		convos.push({ opener: "What's one thing from school today that actually surprised you?", why: "Redirects from 'did you study' to genuine curiosity, the first step away from surface learning", category: 'Curiosity' });
 	}
 	if (sp?.motivation?.intrinsic?.score < 2.5) {
-		convos.push({ opener: 'If you could learn anything in the world — no school rules — what would it be?', why: 'Surfaces latent interests that could bridge to school content', category: 'Purpose' });
+		convos.push({ opener: 'If you could learn anything in the world, no school rules, what would it be?', why: 'Surfaces latent interests that could bridge to school content', category: 'Purpose' });
 	}
 	if (sp?.selfRegulation?.testAnxiety?.score >= 3.5) {
-		convos.push({ opener: "What's one topic you feel really solid on right now?", why: 'Anchors to competence rather than fear — helps them see they DO know things', category: 'Confidence' });
+		convos.push({ opener: "What's one topic you feel really solid on right now?", why: 'Anchors to competence rather than fear, helps them see they DO know things', category: 'Confidence' });
 	}
 	if (lp?.subjectFit) {
 		const disengaged = Object.entries(lp.subjectFit).find(([, s]) => s.alignment === 'disengaged');
@@ -568,7 +568,7 @@ function buildConversations(sp, lp, rootCause) {
 		}
 	}
 	if (sp?.selfRegulation?.helpSeeking?.score < 2.5) {
-		convos.push({ opener: 'Who do you go to when you get stuck on something?', why: "Opens discussion about help-seeking without lecturing — discovers barriers to asking for help", category: 'Support' });
+		convos.push({ opener: 'Who do you go to when you get stuck on something?', why: "Opens discussion about help-seeking without lecturing, discovers barriers to asking for help", category: 'Support' });
 	}
 	if (lp?.grit?.overall?.score >= 3.5) {
 		convos.push({ opener: "What's something you almost gave up on but didn't?", why: 'Reinforces their persistence as a strength worth noticing and being proud of', category: 'Reflection' });
@@ -595,17 +595,17 @@ function buildParentWarnings(lp, sp, rootCause) {
 		warnings.push({ signal: 'Studying more hours but grades staying flat, physical complaints (headaches, stomach aches), loss of interest in hobbies', action: 'The priority is rest, not more study. Talk to school about workload adjustments.' });
 	}
 	if (sp?.motivation?.amotivation?.score >= 2.5) {
-		warnings.push({ signal: 'Hiding schoolwork, lying about assignments, increasing screen time to avoid study', action: "Don't punish — investigate. Ask: 'What would need to change for you to care about school?'" });
+		warnings.push({ signal: 'Hiding schoolwork, lying about assignments, increasing screen time to avoid study', action: "Don't punish, investigate. Ask: 'What would need to change for you to care about school?'" });
 	}
 	if (sp?.selfRegulation?.testAnxiety?.score >= 3.5) {
-		warnings.push({ signal: 'Stomach aches before school, difficulty sleeping before tests, emotional outbursts during homework', action: 'Consider professional anxiety support — this goes beyond normal exam stress.' });
+		warnings.push({ signal: 'Stomach aches before school, difficulty sleeping before tests, emotional outbursts during homework', action: 'Consider professional anxiety support, this goes beyond normal exam stress.' });
 	}
 	if (lp?.energy?.netEnergy?.score < 2.5) {
 		warnings.push({ signal: 'Constant tiredness, inability to focus at home, withdrawal from friends and activities', action: 'Check sleep quality, screen habits, nutrition, and physical activity. If basics are covered, consult a doctor.' });
 	}
 
 	if (warnings.length === 0) {
-		warnings.push({ signal: 'Any sudden change in their attitude toward school, study, or socialising', action: 'Ask direct, gentle questions. Something has shifted — early conversation prevents escalation.' });
+		warnings.push({ signal: 'Any sudden change in their attitude toward school, study, or socialising', action: 'Ask direct, gentle questions. Something has shifted, early conversation prevents escalation.' });
 	}
 
 	return warnings.slice(0, 3);
@@ -614,25 +614,25 @@ function buildParentWarnings(lp, sp, rootCause) {
 function buildCelebrationSignals(sp, lp) {
 	const signals = [];
 
-	signals.push({ signal: 'Explaining a concept to a sibling, friend, or parent in their own words', meaning: 'Deep learning in action — they understand well enough to teach. Acknowledge this specifically.' });
+	signals.push({ signal: 'Explaining a concept to a sibling, friend, or parent in their own words', meaning: 'Deep learning in action: they understand well enough to teach. Acknowledge this specifically.' });
 
 	if (lp?.grit?.overall?.score < 3.0) {
-		signals.push({ signal: 'Finishing something they found difficult without giving up', meaning: 'Persistence muscle is growing — celebrate the completion, not just the quality.' });
+		signals.push({ signal: 'Finishing something they found difficult without giving up', meaning: 'Persistence muscle is growing, celebrate the completion, not just the quality.' });
 	}
 	if (sp?.selfRegulation?.testAnxiety?.score >= 3.0) {
-		signals.push({ signal: 'Talking about an upcoming test without visible distress', meaning: "Anxiety management is improving — don't add pressure in that moment." });
+		signals.push({ signal: 'Talking about an upcoming test without visible distress', meaning: "Anxiety management is improving, don't add pressure in that moment." });
 	}
 	if (sp?.dominantApproach === 'surface') {
-		signals.push({ signal: "Asking 'why' or 'how' instead of 'what's on the test'", meaning: 'A shift toward deeper learning — this is a breakthrough moment worth celebrating.' });
+		signals.push({ signal: "Asking 'why' or 'how' instead of 'what's on the test'", meaning: 'A shift toward deeper learning, this is a breakthrough moment worth celebrating.' });
 	}
 	if (sp?.motivation?.amotivation?.score >= 2.5) {
-		signals.push({ signal: 'Voluntarily talking about something they learned — even casually', meaning: 'Reconnection with learning is happening. Respond with genuine interest, not "see, school is important."' });
+		signals.push({ signal: 'Voluntarily talking about something they learned, even casually', meaning: 'Reconnection with learning is happening. Respond with genuine interest, not "see, school is important."' });
 	}
 
 	// General signals
-	signals.push({ signal: 'Starting homework without being asked', meaning: 'Self-regulation in action — notice it aloud so they know you see the effort.' });
+	signals.push({ signal: 'Starting homework without being asked', meaning: 'Self-regulation in action, notice it aloud so they know you see the effort.' });
 	if (signals.length < 3) {
-		signals.push({ signal: 'Bouncing back after a disappointing result without shutting down', meaning: 'Resilience and grit — celebrate the recovery, not just the wins.' });
+		signals.push({ signal: 'Bouncing back after a disappointing result without shutting down', meaning: 'Resilience and grit, celebrate the recovery, not just the wins.' });
 	}
 
 	return signals.slice(0, 4);
@@ -676,7 +676,7 @@ function buildTopThreeActions(teacher, parent, rootCause, urgency) {
 	const urgent = parent.concerns.find(c => c.severity === 'urgent') || parent.concerns.find(c => c.severity === 'act');
 	if (urgent && actions.length < 3) {
 		actions.push({
-			action: `Address ${urgent.area.toLowerCase()} — ${urgent.detail.split('—')[0].trim().toLowerCase()}`,
+			action: `Address ${urgent.area.toLowerCase()}`,
 			who: 'parent',
 			timeframe: 'This month',
 			why: urgent.detail
@@ -697,7 +697,7 @@ function buildTopThreeActions(teacher, parent, rootCause, urgency) {
 	// Fill remaining with defaults
 	while (actions.length < 3) {
 		if (actions.length === 0) {
-			actions.push({ action: 'Maintain current approach — this student is doing well', who: 'both', timeframe: 'Ongoing', why: 'No significant concerns identified' });
+			actions.push({ action: 'Maintain current approach: this student is doing well', who: 'both', timeframe: 'Ongoing', why: 'No significant concerns identified' });
 		} else if (actions.length === 1) {
 			actions.push({ action: 'Regular brief check-ins to catch emerging issues early', who: 'both', timeframe: 'Weekly', why: 'Prevention is easier than intervention' });
 		} else {

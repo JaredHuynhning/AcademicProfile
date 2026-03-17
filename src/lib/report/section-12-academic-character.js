@@ -8,38 +8,38 @@ import { dimScore, isHigh, isLow } from './helpers.js';
 
 const GRIT_NARRATIVES = {
 	high: {
-		perseverance: 'You show strong perseverance — when you start something, you see it through to the end, even when it gets tough. This is one of the most important predictors of long-term academic success.',
-		consistency: 'You maintain consistent focus on your goals. You don\'t flit from interest to interest — when you commit, you stay the course.',
+		perseverance: 'You show strong perseverance: when you start something, you see it through to the end, even when it gets tough. This is one of the most important predictors of long-term academic success.',
+		consistency: 'You maintain consistent focus on your goals. You don\'t flit from interest to interest: when you commit, you stay the course.',
 		combined: 'Your overall grit is impressive. You combine the ability to push through difficulty with long-term goal commitment. Research by Angela Duckworth shows this combination is more predictive of achievement than IQ.'
 	},
 	moderate: {
-		perseverance: 'You show reasonable perseverance — you can push through challenges, though very difficult or prolonged tasks may test your resolve. Building stamina through gradually increasing challenges will strengthen this.',
+		perseverance: 'You show reasonable perseverance: you can push through challenges, though very difficult or prolonged tasks may test your resolve. Building stamina through gradually increasing challenges will strengthen this.',
 		consistency: 'Your goal consistency is developing. You sometimes shift between interests, which is natural at your age. Try committing to one key goal per term and tracking your progress.',
-		combined: 'Your grit is at a developing level. The foundation is there — you can push through when motivated and sometimes maintain long-term focus. With deliberate practice, this will grow.'
+		combined: 'Your grit is at a developing level. The foundation is there: you can push through when motivated and sometimes maintain long-term focus. With deliberate practice, this will grow.'
 	},
 	low: {
-		perseverance: 'Perseverance is a growth area for you. When tasks become difficult or tedious, you tend to disengage. This is very common but can be trained — start with small "push through" challenges and build up gradually.',
+		perseverance: 'Perseverance is a growth area for you. When tasks become difficult or tedious, you tend to disengage. This is very common but can be trained. Start with small "push through" challenges and build up gradually.',
 		consistency: 'You tend to shift between goals and interests frequently. While exploring is valuable, academic success requires some sustained commitment. Try the "100-day challenge" approach: pick one small habit and stick with it.',
-		combined: 'Grit is an area that needs attention. The good news is that grit is not fixed — it\'s built through practice. Start small: finish one thing you\'re tempted to abandon, and notice how it feels.'
+		combined: 'Grit is an area that needs attention. The good news is that grit is not fixed: it\'s built through practice. Start small: finish one thing you\'re tempted to abandon, and notice how it feels.'
 	}
 };
 
 const FOCUS_NARRATIVES = {
 	concentration: {
-		high: 'You have strong concentration skills — you can tune out distractions and maintain focus on your work for extended periods. This is a genuine academic superpower.',
-		moderate: 'Your concentration is average — you can focus when conditions are right, but distractions (especially digital ones) can pull you away. Creating a distraction-free study zone will help.',
-		low: 'Concentration is a significant challenge for you. You find it hard to sustain attention, especially when studying. This may not be a willpower issue — consider whether your study environment, sleep, or screen habits might be factors.'
+		high: 'You have strong concentration skills: you can tune out distractions and maintain focus on your work for extended periods. This is a genuine academic superpower.',
+		moderate: 'Your concentration is average: you can focus when conditions are right, but distractions (especially digital ones) can pull you away. Creating a distraction-free study zone will help.',
+		low: 'Concentration is a significant challenge for you. You find it hard to sustain attention, especially when studying. This may not be a willpower issue. Consider whether your study environment, sleep, or screen habits might be factors.'
 	},
 	procrastination: {
-		high: 'You manage your time well and start tasks promptly — you don\'t leave things until the last minute. This puts you ahead of most students.',
+		high: 'You manage your time well and start tasks promptly, you don\'t leave things until the last minute. This puts you ahead of most students.',
 		moderate: 'You sometimes procrastinate, especially with tasks that feel boring or overwhelming. Try the "2-minute start" rule: commit to just 2 minutes of work, and momentum often takes over.',
 		low: 'Procrastination is a serious issue for you. You consistently put off work, even when you know it\'s important. This often stems from perfectionism, overwhelm, or task aversion rather than laziness. Breaking tasks into tiny steps can help break the cycle.'
 	}
 };
 
 const ENERGY_NARRATIVES = {
-	high: 'You generally feel energised and vital during the school day. This is a tremendous advantage — you have the raw fuel for sustained academic effort. Protect this energy with good sleep, nutrition, and breaks.',
-	moderate: 'Your energy levels are mixed — sometimes you feel alert and engaged, other times you feel drained. Pay attention to your energy patterns: when do you feel most alive? Schedule demanding work for those windows.',
+	high: 'You generally feel energised and vital during the school day. This is a tremendous advantage: you have the raw fuel for sustained academic effort. Protect this energy with good sleep, nutrition, and breaks.',
+	moderate: 'Your energy levels are mixed: sometimes you feel alert and engaged, other times you feel drained. Pay attention to your energy patterns: when do you feel most alive? Schedule demanding work for those windows.',
 	low: 'You frequently feel tired, drained, or depleted. This significantly impacts your ability to study and learn. Before addressing study strategies, it\'s important to look at fundamentals: sleep quality, physical activity, nutrition, and screen time before bed.'
 };
 
@@ -70,7 +70,7 @@ function generateCrossRef(dimensions, learnerProfile) {
 	if (isHigh(C) && lp.focus.procrastination.level === 'low') {
 		insights.push({
 			icon: '🎯',
-			text: 'You\'re highly conscientious but also procrastinate. This pattern often signals perfectionism — you delay starting because you want to do it perfectly. Try "good enough" drafts and iterate from there.'
+			text: 'You\'re highly conscientious but also procrastinate. This pattern often signals perfectionism: you delay starting because you want to do it perfectly. Try "good enough" drafts and iterate from there.'
 		});
 	}
 

@@ -8,7 +8,7 @@ const TEACHER_PROFILES = {
 	'warm-structured': {
 		label: 'Warm & Structured',
 		icon: '🌟',
-		desc: 'You thrive with teachers who combine warmth and encouragement with clear expectations and structure. You want to feel supported AND pushed to achieve. The ideal tutor is friendly but firm — they believe in you while holding you to high standards.',
+		desc: 'You thrive with teachers who combine warmth and encouragement with clear expectations and structure. You want to feel supported AND pushed to achieve. The ideal tutor is friendly but firm: they believe in you while holding you to high standards.',
 		tutorTip: 'Look for a tutor who sets clear goals each session, gives warm feedback, and follows up on commitments. Avoid overly casual or overly strict approaches.'
 	},
 	'warm-flexible': {
@@ -21,12 +21,12 @@ const TEACHER_PROFILES = {
 		label: 'Firm & Structured',
 		icon: '📐',
 		desc: 'You prefer teachers who are direct, no-nonsense, and focused on results. You respect authority and clear expectations more than warmth and encouragement. You want to know exactly what\'s expected and how to meet those standards.',
-		tutorTip: 'Look for a tutor who is efficient, sets clear targets, and measures progress objectively. You don\'t need hand-holding — you need clear direction and accountability.'
+		tutorTip: 'Look for a tutor who is efficient, sets clear targets, and measures progress objectively. You don\'t need hand-holding: you need clear direction and accountability.'
 	},
 	'firm-flexible': {
 		label: 'Independent',
 		icon: '🦅',
-		desc: 'You prefer a high degree of independence in your learning. You don\'t need a lot of warmth or structure from teachers — you\'d rather figure things out your way. You respond to competence and respect, not authority or comfort.',
+		desc: 'You prefer a high degree of independence in your learning. You don\'t need a lot of warmth or structure from teachers, you\'d rather figure things out your way. You respond to competence and respect, not authority or comfort.',
 		tutorTip: 'Look for a tutor who treats you as an equal, gives you autonomy over learning direction, and acts more as a consultant than an instructor. Micromanagement will frustrate you.'
 	}
 };
@@ -56,9 +56,9 @@ const BARRIER_DIAGNOSES = {
 	anxiety: {
 		label: 'Exam Anxiety',
 		icon: '😰',
-		desc: 'Your biggest exam barrier is anxiety. Nerves are significantly holding back your performance — you likely know more than your results suggest. This is one of the most treatable barriers.',
+		desc: 'Your biggest exam barrier is anxiety. Nerves are significantly holding back your performance: you likely know more than your results suggest. This is one of the most treatable barriers.',
 		strategies: [
-			'Practice exams under timed conditions regularly — familiarity reduces anxiety',
+			'Practice exams under timed conditions regularly, familiarity reduces anxiety',
 			'Learn box breathing (4-4-4-4) and use it before and during exams',
 			'Arrive early, avoid anxious classmates before the exam, and start with questions you know',
 			'Consider speaking with a school counsellor about exam anxiety support'
@@ -72,7 +72,7 @@ const BARRIER_DIAGNOSES = {
 			'Before starting, read through the entire exam and allocate time per section',
 			'Wear a watch (if allowed) and check it after each section',
 			'If stuck on a question for more than 2 minutes, mark it and move on',
-			'Practice timed mock exams weekly — the skill of pacing improves rapidly with practice'
+			'Practice timed mock exams weekly, the skill of pacing improves rapidly with practice'
 		]
 	},
 	'external-blame': {
@@ -80,7 +80,7 @@ const BARRIER_DIAGNOSES = {
 		icon: '🔍',
 		desc: 'You tend to attribute poor exam results to external factors (unfair tests, bad luck, hard markers). While sometimes tests are genuinely unfair, this attribution pattern can prevent you from improving what you can control.',
 		strategies: [
-			'After each exam, write down one thing YOU could have done differently — not what the exam could have done differently',
+			'After each exam, write down one thing YOU could have done differently, not what the exam could have done differently',
 			'Ask your teacher to explain the marking criteria before the exam, not after',
 			'Compare your answers with high-scoring classmates to see specific gaps',
 			'Focus on "controllables": preparation quality, sleep, nutrition, revision strategy'
@@ -89,7 +89,7 @@ const BARRIER_DIAGNOSES = {
 	preparation: {
 		label: 'Preparation Quality',
 		icon: '📝',
-		desc: 'You recognise that your exam results largely depend on how well you prepare. This is actually the healthiest attribution pattern — it means you have an internal locus of control and believe effort matters.',
+		desc: 'You recognise that your exam results largely depend on how well you prepare. This is actually the healthiest attribution pattern: it means you have an internal locus of control and believe effort matters.',
 		strategies: [
 			'Since you already link effort to outcomes, focus on study quality not just quantity',
 			'Use active recall and spaced repetition instead of passive re-reading',
@@ -100,9 +100,9 @@ const BARRIER_DIAGNOSES = {
 	none: {
 		label: 'No Dominant Barrier',
 		icon: '✅',
-		desc: 'You don\'t show a strong pattern of any single exam barrier. This is positive — you likely have a balanced approach to exams without one factor disproportionately holding you back.',
+		desc: 'You don\'t show a strong pattern of any single exam barrier. This is positive: you likely have a balanced approach to exams without one factor disproportionately holding you back.',
 		strategies: [
-			'Continue with your current approach — it\'s balanced',
+			'Continue with your current approach, it\'s balanced',
 			'Focus on incremental improvements: slightly better preparation, slightly calmer nerves',
 			'Review your exam results honestly and address any patterns you notice',
 			'Share your strategies with classmates who struggle more'

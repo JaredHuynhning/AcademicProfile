@@ -16,12 +16,12 @@ export const studyItems = [
 	// Deep approach (4 items)
 	{ id: 61, text: 'When I study, I try to understand the meaning behind what I\'m learning, not just memorise facts.', domain: 'studyApproaches', subscale: 'deep', reverse: false },
 	{ id: 62, text: 'I like to connect new ideas to things I already know from other subjects or experiences.', domain: 'studyApproaches', subscale: 'deep', reverse: false },
-	{ id: 63, text: 'I often look for evidence or examples to support ideas before I accept them.', domain: 'studyApproaches', subscale: 'deep', reverse: false },
+	{ id: 63, text: 'I like to find proof or examples before I believe something is true.', domain: 'studyApproaches', subscale: 'deep', reverse: false },
 	{ id: 64, text: 'I find myself thinking about schoolwork even when I\'m not studying, because the ideas interest me.', domain: 'studyApproaches', subscale: 'deep', reverse: false },
 
 	// Strategic approach (3 items)
 	{ id: 65, text: 'I organise my study time carefully to make sure I cover everything I need to.', domain: 'studyApproaches', subscale: 'strategic', reverse: false },
-	{ id: 66, text: 'I regularly check whether my study methods are actually working and change them if not.', domain: 'studyApproaches', subscale: 'strategic', reverse: false },
+	{ id: 66, text: 'I check whether the way I study is actually working and change it if not.', domain: 'studyApproaches', subscale: 'strategic', reverse: false },
 	{ id: 67, text: 'I pay attention to what teachers emphasise so I can focus on the most important topics.', domain: 'studyApproaches', subscale: 'strategic', reverse: false },
 
 	// Surface approach (3 items)
@@ -38,7 +38,7 @@ export const studyItems = [
 
 	// Identified regulation (2 items)
 	{ id: 74, text: 'I work hard at school because I know education will help me reach my future goals.', domain: 'motivation', subscale: 'identified', reverse: false },
-	{ id: 75, text: 'Even when a subject is boring, I still try because I know it\'s important for my development.', domain: 'motivation', subscale: 'identified', reverse: false },
+	{ id: 75, text: 'Even when a subject is boring, I still try because I know it\'s important for my future.', domain: 'motivation', subscale: 'identified', reverse: false },
 
 	// External regulation (2 items)
 	{ id: 76, text: 'I mainly study to get good grades and avoid getting in trouble.', domain: 'motivation', subscale: 'external', reverse: false },
@@ -69,7 +69,7 @@ export const studyItems = [
 
 	// Help-seeking (2 items)
 	{ id: 89, text: 'When I don\'t understand something, I ask a teacher or classmate for help.', domain: 'selfRegulation', subscale: 'helpSeeking', reverse: false },
-	{ id: 90, text: 'I\'m comfortable admitting when I\'m stuck and looking for support.', domain: 'selfRegulation', subscale: 'helpSeeking', reverse: false }
+	{ id: 90, text: 'I don\'t mind admitting when I\'m stuck and asking for help.', domain: 'selfRegulation', subscale: 'helpSeeking', reverse: false }
 ];
 
 /**

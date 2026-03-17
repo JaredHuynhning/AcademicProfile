@@ -30,7 +30,7 @@ function buildGroupRole(dims) {
 			icon: '👑',
 			description: 'You naturally organise the team and keep everyone on track. Your combination of social confidence and discipline means you set clear goals and follow through.',
 			strengths: ['Delegates effectively', 'Keeps the team focused', 'Balances social and task needs'],
-			watchOut: 'Be careful not to dominate — make sure quieter members have a voice.'
+			watchOut: 'Be careful not to dominate, make sure quieter members have a voice.'
 		};
 	}
 	if (xHigh && oHigh) {
@@ -39,7 +39,7 @@ function buildGroupRole(dims) {
 			icon: '💡',
 			description: 'You spark ideas and get the group excited about possibilities. Your energy and curiosity drive brainstorming sessions and keep things interesting.',
 			strengths: ['Generates innovative ideas', 'Keeps energy high', 'Makes connections others miss'],
-			watchOut: 'Remember to follow through on ideas — generate, then execute.'
+			watchOut: 'Remember to follow through on ideas, generate, then execute.'
 		};
 	}
 	if (cHigh && aHigh) {
@@ -48,7 +48,7 @@ function buildGroupRole(dims) {
 			icon: '⚙️',
 			description: 'You are the person who ensures the work gets done to a high standard. Teams trust you with critical tasks because you are both thorough and cooperative.',
 			strengths: ['Consistently delivers quality', 'Easy to work with', 'Picks up slack without complaint'],
-			watchOut: 'Don\'t take on more than your share — speak up when the load is unbalanced.'
+			watchOut: 'Don\'t take on more than your share, speak up when the load is unbalanced.'
 		};
 	}
 	if (xLow && oHigh) {
@@ -57,7 +57,7 @@ function buildGroupRole(dims) {
 			icon: '🔬',
 			description: 'You contribute deep, original thinking to the group. While you may not be the loudest voice, your ideas are often the most insightful.',
 			strengths: ['Quality over quantity in contributions', 'Spots problems others miss', 'Brings unique perspectives'],
-			watchOut: 'Make sure your ideas are heard — consider writing them down or sharing via chat.'
+			watchOut: 'Make sure your ideas are heard, consider writing them down or sharing via chat.'
 		};
 	}
 	if (aHigh && isHigh(dims.E.score)) {
@@ -66,7 +66,7 @@ function buildGroupRole(dims) {
 			icon: '🕊️',
 			description: 'You keep the group together emotionally. You sense tension early and smooth things over, creating a safe environment for everyone.',
 			strengths: ['Resolves conflicts naturally', 'Makes everyone feel included', 'Emotional barometer for the group'],
-			watchOut: 'Your own needs matter too — don\'t sacrifice your contribution for group harmony.'
+			watchOut: 'Your own needs matter too, don\'t sacrifice your contribution for group harmony.'
 		};
 	}
 	if (isLow(dims.A.score) && xHigh) {
@@ -75,7 +75,7 @@ function buildGroupRole(dims) {
 			icon: '🔥',
 			description: 'You push the group to higher standards by questioning assumptions and challenging weak ideas. Your directness keeps the team honest.',
 			strengths: ['Prevents groupthink', 'Drives quality', 'Not afraid to have difficult conversations'],
-			watchOut: 'Deliver challenges constructively — the goal is improvement, not conflict.'
+			watchOut: 'Deliver challenges constructively: the goal is improvement, not conflict.'
 		};
 	}
 	return {
@@ -83,7 +83,7 @@ function buildGroupRole(dims) {
 		icon: '🔄',
 		description: 'You adapt your role based on what the team needs. You can lead, follow, create, or execute depending on the situation.',
 		strengths: ['Adaptable to different group needs', 'Can fill gaps in the team', 'Balanced approach to collaboration'],
-		watchOut: 'Having a clear go-to role can increase your impact — identify what you do best and offer it.'
+		watchOut: 'Having a clear go-to role can increase your impact, identify what you do best and offer it.'
 	};
 }
 
@@ -95,12 +95,12 @@ function buildCommunicationStyle(dims) {
 		high_high: {
 			style: 'Open and Honest',
 			description: 'You communicate directly and authentically. You say what you mean and mean what you say, which builds trust quickly.',
-			tip: 'Your openness is refreshing — just ensure your honesty is always paired with kindness.'
+			tip: 'Your openness is refreshing, just ensure your honesty is always paired with kindness.'
 		},
 		high_low: {
 			style: 'Charismatic and Strategic',
 			description: 'You are a skilled communicator who reads the room well. You know when to share and when to hold back for maximum impact.',
-			tip: 'Your social intelligence is a strength — use it to lift others up, not just to advance your own ideas.'
+			tip: 'Your social intelligence is a strength, use it to lift others up, not just to advance your own ideas.'
 		},
 		high_moderate: {
 			style: 'Confident and Balanced',
@@ -109,18 +109,18 @@ function buildCommunicationStyle(dims) {
 		},
 		low_high: {
 			style: 'Thoughtful and Sincere',
-			description: 'When you speak, people listen — because you choose your words carefully and always mean them. You communicate most effectively in writing or one-on-one.',
+			description: 'When you speak, people listen, because you choose your words carefully and always mean them. You communicate most effectively in writing or one-on-one.',
 			tip: 'Prepare key points before meetings so you can contribute despite your reserved nature.'
 		},
 		low_low: {
 			style: 'Reserved and Practical',
 			description: 'You keep communication minimal and focused. You prefer to let your work speak for itself rather than talk about it.',
-			tip: 'Sharing your thought process — even briefly — helps teammates understand and trust your contributions.'
+			tip: 'Sharing your thought process, even briefly, helps teammates understand and trust your contributions.'
 		},
 		low_moderate: {
 			style: 'Quiet and Considered',
 			description: 'You think carefully before communicating and prefer substance over small talk. Written communication may feel more natural.',
-			tip: 'Consider sharing ideas via written notes or messages before group discussions — it plays to your strength.'
+			tip: 'Consider sharing ideas via written notes or messages before group discussions, it plays to your strength.'
 		},
 		moderate_high: {
 			style: 'Genuine and Measured',
@@ -130,7 +130,7 @@ function buildCommunicationStyle(dims) {
 		moderate_low: {
 			style: 'Adaptive and Pragmatic',
 			description: 'You adjust your communication to fit the audience. You can be more or less direct depending on what the situation requires.',
-			tip: 'Your adaptability is useful — just make sure you are consistent in what you promise to deliver.'
+			tip: 'Your adaptability is useful, just make sure you are consistent in what you promise to deliver.'
 		},
 		moderate_moderate: {
 			style: 'Balanced Communicator',
@@ -148,19 +148,19 @@ function buildConflictHandling(dims) {
 
 	const strategies = [];
 	if (isHigh(dims.A.score)) {
-		strategies.push('Seek common ground first — find what everyone agrees on before tackling differences');
+		strategies.push('Seek common ground first, find what everyone agrees on before tackling differences');
 		strategies.push('Use "I" statements to express concerns without sounding accusatory');
 	}
 	if (isLow(dims.A.score)) {
 		strategies.push('State your position clearly but listen to alternatives before pushing back');
-		strategies.push('Focus on the issue, not the person — separate ideas from identity');
+		strategies.push('Focus on the issue, not the person, separate ideas from identity');
 	}
 	if (isHigh(dims.E.score)) {
-		strategies.push('Take a break if emotions are running high — it is okay to pause and return');
-		strategies.push('Write down your thoughts before discussing — it helps organise emotional responses');
+		strategies.push('Take a break if emotions are running high, it is okay to pause and return');
+		strategies.push('Write down your thoughts before discussing, it helps organise emotional responses');
 	}
 	if (isLow(dims.E.score)) {
-		strategies.push('Remember that others may need more time to process emotionally — be patient');
+		strategies.push('Remember that others may need more time to process emotionally, be patient');
 		strategies.push('Check that you are not dismissing valid emotional concerns as "irrational"');
 	}
 	if (strategies.length < 2) {
@@ -238,9 +238,9 @@ function buildTeamTips(dims) {
 
 	if (isHigh(dims.X.score)) tips.push('Use your social skills to keep the group connected, but ensure productive focus');
 	if (isLow(dims.X.score)) tips.push('Ask to contribute via written notes or shared documents when speaking up feels difficult');
-	if (isHigh(dims.C.score)) tips.push('Offer to create the project timeline — your planning skills benefit the whole team');
-	if (isLow(dims.C.score)) tips.push('Commit to specific deliverables with deadlines — external accountability helps you follow through');
-	if (isHigh(dims.A.score)) tips.push('Practise saying "I disagree because..." — your ideas matter as much as group harmony');
+	if (isHigh(dims.C.score)) tips.push('Offer to create the project timeline, your planning skills benefit the whole team');
+	if (isLow(dims.C.score)) tips.push('Commit to specific deliverables with deadlines, external accountability helps you follow through');
+	if (isHigh(dims.A.score)) tips.push('Practise saying "I disagree because...", your ideas matter as much as group harmony');
 	if (isLow(dims.A.score)) tips.push('Before pushing back, acknowledge what is good about the other person\'s idea first');
 
 	return tips.slice(0, 5);

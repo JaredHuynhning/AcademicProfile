@@ -26,7 +26,7 @@ export function generateLearning(results) {
 }
 
 function buildLearningSummary(cx, oc, ox) {
-	return `As a "${cx.label}" with a "${oc.label}" approach to learning, you ${cx.description.split('.')[0].toLowerCase()}. Your curiosity style is best described as "${ox.label}" — ${ox.description.split('.')[0].toLowerCase()}.`;
+	return `As a "${cx.label}" with a "${oc.label}" approach to learning, you ${cx.description.split('.')[0].toLowerCase()}. Your curiosity style is best described as "${ox.label}": ${ox.description.split('.')[0].toLowerCase()}.`;
 }
 
 function buildEnvironment(dims) {
@@ -59,9 +59,9 @@ function buildEnvironment(dims) {
 		category: 'Stimulation',
 		icon: '💡',
 		recommendation: pickByLevel(dims.O.score, {
-			high: ['Varied, multi-sensory learning materials — videos, discussions, hands-on projects', 'You need intellectual stimulation and novelty to stay engaged'],
+			high: ['Varied, multi-sensory learning materials: videos, discussions, hands-on projects', 'You need intellectual stimulation and novelty to stay engaged'],
 			moderate: ['A mix of traditional and creative learning methods', 'Alternate between textbook study and more engaging formats'],
-			low: ['Consistent, familiar methods with clear practical applications', 'Stick with what works — textbooks, practice problems, and direct instruction']
+			low: ['Consistent, familiar methods with clear practical applications', 'Stick with what works: textbooks, practice problems, and direct instruction']
 		})
 	});
 
@@ -85,9 +85,9 @@ function buildAttentionProfile(dims) {
 	const xLevel = classifyLevel(dims.X.score);
 
 	const profile = {
-		sustainedFocus: cLevel === 'high' ? 'Strong — can focus for extended periods' : cLevel === 'low' ? 'Variable — works best in short bursts' : 'Moderate — can focus well with occasional breaks',
+		sustainedFocus: cLevel === 'high' ? 'Strong: can focus for extended periods' : cLevel === 'low' ? 'Variable: works best in short bursts' : 'Moderate: can focus well with occasional breaks',
 		bestTimeBlocks: cLevel === 'high' ? '45-60 minute blocks with short breaks' : cLevel === 'low' ? '20-25 minute sprints (Pomodoro style)' : '30-40 minute blocks with 10-minute breaks',
-		distractionRisk: xLevel === 'high' ? 'Social distractions — may chat or help others instead of focusing' : xLevel === 'low' ? 'Internal — may overthink or drift into thought' : 'Moderate — manageable with awareness',
+		distractionRisk: xLevel === 'high' ? 'Social distractions: may chat or help others instead of focusing' : xLevel === 'low' ? 'Internal: may overthink or drift into thought' : 'Moderate, manageable with awareness',
 		engagementDriver: oLevel === 'high' ? 'Novelty and intellectual challenge' : oLevel === 'low' ? 'Clear purpose and practical relevance' : 'A mix of challenge and practical payoff'
 	};
 
@@ -130,13 +130,13 @@ function buildPreferredFormats(dims) {
 
 function buildKeyInsight(dims) {
 	if (isHigh(dims.C.score) && isHigh(dims.O.score)) {
-		return 'You have the rare combination of creativity AND discipline. You can generate ideas and follow through on them. This is a powerful learning advantage — use it by choosing projects that challenge you creatively.';
+		return 'You have the rare combination of creativity AND discipline. You can generate ideas and follow through on them. This is a powerful learning advantage, use it by choosing projects that challenge you creatively.';
 	}
 	if (isHigh(dims.O.score) && isLow(dims.C.score)) {
-		return 'Your biggest learning challenge is the gap between your ideas and your execution. You have fantastic creative potential — the key is building small habits of follow-through. Start with 10-minute daily study commitments and build up.';
+		return 'Your biggest learning challenge is the gap between your ideas and your execution. You have fantastic creative potential, the key is building small habits of follow-through. Start with 10-minute daily study commitments and build up.';
 	}
 	if (isHigh(dims.C.score) && isLow(dims.O.score)) {
-		return 'You are extremely reliable and thorough, which will serve you well in any academic pursuit. To unlock your full potential, occasionally push yourself to try unfamiliar approaches — your discipline will ensure you execute them well.';
+		return 'You are extremely reliable and thorough, which will serve you well in any academic pursuit. To unlock your full potential, occasionally push yourself to try unfamiliar approaches, your discipline will ensure you execute them well.';
 	}
 	if (isHigh(dims.X.score) && isLow(dims.C.score)) {
 		return 'You learn best through social interaction but may struggle with solitary revision. Build study groups, find accountability partners, and use social commitment to drive your preparation.';

@@ -20,7 +20,7 @@ const APPROACH_DESC = {
 		],
 		tips: [
 			'Challenge yourself with open-ended research projects',
-			'Teach concepts to others — explaining deepens your understanding',
+			'Teach concepts to others, explaining deepens your understanding',
 			'Use concept maps to visualise connections between ideas'
 		]
 	},
@@ -31,7 +31,7 @@ const APPROACH_DESC = {
 		strengths: [
 			'Efficient use of study time with clear priorities',
 			'Self-monitoring ensures consistent progress',
-			'Adaptable — changes methods when something isn\'t working'
+			'Adaptable, changes methods when something isn\'t working'
 		],
 		tips: [
 			'Pair your planning skills with deeper questioning',
@@ -49,10 +49,10 @@ const APPROACH_DESC = {
 			'May excel in subjects requiring rote knowledge'
 		],
 		tips: [
-			'Try asking "why?" and "how?" about what you memorise — even one question per topic',
+			'Try asking "why?" and "how?" about what you memorise, even one question per topic',
 			'Connect study topics to things you actually care about',
 			'Work with a study partner who can discuss ideas, not just review notes',
-			'Start with practice problems before memorising — understanding comes from doing'
+			'Start with practice problems before memorising, understanding comes from doing'
 		]
 	}
 };
@@ -73,13 +73,13 @@ const MOTIVATION_DESC = {
 	controlled: {
 		label: 'Externally Driven',
 		icon: '🔔',
-		desc: 'You are mainly motivated by external pressures — grades, rewards, or avoiding trouble. Internal interest plays a smaller role.',
+		desc: 'You are mainly motivated by external pressures, grades, rewards, or avoiding trouble. Internal interest plays a smaller role.',
 		insight: 'External motivation works in the short term but can lead to burnout. Try finding personal meaning in what you study.'
 	},
 	amotivated: {
 		label: 'Disengaged',
 		icon: '⚠️',
-		desc: 'You are struggling to find reasons to engage with school. This isn\'t laziness — it often signals a mismatch between your needs and your current learning environment.',
+		desc: 'You are struggling to find reasons to engage with school. This isn\'t laziness, it often signals a mismatch between your needs and your current learning environment.',
 		insight: 'This is a flag for intervention. A supportive tutor, counsellor, or mentor who can help reconnect you with purpose is important.'
 	}
 };
@@ -100,7 +100,7 @@ function generateCrossInsights(dimensions, studyProfile) {
 		insights.push({
 			icon: '💡',
 			title: 'Curiosity Not Translating',
-			text: 'Your high intellectual curiosity (Openness) isn\'t showing up in your study approach yet. You have the capacity for deep learning — try connecting schoolwork to topics that genuinely fascinate you.'
+			text: 'Your high intellectual curiosity (Openness) isn\'t showing up in your study approach yet. You have the capacity for deep learning, try connecting schoolwork to topics that genuinely fascinate you.'
 		});
 	}
 
@@ -136,7 +136,7 @@ function generateCrossInsights(dimensions, studyProfile) {
 		insights.push({
 			icon: '🤔',
 			title: 'Social but Silent',
-			text: 'You\'re socially confident (Extraversion) but reluctant to ask for academic help. Your social skills are an asset — use them to build study partnerships and ask questions in class.'
+			text: 'You\'re socially confident (Extraversion) but reluctant to ask for academic help. Your social skills are an asset, use them to build study partnerships and ask questions in class.'
 		});
 	}
 
@@ -163,7 +163,7 @@ function generateCrossInsights(dimensions, studyProfile) {
 		insights.push({
 			icon: '🏆',
 			title: 'Excellence Pattern',
-			text: 'High discipline (Conscientiousness) paired with genuine self-motivation is the strongest predictor of academic success. You have the engine and the fuel — just make sure you also rest.'
+			text: 'High discipline (Conscientiousness) paired with genuine self-motivation is the strongest predictor of academic success. You have the engine and the fuel, just make sure you also rest.'
 		});
 	}
 

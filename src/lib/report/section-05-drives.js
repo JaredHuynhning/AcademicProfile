@@ -13,7 +13,7 @@ export function generateDrives(results) {
 		motivators: buildMotivators(dims),
 		demotivators: buildDemotivators(dims),
 		flowState: {
-			description: xe.flow || 'Engaged and focused — participates appropriately in the learning activity.',
+			description: xe.flow || 'Engaged and focused, participates appropriately in the learning activity.',
 			triggers: buildFlowTriggers(dims)
 		},
 		disengagement: {
@@ -122,30 +122,30 @@ function buildFlowTriggers(dims) {
 	if (isLow(dims.X.score)) triggers.push('Quiet, uninterrupted deep-work sessions');
 	if (isHigh(dims.E.score)) triggers.push('Feeling connected to the subject matter emotionally');
 	if (isLow(dims.E.score)) triggers.push('Direct, efficient instruction without emotional overhead');
-	if (triggers.length < 2) triggers.push('Material matched to the right difficulty level — challenging but achievable');
+	if (triggers.length < 2) triggers.push('Material matched to the right difficulty level: challenging but achievable');
 	return triggers.slice(0, 4);
 }
 
 function buildDisengagementSigns(dims) {
 	const signs = [];
-	if (isHigh(dims.X.score)) signs.push('Becomes chatty or restless — seeks social distraction');
-	if (isLow(dims.X.score)) signs.push('Withdraws and becomes very quiet — stops contributing');
-	if (isHigh(dims.E.score)) signs.push('Shows visible anxiety or frustration — may become tearful');
-	if (isLow(dims.E.score)) signs.push('Appears flat and indifferent — hard to read emotionally');
+	if (isHigh(dims.X.score)) signs.push('Becomes chatty or restless. Seeks social distraction');
+	if (isLow(dims.X.score)) signs.push('Withdraws and becomes very quiet. Stops contributing');
+	if (isHigh(dims.E.score)) signs.push('Shows visible anxiety or frustration. May become tearful');
+	if (isLow(dims.E.score)) signs.push('Appears flat and indifferent. Hard to read emotionally');
 	if (isLow(dims.C.score)) signs.push('Starts procrastinating or switching to unrelated tasks');
-	if (isHigh(dims.C.score)) signs.push('Becomes rigidly perfectionist — gets stuck on details');
-	if (signs.length < 2) signs.push('Output quality drops — doing the minimum to get by');
+	if (isHigh(dims.C.score)) signs.push('Becomes rigidly perfectionist. Gets stuck on details');
+	if (signs.length < 2) signs.push('Output quality drops. Doing the minimum to get by');
 	return signs.slice(0, 4);
 }
 
 function buildInterventions(dims) {
 	const interventions = [];
 	if (isHigh(dims.X.score)) interventions.push('Introduce a group activity or discussion to re-energise');
-	if (isLow(dims.X.score)) interventions.push('Give space and check in privately — avoid putting on the spot');
+	if (isLow(dims.X.score)) interventions.push('Give space and check in privately. Avoid putting on the spot');
 	if (isHigh(dims.E.score)) interventions.push('Offer reassurance and break the task into smaller, less overwhelming steps');
 	if (isHigh(dims.O.score)) interventions.push('Introduce a new angle or challenge to reignite curiosity');
 	if (isLow(dims.C.score)) interventions.push('Provide an immediate, achievable micro-goal to rebuild momentum');
-	if (isHigh(dims.C.score)) interventions.push('Remind them that "good enough" is acceptable — reduce perfectionism pressure');
-	if (interventions.length < 2) interventions.push('Change the activity type — switch from passive to active learning');
+	if (isHigh(dims.C.score)) interventions.push('Remind them that "good enough" is acceptable. Reduce perfectionism pressure');
+	if (interventions.length < 2) interventions.push('Change the activity type: switch from passive to active learning');
 	return interventions.slice(0, 4);
 }

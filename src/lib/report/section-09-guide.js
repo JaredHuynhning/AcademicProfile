@@ -27,18 +27,18 @@ function buildTeacherGuide(dims, ranked) {
 
 function buildTeacherQuickProfile(dims) {
 	const traits = [];
-	if (isHigh(dims.C.score)) traits.push('Highly organised and self-motivated — comes prepared and meets deadlines');
-	if (isLow(dims.C.score)) traits.push('Needs external structure — benefits from clear deadlines and check-ins');
-	if (isHigh(dims.X.score)) traits.push('Socially confident — participates actively and enjoys group activities');
-	if (isLow(dims.X.score)) traits.push('Reserved — may not speak up without direct invitation; do not mistake silence for disengagement');
-	if (isHigh(dims.O.score)) traits.push('Intellectually curious — thrives with open-ended questions and creative tasks');
-	if (isLow(dims.O.score)) traits.push('Prefers concrete instructions — provide clear guidelines and practical examples');
-	if (isHigh(dims.E.score)) traits.push('Emotionally sensitive — responds well to encouragement, poorly to public criticism');
-	if (isLow(dims.E.score)) traits.push('Emotionally steady — handles criticism well but may not show when struggling');
-	if (isHigh(dims.A.score)) traits.push('Cooperative and easy to work with — may need encouragement to assert own ideas');
-	if (isLow(dims.A.score)) traits.push('Direct and assertive — values honest feedback; frame challenges constructively');
-	if (isHigh(dims.H.score)) traits.push('High integrity — trustworthy in group work and examinations');
-	if (isLow(dims.H.score)) traits.push('Competitive — motivated by rewards and recognition; channel this positively');
+	if (isHigh(dims.C.score)) traits.push('Highly organised and self-motivated. Comes prepared and meets deadlines');
+	if (isLow(dims.C.score)) traits.push('Needs external structure. Benefits from clear deadlines and check-ins');
+	if (isHigh(dims.X.score)) traits.push('Socially confident. Participates actively and enjoys group activities');
+	if (isLow(dims.X.score)) traits.push('Reserved, may not speak up without direct invitation; do not mistake silence for disengagement');
+	if (isHigh(dims.O.score)) traits.push('Intellectually curious. Thrives with open-ended questions and creative tasks');
+	if (isLow(dims.O.score)) traits.push('Prefers concrete instructions. Provide clear guidelines and practical examples');
+	if (isHigh(dims.E.score)) traits.push('Emotionally sensitive. Responds well to encouragement, poorly to public criticism');
+	if (isLow(dims.E.score)) traits.push('Emotionally steady. Handles criticism well but may not show when struggling');
+	if (isHigh(dims.A.score)) traits.push('Cooperative and easy to work with. May need encouragement to assert own ideas');
+	if (isLow(dims.A.score)) traits.push('Direct and assertive, values honest feedback; frame challenges constructively');
+	if (isHigh(dims.H.score)) traits.push('High integrity. Trustworthy in group work and examinations');
+	if (isLow(dims.H.score)) traits.push('Competitive, motivated by rewards and recognition; channel this positively');
 	return traits;
 }
 
@@ -100,7 +100,7 @@ function buildFeedbackStyle(dims) {
 	if (isLow(dims.E.score) && isHigh(dims.X.score)) {
 		return {
 			preferred: 'Direct, specific, challenge-oriented',
-			description: 'Be straightforward — they prefer honesty to sugar-coating. Frame improvements as challenges to rise to.',
+			description: 'Be straightforward, they prefer honesty to sugar-coating. Frame improvements as challenges to rise to.',
 			avoid: 'Over-cushioning feedback, being vague, withholding constructive criticism'
 		};
 	}
@@ -114,36 +114,36 @@ function buildFeedbackStyle(dims) {
 	if (isLow(dims.E.score)) {
 		return {
 			preferred: 'Direct and actionable',
-			description: 'Get to the point — they prefer efficiency over emotional cushioning. Focus on specific, actionable improvements.',
+			description: 'Get to the point, they prefer efficiency over emotional cushioning. Focus on specific, actionable improvements.',
 			avoid: 'Over-praising, excessive emotional framing, being indirect about problems'
 		};
 	}
 	return {
 		preferred: 'Balanced and specific',
 		description: 'A mix of recognition and constructive feedback works well. Be specific about both strengths and areas for improvement.',
-		avoid: 'Exclusively positive or exclusively critical feedback — balance is key'
+		avoid: 'Exclusively positive or exclusively critical feedback, balance is key'
 	};
 }
 
 function buildClassroomTips(dims) {
 	const tips = [];
 	if (isHigh(dims.X.score) && isLow(dims.C.score)) {
-		tips.push('Seat near focused students — social energy can become distraction without anchoring influence');
+		tips.push('Seat near focused students, as social energy can become distraction without anchoring influence');
 	}
 	if (isLow(dims.X.score)) {
-		tips.push('Do not cold-call in class — use think-pair-share or warning before questions to reduce anxiety');
+		tips.push('Do not cold-call in class. Use think-pair-share or warning before questions to reduce anxiety');
 	}
 	if (isHigh(dims.O.score)) {
 		tips.push('Provide extension questions that allow deeper exploration beyond the standard curriculum');
 	}
 	if (isLow(dims.C.score)) {
-		tips.push('Check in on long-term project progress at regular intervals — do not assume they are on track');
+		tips.push('Check in on long-term project progress at regular intervals. Do not assume they are on track');
 	}
 	if (isHigh(dims.E.score)) {
-		tips.push('Create a safe environment for mistakes — normalise errors as part of learning');
+		tips.push('Create a safe environment for mistakes. Normalise errors as part of learning');
 	}
 	if (isHigh(dims.H.score)) {
-		tips.push('Acknowledge their integrity publicly — it reinforces positive behaviour');
+		tips.push('Acknowledge their integrity publicly: it reinforces positive behaviour');
 	}
 	if (tips.length < 3) {
 		tips.push('Vary activity types within each lesson to maintain engagement across different personalities');
@@ -156,28 +156,28 @@ function buildTeacherWarnings(dims) {
 	if (isHigh(dims.E.score)) {
 		warnings.push({
 			signal: 'Withdrawal or unusual quietness',
-			meaning: 'May be experiencing anxiety or emotional distress — check in privately',
+			meaning: 'May be experiencing anxiety or emotional distress. Check in privately',
 			action: 'A brief, private "How are you going?" can make a significant difference'
 		});
 	}
 	if (isLow(dims.E.score) && isLow(dims.X.score)) {
 		warnings.push({
 			signal: 'Consistent under-performance without visible distress',
-			meaning: 'They may be struggling but not showing it — their composure can mask problems',
+			meaning: 'They may be struggling but not showing it. Their composure can mask problems',
 			action: 'Review work quality trends and ask direct questions about understanding'
 		});
 	}
 	if (isHigh(dims.C.score)) {
 		warnings.push({
 			signal: 'Increased irritability or obsessive revision',
-			meaning: 'Perfectionism under pressure can become anxiety — they may be overwhelmed',
+			meaning: 'Perfectionism under pressure can become anxiety. They may be overwhelmed',
 			action: 'Help them prioritise and give explicit permission to submit "good enough" work'
 		});
 	}
 	if (isLow(dims.C.score)) {
 		warnings.push({
 			signal: 'Missing deadlines or incomplete work',
-			meaning: 'Not necessarily laziness — may be overwhelmed by the scope of tasks',
+			meaning: 'Not necessarily laziness. May be overwhelmed by the scope of tasks',
 			action: 'Break work into smaller, immediately actionable steps with clear deadlines'
 		});
 	}
@@ -216,12 +216,12 @@ function buildParentProfile(dims, ranked) {
 
 function getParentExplanation(key, level) {
 	const explanations = {
-		H: { high: 'they have a strong moral compass and value fairness', low: 'they are competitive and motivated by achievement — help them channel this positively' },
-		E: { high: 'they feel things deeply and need emotional support during stressful periods', low: 'they handle stress quietly — check in regularly because they may not ask for help' },
-		X: { high: 'they are sociable and energised by people — they need social interaction', low: 'they prefer quiet time and may need help building social confidence gradually' },
-		A: { high: 'they are cooperative and easy-going — encourage them to also express their own needs', low: 'they are assertive and direct — help them develop diplomatic communication skills' },
-		C: { high: 'they are naturally organised and disciplined — watch for perfectionism under pressure', low: 'they need help with structure and organisation — external routines are important' },
-		O: { high: 'they are creative and curious — provide outlets for exploration', low: 'they prefer practical, concrete activities — connect learning to real-world applications' }
+		H: { high: 'they have a strong moral compass and value fairness', low: 'they are competitive and motivated by achievement. Help them channel this positively' },
+		E: { high: 'they feel things deeply and need emotional support during stressful periods', low: 'they handle stress quietly. Check in regularly because they may not ask for help' },
+		X: { high: 'they are sociable and energised by people. They need social interaction', low: 'they prefer quiet time and may need help building social confidence gradually' },
+		A: { high: 'they are cooperative and easy-going. Encourage them to also express their own needs', low: 'they are assertive and direct. Help them develop diplomatic communication skills' },
+		C: { high: 'they are naturally organised and disciplined. Watch for perfectionism under pressure', low: 'they need help with structure and organisation. External routines are important' },
+		O: { high: 'they are creative and curious. Provide outlets for exploration', low: 'they prefer practical, concrete activities. Connect learning to real-world applications' }
 	};
 	return explanations[key]?.[level] || 'this is an important part of who they are';
 }
@@ -229,12 +229,12 @@ function getParentExplanation(key, level) {
 function buildHomeEnvironment(dims) {
 	const tips = [];
 	if (isHigh(dims.C.score)) {
-		tips.push({ area: 'Study Space', tip: 'Provide an organised, dedicated study area — they thrive with a consistent workspace' });
+		tips.push({ area: 'Study Space', tip: 'Provide an organised, dedicated study area: they thrive with a consistent workspace' });
 	} else {
-		tips.push({ area: 'Study Space', tip: 'Help set up an organised study area and gently encourage its use — external structure compensates for internal flexibility' });
+		tips.push({ area: 'Study Space', tip: 'Help set up an organised study area and gently encourage its use: external structure compensates for internal flexibility' });
 	}
 	if (isHigh(dims.X.score)) {
-		tips.push({ area: 'Social Learning', tip: 'Allow study sessions with friends — they genuinely learn better in social settings. Just ensure there is a balance between socialising and studying' });
+		tips.push({ area: 'Social Learning', tip: 'Allow study sessions with friends: they genuinely learn better in social settings. Just ensure there is a balance between socialising and studying' });
 	} else {
 		tips.push({ area: 'Quiet Time', tip: 'Respect their need for quiet, solo study time. Do not push them to study with friends if they prefer working alone' });
 	}
@@ -245,8 +245,8 @@ function buildHomeEnvironment(dims) {
 		tips.push({ area: 'Exploration', tip: 'Keep books, documentaries, and creative materials accessible. Encourage questions and do not shut down unusual interests' });
 	}
 	tips.push({ area: 'Routine', tip: isHigh(dims.C.score)
-		? 'Support their natural routine — do not disrupt their study schedule unnecessarily'
-		: 'Help establish a consistent daily routine — dinner time, homework time, bed time — without being rigid' });
+		? 'Support their natural routine, do not disrupt their study schedule unnecessarily'
+		: 'Help establish a consistent daily routine, dinner time, homework time, bed time, without being rigid' });
 	return tips.slice(0, 4);
 }
 
@@ -285,7 +285,7 @@ function buildParentSupport(dims) {
 			: ['Help create a study schedule together', 'Set regular "homework check-in" times', 'Break big assignments into daily chunks'],
 		donts: isHigh(dims.C.score)
 			? ['Micromanage their schedule', 'Add pressure to an already self-driven student']
-			: ['Nag about homework — it creates resistance', 'Do the work for them — guide process instead']
+			: ['Nag about homework, it creates resistance', 'Do the work for them, guide process instead']
 	});
 	strategies.push({
 		area: 'Emotional Support',
@@ -302,7 +302,7 @@ function buildParentSupport(dims) {
 			? ['Encourage social study sessions', 'Support extracurricular social activities', 'Help them balance social time with focus time']
 			: ['Provide low-pressure social opportunities', 'Do not force large group activities', 'Celebrate small social wins'],
 		donts: isHigh(dims.X.score)
-			? ['Isolate them as punishment — it is particularly painful for social learners']
+			? ['Isolate them as punishment, it is particularly painful for social learners']
 			: ['Compare them to more social siblings or peers', 'Force them into social situations that cause anxiety']
 	});
 	return strategies;
@@ -319,19 +319,19 @@ function buildParentWarnings(dims) {
 	if (isLow(dims.E.score)) {
 		warnings.push({
 			signal: 'Withdrawal from activities they usually enjoy',
-			action: 'They may not show distress visibly — ask direct but gentle questions'
+			action: 'They may not show distress visibly, ask direct but gentle questions'
 		});
 	}
 	if (isHigh(dims.C.score)) {
 		warnings.push({
 			signal: 'Obsessive studying, inability to relax, or physical symptoms (headaches, stomach aches)',
-			action: 'Perfectionism may be tipping into anxiety — help them set realistic standards'
+			action: 'Perfectionism may be tipping into anxiety, help them set realistic standards'
 		});
 	}
 	if (isLow(dims.C.score)) {
 		warnings.push({
 			signal: 'Complete disengagement from schoolwork or hiding assignments',
-			action: 'This may signal overwhelm rather than laziness — help break tasks into manageable pieces'
+			action: 'This may signal overwhelm rather than laziness, help break tasks into manageable pieces'
 		});
 	}
 	warnings.push({
@@ -344,7 +344,7 @@ function buildParentWarnings(dims) {
 function buildSharedInsights(dims) {
 	return {
 		keyMessage: 'This student\'s personality is a unique combination of traits, not a label. The goal is to understand their natural tendencies so we can create conditions where they thrive.',
-		alignmentTip: 'Teachers and parents working together is the most powerful support system. Share observations about what works and what does not — consistency between school and home accelerates growth.',
+		alignmentTip: 'Teachers and parents working together is the most powerful support system. Share observations about what works and what does not, consistency between school and home accelerates growth.',
 		reminderNote: 'Personality traits are tendencies that can be developed, not fixed limits. With the right support and encouragement, every student can grow in any area.'
 	};
 }
