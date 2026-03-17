@@ -4,25 +4,31 @@ import { sampleProfiles } from '$lib/data/sample-profiles.js';
 
 const REPORTS_KEY = 'hexaco_saved_reports';
 
+// Bump this when sample profile data changes to force refresh from code
+const SAMPLE_VERSION = 2;
+const SAMPLE_VERSION_KEY = 'hexaco_sample_version';
+
 function loadReports() {
 	if (typeof window === 'undefined') return [...sampleProfiles];
 	try {
 		const stored = localStorage.getItem(REPORTS_KEY);
 		const reports = stored ? JSON.parse(stored) : [];
+		const storedVersion = parseInt(localStorage.getItem(SAMPLE_VERSION_KEY) || '0');
 
-		// Always ensure all sample profiles are present and up-to-date
+		// Always replace sample profiles with latest code versions
 		const userReports = reports.filter((r) => !r.id.startsWith('sample-'));
-		const sampleIds = new Set(sampleProfiles.map((s) => s.id));
 		const existingSampleIds = new Set(
 			reports.filter((r) => r.id.startsWith('sample-')).map((r) => r.id)
 		);
 		const needsUpdate =
+			storedVersion < SAMPLE_VERSION ||
 			sampleProfiles.length !== existingSampleIds.size ||
 			sampleProfiles.some((s) => !existingSampleIds.has(s.id));
 
 		if (needsUpdate) {
 			const merged = [...userReports, ...sampleProfiles];
 			localStorage.setItem(REPORTS_KEY, JSON.stringify(merged));
+			localStorage.setItem(SAMPLE_VERSION_KEY, String(SAMPLE_VERSION));
 			return merged;
 		}
 		return reports;
