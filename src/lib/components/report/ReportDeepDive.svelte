@@ -1,11 +1,15 @@
 <script>
-	import FacetBarChart from './FacetBarChart.svelte';
-
 	let { data = {} } = $props();
 
 	function levelLabel(level) {
 		const labels = { very_low: 'Very Low', low: 'Low', moderate: 'Moderate', high: 'High', very_high: 'Very High' };
 		return labels[level] || level;
+	}
+
+	function levelColor(level) {
+		if (level === 'high' || level === 'very_high') return 'text-green-700 bg-green-50';
+		if (level === 'low' || level === 'very_low') return 'text-amber-700 bg-amber-50';
+		return 'text-blue-700 bg-blue-50';
 	}
 </script>
 
@@ -37,10 +41,21 @@
 
 				<p class="text-sm text-gray-700 leading-relaxed mb-4">{dim.insight}</p>
 
-				<div class="mb-4">
-					<h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Facet Breakdown</h4>
-					<FacetBarChart facets={dim.facets} color={dim.color} />
-				</div>
+				<!-- Facet Insights (narrative, not bars) -->
+				{#if dim.facetInsights?.length > 0}
+					<div class="space-y-2.5 mb-4">
+						{#each dim.facetInsights as fi}
+							{#if fi}
+								<div class="flex items-start gap-2">
+									<span class="text-xs font-semibold px-2 py-0.5 rounded-full shrink-0 mt-0.5 {levelColor(fi.level)}">
+										{fi.name}
+									</span>
+									<p class="text-sm text-gray-600 leading-relaxed">{fi.text}</p>
+								</div>
+							{/if}
+						{/each}
+					</div>
+				{/if}
 
 				{#if dim.learningCallout.text}
 					<div class="bg-gray-50 rounded-lg p-3 border-l-3"
