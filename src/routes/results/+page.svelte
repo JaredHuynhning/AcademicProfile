@@ -173,22 +173,29 @@
 		<!-- Actions -->
 		<div class="flex flex-wrap gap-3 justify-center no-print">
 			<button
+				onclick={() => goto('/report')}
+				class="px-6 py-3 bg-gradient-to-r from-blue-600 to-violet-600 text-white rounded-xl font-medium
+					hover:from-blue-700 hover:to-violet-700 transition-all shadow-sm"
+			>
+				View Full Report
+			</button>
+			<button
 				onclick={handlePrint}
 				class="px-6 py-3 bg-white border border-gray-300 rounded-xl font-medium text-gray-700 hover:bg-gray-50 transition"
 			>
-				🖨️ Print / Save PDF
+				Print / Save PDF
 			</button>
 			<button
 				onclick={handleRetake}
 				class="px-6 py-3 bg-white border border-gray-300 rounded-xl font-medium text-gray-700 hover:bg-gray-50 transition"
 			>
-				🔄 Retake Quiz
+				Retake Quiz
 			</button>
 			<button
 				onclick={() => goto('/')}
 				class="px-6 py-3 bg-white border border-gray-300 rounded-xl font-medium text-gray-700 hover:bg-gray-50 transition"
 			>
-				🏠 Home
+				Home
 			</button>
 		</div>
 	</div>

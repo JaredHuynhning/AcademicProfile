@@ -163,6 +163,12 @@
 							View
 						</button>
 						<button
+							onclick={() => goto(`/report?id=${report.id}`)}
+							class="px-4 py-2 bg-violet-50 text-violet-700 font-medium rounded-lg hover:bg-violet-100 transition text-sm"
+						>
+							Report
+						</button>
+						<button
 							onclick={() => handleDelete(report.id)}
 							class="px-4 py-2 rounded-lg font-medium transition text-sm
 								{confirmDeleteId === report.id
