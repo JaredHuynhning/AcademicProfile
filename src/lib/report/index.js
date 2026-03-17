@@ -16,6 +16,8 @@ import { generateStudyProfile } from './section-11-study-profile.js';
 import { generateAcademicCharacter } from './section-12-academic-character.js';
 import { generateSubjectFit } from './section-13-subject-fit.js';
 import { generateWhatWorks } from './section-14-what-works.js';
+import { generateRootCause } from './section-15-root-cause.js';
+import { generateAcademicGuide } from './section-16-academic-guide.js';
 
 /**
  * Generate the full report.
@@ -51,6 +53,8 @@ export function generateReport(results, name) {
 		academicCharacter: hasLearner ? generateAcademicCharacter(results) : null,
 		subjectFit: hasLearner ? generateSubjectFit(results) : null,
 		whatWorks: hasLearner ? generateWhatWorks(results) : null,
+		rootCause: hasLearner ? generateRootCause(results) : null,
+		academicGuide: (hasStudy || hasLearner) ? generateAcademicGuide(results) : null,
 
 		// Metadata
 		quizMode: results.quizMode || 'complete',
