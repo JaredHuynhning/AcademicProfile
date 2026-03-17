@@ -182,7 +182,38 @@ export const sampleProfiles = [
 				dominantApproach: 'strategic',
 				motivationProfile: 'self-determined',
 				regulationStrength: 'high'
-			}
+			},
+			// Alex: High grit, strong focus, good energy, maths-aligned, warm-structured, balanced response
+			learnerProfile: {
+				grit: {
+					perseverance: { score: 4.3, level: 'high', items: 3 },
+					consistency: { score: 4.0, level: 'high', items: 3 },
+					overall: { score: 4.2, level: 'high' }
+				},
+				focus: {
+					concentration: { score: 3.7, level: 'high', items: 3 },
+					procrastination: { score: 4.0, level: 'high', items: 3 }
+				},
+				energy: {
+					vitality: { score: 3.5, level: 'high', items: 2 },
+					depletion: { score: 3.5, level: 'high', items: 2 },
+					netEnergy: { score: 3.5, level: 'high' }
+				},
+				subjectFit: {
+					maths: { passion: 4, confidence: 5, alignment: 'aligned' },
+					english: { passion: 3, confidence: 4, alignment: 'passion-gap' },
+					science: { passion: 4, confidence: 4, alignment: 'aligned' }
+				},
+				teacherPreference: {
+					structure: 4, warmth: 4, profile: 'warm-structured',
+					carrot: 4, stick: 3, responseType: 'balanced'
+				},
+				examBarriers: {
+					preparation: 4, external: 2, anxiety: 2, timeManagement: 2,
+					primaryBarrier: 'none'
+				}
+			},
+			quizMode: 'complete'
 		}
 	},
 	{
@@ -370,7 +401,38 @@ export const sampleProfiles = [
 				dominantApproach: 'surface',
 				motivationProfile: 'self-determined',
 				regulationStrength: 'low'
-			}
+			},
+			// Maya: Low grit consistency, distracted, creative but scattered, science-passionate
+			learnerProfile: {
+				grit: {
+					perseverance: { score: 3.0, level: 'moderate', items: 3 },
+					consistency: { score: 2.0, level: 'low', items: 3 },
+					overall: { score: 2.5, level: 'moderate' }
+				},
+				focus: {
+					concentration: { score: 2.3, level: 'low', items: 3 },
+					procrastination: { score: 2.0, level: 'low', items: 3 }
+				},
+				energy: {
+					vitality: { score: 4.0, level: 'high', items: 2 },
+					depletion: { score: 2.5, level: 'moderate', items: 2 },
+					netEnergy: { score: 3.3, level: 'moderate' }
+				},
+				subjectFit: {
+					maths: { passion: 2, confidence: 3, alignment: 'disengaged' },
+					english: { passion: 4, confidence: 3, alignment: 'confidence-gap' },
+					science: { passion: 5, confidence: 4, alignment: 'aligned' }
+				},
+				teacherPreference: {
+					structure: 2, warmth: 5, profile: 'warm-flexible',
+					carrot: 5, stick: 2, responseType: 'encouragement'
+				},
+				examBarriers: {
+					preparation: 2, external: 3, anxiety: 2, timeManagement: 4,
+					primaryBarrier: 'time-management'
+				}
+			},
+			quizMode: 'complete'
 		}
 	},
 	// ─── Profile 3: Quiet Perfectionist (anxious high-achiever) ─────
@@ -550,7 +612,38 @@ export const sampleProfiles = [
 				dominantApproach: 'strategic',
 				motivationProfile: 'self-determined',
 				regulationStrength: 'high'
-			}
+			},
+			// Liam: High grit but anxious, strong focus, low energy, maths-confidence-gap
+			learnerProfile: {
+				grit: {
+					perseverance: { score: 4.7, level: 'high', items: 3 },
+					consistency: { score: 4.3, level: 'high', items: 3 },
+					overall: { score: 4.5, level: 'high' }
+				},
+				focus: {
+					concentration: { score: 4.3, level: 'high', items: 3 },
+					procrastination: { score: 4.0, level: 'high', items: 3 }
+				},
+				energy: {
+					vitality: { score: 2.5, level: 'moderate', items: 2 },
+					depletion: { score: 2.0, level: 'low', items: 2 },
+					netEnergy: { score: 2.3, level: 'low' }
+				},
+				subjectFit: {
+					maths: { passion: 4, confidence: 3, alignment: 'confidence-gap' },
+					english: { passion: 3, confidence: 4, alignment: 'passion-gap' },
+					science: { passion: 4, confidence: 4, alignment: 'aligned' }
+				},
+				teacherPreference: {
+					structure: 5, warmth: 3, profile: 'firm-structured',
+					carrot: 3, stick: 4, responseType: 'accountability'
+				},
+				examBarriers: {
+					preparation: 5, external: 1, anxiety: 5, timeManagement: 2,
+					primaryBarrier: 'anxiety'
+				}
+			},
+			quizMode: 'complete'
 		}
 	},
 	// ─── Profile 4: Social Butterfly (externally motivated, low effort) ─
@@ -724,7 +817,38 @@ export const sampleProfiles = [
 				dominantApproach: 'surface',
 				motivationProfile: 'controlled',
 				regulationStrength: 'low'
-			}
+			},
+			// Jasmine: Low grit, very distracted, high energy, social, warm-flexible, encouragement
+			learnerProfile: {
+				grit: {
+					perseverance: { score: 2.3, level: 'low', items: 3 },
+					consistency: { score: 2.0, level: 'low', items: 3 },
+					overall: { score: 2.2, level: 'low' }
+				},
+				focus: {
+					concentration: { score: 2.0, level: 'low', items: 3 },
+					procrastination: { score: 1.7, level: 'low', items: 3 }
+				},
+				energy: {
+					vitality: { score: 4.5, level: 'high', items: 2 },
+					depletion: { score: 3.0, level: 'moderate', items: 2 },
+					netEnergy: { score: 3.8, level: 'high' }
+				},
+				subjectFit: {
+					maths: { passion: 2, confidence: 2, alignment: 'disengaged' },
+					english: { passion: 4, confidence: 4, alignment: 'aligned' },
+					science: { passion: 2, confidence: 3, alignment: 'disengaged' }
+				},
+				teacherPreference: {
+					structure: 2, warmth: 5, profile: 'warm-flexible',
+					carrot: 5, stick: 2, responseType: 'encouragement'
+				},
+				examBarriers: {
+					preparation: 2, external: 4, anxiety: 3, timeManagement: 3,
+					primaryBarrier: 'external-blame'
+				}
+			},
+			quizMode: 'complete'
 		}
 	},
 	// ─── Profile 5: Gifted Underachiever (high potential, checked out) ──
@@ -898,7 +1022,38 @@ export const sampleProfiles = [
 				dominantApproach: 'deep',
 				motivationProfile: 'moderate',
 				regulationStrength: 'low'
-			}
+			},
+			// Ethan: Moderate grit, good focus when interested, high energy, science-passionate, independent
+			learnerProfile: {
+				grit: {
+					perseverance: { score: 3.0, level: 'moderate', items: 3 },
+					consistency: { score: 1.7, level: 'low', items: 3 },
+					overall: { score: 2.4, level: 'low' }
+				},
+				focus: {
+					concentration: { score: 3.7, level: 'high', items: 3 },
+					procrastination: { score: 2.3, level: 'low', items: 3 }
+				},
+				energy: {
+					vitality: { score: 4.0, level: 'high', items: 2 },
+					depletion: { score: 3.5, level: 'high', items: 2 },
+					netEnergy: { score: 3.8, level: 'high' }
+				},
+				subjectFit: {
+					maths: { passion: 3, confidence: 4, alignment: 'passion-gap' },
+					english: { passion: 2, confidence: 3, alignment: 'disengaged' },
+					science: { passion: 5, confidence: 5, alignment: 'aligned' }
+				},
+				teacherPreference: {
+					structure: 2, warmth: 2, profile: 'firm-flexible',
+					carrot: 3, stick: 2, responseType: 'balanced'
+				},
+				examBarriers: {
+					preparation: 3, external: 3, anxiety: 1, timeManagement: 4,
+					primaryBarrier: 'time-management'
+				}
+			},
+			quizMode: 'complete'
 		}
 	},
 	// ─── Profile 6: Struggling Learner (low confidence, high anxiety) ──
@@ -1072,7 +1227,38 @@ export const sampleProfiles = [
 				dominantApproach: 'surface',
 				motivationProfile: 'controlled',
 				regulationStrength: 'moderate'
-			}
+			},
+			// Priya: Low grit, anxious, low energy, confidence gaps everywhere, warm-structured, anxiety barrier
+			learnerProfile: {
+				grit: {
+					perseverance: { score: 2.7, level: 'moderate', items: 3 },
+					consistency: { score: 2.3, level: 'low', items: 3 },
+					overall: { score: 2.5, level: 'moderate' }
+				},
+				focus: {
+					concentration: { score: 2.7, level: 'moderate', items: 3 },
+					procrastination: { score: 2.3, level: 'low', items: 3 }
+				},
+				energy: {
+					vitality: { score: 2.0, level: 'low', items: 2 },
+					depletion: { score: 1.5, level: 'low', items: 2 },
+					netEnergy: { score: 1.8, level: 'low' }
+				},
+				subjectFit: {
+					maths: { passion: 2, confidence: 2, alignment: 'disengaged' },
+					english: { passion: 3, confidence: 2, alignment: 'confidence-gap' },
+					science: { passion: 3, confidence: 2, alignment: 'confidence-gap' }
+				},
+				teacherPreference: {
+					structure: 4, warmth: 5, profile: 'warm-structured',
+					carrot: 5, stick: 2, responseType: 'encouragement'
+				},
+				examBarriers: {
+					preparation: 3, external: 2, anxiety: 5, timeManagement: 3,
+					primaryBarrier: 'anxiety'
+				}
+			},
+			quizMode: 'complete'
 		}
 	}
 ];

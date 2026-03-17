@@ -17,28 +17,37 @@
 	import ReportGuide from '$lib/components/report/ReportGuide.svelte';
 	import ReportTutor from '$lib/components/report/ReportTutor.svelte';
 	import ReportStudyProfile from '$lib/components/report/ReportStudyProfile.svelte';
+	import ReportAcademicCharacter from '$lib/components/report/ReportAcademicCharacter.svelte';
+	import ReportSubjectFit from '$lib/components/report/ReportSubjectFit.svelte';
+	import ReportWhatWorks from '$lib/components/report/ReportWhatWorks.svelte';
 
 	let results = $state(null);
 	let name = $state('');
 	let report = $state(null);
 	let activeSection = $state('section-cover');
 
-	const sections = [
-		{ id: 'section-cover', label: 'Cover', num: '1' },
-		{ id: 'section-glance', label: 'At a Glance', num: '2' },
-		{ id: 'section-deep-dive', label: 'Deep Dive', num: '3' },
-		{ id: 'section-learning', label: 'Learning', num: '5' },
-		{ id: 'section-drives', label: 'Drives', num: '6' },
-		{ id: 'section-study', label: 'Study', num: '7' },
-		{ id: 'section-group', label: 'Groups', num: '8' },
-		{ id: 'section-strengths', label: 'Strengths', num: '9' },
-		{ id: 'section-guide', label: 'Guide', num: '10' },
-		{ id: 'section-tutor', label: 'Tutor Match', num: '10' },
-		{ id: 'section-study-profile', label: 'Study Profile', num: '11' }
-	];
+	// Build sections list dynamically based on available data
+	let sections = $derived(() => {
+		if (!report) return [];
+		const s = [];
+		if (report.cover) s.push({ id: 'section-cover', label: 'Cover', num: '1' });
+		if (report.glance) s.push({ id: 'section-glance', label: 'At a Glance', num: '2' });
+		if (report.deepDive) s.push({ id: 'section-deep-dive', label: 'Deep Dive', num: '3' });
+		if (report.learning) s.push({ id: 'section-learning', label: 'Learning', num: '4' });
+		if (report.drives) s.push({ id: 'section-drives', label: 'Drives', num: '5' });
+		if (report.study) s.push({ id: 'section-study', label: 'Study', num: '6' });
+		if (report.group) s.push({ id: 'section-group', label: 'Groups', num: '7' });
+		if (report.strengths) s.push({ id: 'section-strengths', label: 'Strengths', num: '8' });
+		if (report.guide) s.push({ id: 'section-guide', label: 'Guide', num: '9' });
+		if (report.tutor) s.push({ id: 'section-tutor', label: 'Tutor Match', num: '10' });
+		if (report.studyProfile) s.push({ id: 'section-study-profile', label: 'Study Profile', num: '11' });
+		if (report.academicCharacter) s.push({ id: 'section-academic-character', label: 'Academic Character', num: '12' });
+		if (report.subjectFit) s.push({ id: 'section-subject-fit', label: 'Subject Fit', num: '13' });
+		if (report.whatWorks) s.push({ id: 'section-what-works', label: 'What Works', num: '14' });
+		return s;
+	});
 
 	onMount(() => {
-		// Check for ?id=xxx to load a saved report
 		const reportId = $page.url.searchParams.get('id');
 		if (reportId) {
 			const saved = $savedReportsStore.find((r) => r.id === reportId);
@@ -49,7 +58,6 @@
 		}
 
 		if (!results) {
-			// Fall back to current test results
 			const unsub1 = testResults.subscribe((v) => (results = v));
 			const unsub2 = studentName.subscribe((v) => (name = v));
 
@@ -83,7 +91,6 @@
 		window.print();
 	}
 
-	// Scroll spy
 	onMount(() => {
 		if (typeof IntersectionObserver === 'undefined') return;
 
@@ -98,9 +105,9 @@
 			{ rootMargin: '-20% 0px -70% 0px' }
 		);
 
-		// Delay to ensure sections are rendered
 		setTimeout(() => {
-			for (const sec of sections) {
+			const secs = sections();
+			for (const sec of secs) {
 				const el = document.getElementById(sec.id);
 				if (el) observer.observe(el);
 			}
@@ -108,13 +115,17 @@
 
 		return () => observer.disconnect();
 	});
+
+	let reportDate = $derived(
+		new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })
+	);
 </script>
 
 {#if report}
 	<!-- Sidebar Nav (screen only) -->
 	<nav class="report-sidebar no-print">
 		<div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 px-2">Sections</div>
-		{#each sections as sec}
+		{#each sections() as sec}
 			<button
 				onclick={() => scrollToSection(sec.id)}
 				class="report-nav-item {activeSection === sec.id ? 'active' : ''}"
@@ -142,25 +153,72 @@
 	<!-- Main Report Content -->
 	<div class="report-content">
 		<div class="max-w-3xl mx-auto px-4 py-8 space-y-0">
-			<ReportCover data={report.cover} />
-			<ReportGlance data={report.glance} />
-			<ReportDeepDive data={report.deepDive} />
-			<ReportLearning data={report.learning} />
-			<ReportDrives data={report.drives} />
-			<ReportStudy data={report.study} />
-			<ReportGroup data={report.group} />
-			<ReportStrengths data={report.strengths} />
-			<ReportGuide data={report.guide} />
-			<ReportTutor data={report.tutor} />
+
+			<!-- Personality Sections (1-10) -->
+			{#if report.hasPersonality}
+				<ReportCover data={report.cover} />
+				<ReportGlance data={report.glance} />
+				<ReportDeepDive data={report.deepDive} />
+				<ReportLearning data={report.learning} />
+				<ReportDrives data={report.drives} />
+				<ReportStudy data={report.study} />
+				<ReportGroup data={report.group} />
+				<ReportStrengths data={report.strengths} />
+				<ReportGuide data={report.guide} />
+				<ReportTutor data={report.tutor} />
+			{:else}
+				<!-- Prompt for personality quiz -->
+				<div class="bg-violet-50 rounded-2xl p-8 text-center mb-8">
+					<div class="text-4xl mb-3">🔬</div>
+					<h2 class="text-xl font-bold text-gray-900 mb-2">Personality Profile Available</h2>
+					<p class="text-sm text-gray-600 mb-4">
+						Take the Personality Profile quiz to unlock 10 additional sections covering your HEXACO personality dimensions, tutor matching, and personalised learning insights.
+					</p>
+					<button
+						onclick={() => goto('/test?quiz=personality')}
+						class="px-6 py-2.5 bg-violet-600 text-white rounded-xl font-medium hover:bg-violet-700 transition"
+					>
+						Take Personality Quiz
+					</button>
+				</div>
+			{/if}
+
+			<!-- Learning Sections (11-14) -->
 			{#if report.studyProfile}
 				<ReportStudyProfile data={report.studyProfile} />
+			{/if}
+			{#if report.academicCharacter}
+				<ReportAcademicCharacter data={report.academicCharacter} />
+			{/if}
+			{#if report.subjectFit}
+				<ReportSubjectFit data={report.subjectFit} />
+			{/if}
+			{#if report.whatWorks}
+				<ReportWhatWorks data={report.whatWorks} />
+			{/if}
+
+			{#if !report.hasLearning}
+				<!-- Prompt for learning quiz -->
+				<div class="bg-emerald-50 rounded-2xl p-8 text-center mb-8">
+					<div class="text-4xl mb-3">📚</div>
+					<h2 class="text-xl font-bold text-gray-900 mb-2">Learning Assessment Available</h2>
+					<p class="text-sm text-gray-600 mb-4">
+						Take the Learning Assessment to unlock sections on your study approach, academic character, subject interests, and personalised strategies.
+					</p>
+					<button
+						onclick={() => goto('/test?quiz=learning')}
+						class="px-6 py-2.5 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition"
+					>
+						Take Learning Assessment
+					</button>
+				</div>
 			{/if}
 
 			<!-- Print Footer -->
 			<div class="print-only text-center border-t border-gray-300 pt-4 mt-8 text-xs text-gray-400">
-				<p>HEXACO Learning Personality Profile — {name || 'Student'}</p>
-				<p class="mt-1">Based on the HEXACO-PI-R (Lee & Ashton, 2018), ASSIST, AMS, MSLQ</p>
-				<p class="mt-1">Generated {report.cover.date}</p>
+				<p>Learning Personality Profile — {name || 'Student'}</p>
+				<p class="mt-1">Based on HEXACO-PI-R, Grit-S, SVS, ASSIST, AMS, MSLQ, TIMSS</p>
+				<p class="mt-1">Generated {reportDate}</p>
 			</div>
 
 			<!-- Screen Footer -->

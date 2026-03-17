@@ -3,6 +3,7 @@ import { writable, derived } from 'svelte/store';
 const STORAGE_KEY = 'hexaco_answers';
 const RESULTS_KEY = 'hexaco_results';
 const NAME_KEY = 'hexaco_name';
+const QUIZ_MODE_KEY = 'hexaco_quiz_mode';
 
 function loadFromStorage(key, fallback) {
 	if (typeof window === 'undefined') return fallback;
@@ -29,11 +30,12 @@ export const answers = persistedWritable(STORAGE_KEY, {});
 export const currentIndex = writable(0);
 export const testResults = persistedWritable(RESULTS_KEY, null);
 export const studentName = persistedWritable(NAME_KEY, '');
+export const quizMode = persistedWritable(QUIZ_MODE_KEY, 'complete');
 
 export const progress = derived(
 	[answers, testItems],
 	([$answers, $testItems]) => {
-		const total = $testItems.length || 90;
+		const total = $testItems.length || 60;
 		const answered = Object.keys($answers).length;
 		return {
 			answered,

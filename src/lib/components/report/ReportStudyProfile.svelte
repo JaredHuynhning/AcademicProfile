@@ -1,5 +1,14 @@
 <script>
 	let { data } = $props();
+
+	function levelBadge(level) {
+		const colors = {
+			high: 'bg-green-50 text-green-700',
+			moderate: 'bg-amber-50 text-amber-700',
+			low: 'bg-red-50 text-red-700'
+		};
+		return colors[level] || 'bg-gray-50 text-gray-700';
+	}
 </script>
 
 {#if data}
@@ -16,21 +25,12 @@
 			</h3>
 			<p class="text-gray-700 mb-4">{data.approach.desc}</p>
 
-			<!-- Approach bar chart -->
-			<div class="space-y-3 mb-5">
+			<!-- Approach scores as inline badges -->
+			<div class="flex flex-wrap gap-2 mb-5">
 				{#each Object.entries(data.approaches) as [key, a]}
-					<div>
-						<div class="flex justify-between text-sm mb-1">
-							<span class="font-medium text-gray-700">{a.label}</span>
-							<span class="text-gray-500">{a.score}/5 ({a.level})</span>
-						</div>
-						<div class="h-3 bg-gray-100 rounded-full overflow-hidden">
-							<div
-								class="h-full rounded-full transition-all"
-								style="width: {(a.score / 5) * 100}%; background-color: {a.color}"
-							></div>
-						</div>
-					</div>
+					<span class="text-xs font-semibold px-3 py-1.5 rounded-full" style="background: {a.color}15; color: {a.color}">
+						{a.label}: {a.score}/5 ({a.level})
+					</span>
 				{/each}
 			</div>
 
@@ -66,21 +66,12 @@
 			<p class="text-gray-700 mb-2">{data.motivation.desc}</p>
 			<p class="text-sm text-gray-600 italic mb-4">{data.motivation.insight}</p>
 
-			<!-- Motivation bars -->
-			<div class="space-y-3 mb-4">
+			<!-- Motivation scores as narrative badges -->
+			<div class="flex flex-wrap gap-2 mb-4">
 				{#each Object.entries(data.motivationScores) as [key, m]}
-					<div>
-						<div class="flex justify-between text-sm mb-1">
-							<span class="font-medium text-gray-700">{m.label}</span>
-							<span class="text-gray-500">{m.score}/5 ({m.level})</span>
-						</div>
-						<div class="h-3 bg-gray-100 rounded-full overflow-hidden">
-							<div
-								class="h-full rounded-full transition-all"
-								style="width: {(m.score / 5) * 100}%; background-color: {m.color}"
-							></div>
-						</div>
-					</div>
+					<span class="text-xs font-semibold px-3 py-1.5 rounded-full" style="background: {m.color}15; color: {m.color}">
+						{m.label}: {m.score}/5 ({m.level})
+					</span>
 				{/each}
 			</div>
 
@@ -100,22 +91,18 @@
 				Overall strength: <span class="font-semibold capitalize">{data.regulationStrength}</span>
 			</p>
 
-			<div class="space-y-4">
+			<div class="space-y-3">
 				{#each data.regulation as r}
-					<div class="flex items-center gap-3">
-						<span class="text-xl w-8 text-center">{r.icon}</span>
+					<div class="flex items-start gap-3">
+						<span class="text-xl w-8 text-center shrink-0">{r.icon}</span>
 						<div class="flex-1">
-							<div class="flex justify-between text-sm mb-1">
-								<span class="font-medium text-gray-700">{r.label}</span>
-								<span class="text-gray-500">{r.score}/5</span>
+							<div class="flex items-center gap-2 mb-0.5">
+								<span class="font-medium text-gray-700 text-sm">{r.label}</span>
+								<span class="text-xs font-semibold px-2 py-0.5 rounded-full {levelBadge(r.level)}">
+									{r.score}/5 — {r.level}
+								</span>
 							</div>
-							<div class="h-2.5 bg-gray-100 rounded-full overflow-hidden">
-								<div
-									class="h-full rounded-full transition-all {r.level === 'high' ? 'bg-green-500' : r.level === 'moderate' ? 'bg-amber-400' : 'bg-red-400'}"
-									style="width: {(r.score / 5) * 100}%"
-								></div>
-							</div>
-							<p class="text-xs text-gray-400 mt-0.5">{r.desc}</p>
+							<p class="text-xs text-gray-500">{r.desc}</p>
 						</div>
 					</div>
 				{/each}

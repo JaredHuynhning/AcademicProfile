@@ -25,16 +25,10 @@
 					<div class="flex-1">
 						<div class="flex items-center gap-2">
 							<h3 class="text-lg font-bold text-gray-900">{dim.name}</h3>
-							<span class="text-xs font-medium px-2 py-0.5 rounded-full"
+							<span class="text-xs font-bold px-2 py-0.5 rounded-full"
 								style="background: {dim.color}15; color: {dim.color}">
-								{levelLabel(dim.level)}
+								{dim.score}/5 — {levelLabel(dim.level)}
 							</span>
-						</div>
-						<div class="flex items-center gap-2 mt-1">
-							<div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-								<div class="h-full rounded-full" style="width: {dim.percent}%; background: {dim.color}"></div>
-							</div>
-							<span class="text-sm font-bold text-gray-600">{dim.score}/5</span>
 						</div>
 					</div>
 				</div>

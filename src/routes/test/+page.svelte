@@ -2,11 +2,14 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { get } from 'svelte/store';
+	import { page } from '$app/stores';
 	import { fetchItems, submitAnswers } from '$lib/api/client.js';
-	import { testItems, answers, currentIndex, testResults, studentName, isComplete } from '$lib/stores/test.js';
+	import { testItems, answers, currentIndex, testResults, studentName, isComplete, quizMode } from '$lib/stores/test.js';
 	import { saveReport } from '$lib/stores/reports.js';
 	import { studyItems } from '$lib/data/study-items.js';
+	import { learnerItems } from '$lib/data/learner-items.js';
 	import { scoreStudyProfile } from '$lib/scoring/study-scorer.js';
+	import { scoreLearnerProfile } from '$lib/scoring/learner-scorer.js';
 
 	let loading = $state(true);
 	let submitting = $state(false);
@@ -15,12 +18,10 @@
 	let idx = $state(0);
 	let ans = $state({});
 	let feedbackId = $state(null);
+	let mode = $state('complete');
 
 	const labels = ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'];
 
-	/**
-	 * Fisher-Yates shuffle — deterministic in-place.
-	 */
 	function shuffle(arr) {
 		const a = [...arr];
 		for (let i = a.length - 1; i > 0; i--) {
@@ -31,23 +32,47 @@
 	}
 
 	onMount(async () => {
+		// Determine quiz mode from URL param
+		const urlMode = $page.url.searchParams.get('quiz') || get(quizMode) || 'complete';
+		mode = urlMode;
+		quizMode.set(mode);
+
 		try {
-			const data = await fetchItems();
-			// Merge HEXACO items (from backend) + study items (frontend), then shuffle
-			const hexacoItems = data.items;
-			const allItems = shuffle([...hexacoItems, ...studyItems.map((i) => ({ id: i.id, text: i.text }))]);
-			items = allItems;
-			testItems.set(allItems);
+			const frontendStudyItems = studyItems.map((i) => ({ id: i.id, text: i.text }));
+			const frontendLearnerItems = learnerItems.map((i) => ({ id: i.id, text: i.text }));
+
+			if (mode === 'learning') {
+				// Learning-only: study items (61-90) + learner items (91-120)
+				const allItems = shuffle([...frontendStudyItems, ...frontendLearnerItems]);
+				items = allItems;
+				testItems.set(allItems);
+			} else if (mode === 'personality') {
+				// Personality-only: HEXACO items (1-60)
+				const data = await fetchItems();
+				const allItems = shuffle(data.items);
+				items = allItems;
+				testItems.set(allItems);
+			} else {
+				// Complete: all 120 items
+				const data = await fetchItems();
+				const hexacoItems = data.items;
+				const allItems = shuffle([...hexacoItems, ...frontendStudyItems, ...frontendLearnerItems]);
+				items = allItems;
+				testItems.set(allItems);
+			}
 		} catch (e) {
-			error = 'Failed to load questions. Is the backend running?';
+			if (mode === 'learning') {
+				// Learning mode doesn't need backend
+				error = '';
+			} else {
+				error = 'Failed to load questions. Is the backend running?';
+			}
 		}
 		loading = false;
 
-		// Restore position
 		const unsub1 = currentIndex.subscribe((v) => (idx = v));
 		const unsub2 = answers.subscribe((v) => (ans = { ...v }));
 
-		// Keyboard shortcuts
 		function handleKey(e) {
 			if (e.key >= '1' && e.key <= '5') {
 				selectAnswer(parseInt(e.key));
@@ -79,7 +104,6 @@
 
 		feedbackId = id;
 
-		// Auto-advance after brief delay
 		if (idx < items.length - 1) {
 			setTimeout(() => {
 				goTo(idx + 1);
@@ -94,26 +118,43 @@
 		submitting = true;
 		error = '';
 		try {
-			// Split answers: IDs 1-60 → backend, IDs 61-90 → frontend scorer
+			// Split answers by ID range
 			const hexacoAnswers = {};
 			const studyAnswers = {};
+			const learnerAnswers = {};
+
 			for (const [k, v] of Object.entries(ans)) {
 				const id = parseInt(k);
 				if (id <= 60) {
 					hexacoAnswers[String(id)] = v;
-				} else {
+				} else if (id <= 90) {
 					studyAnswers[id] = v;
+				} else {
+					learnerAnswers[id] = v;
 				}
 			}
 
-			// Score HEXACO via backend (unchanged)
-			const results = await submitAnswers(hexacoAnswers);
+			let results = {};
+			let hasPersonality = mode === 'personality' || mode === 'complete';
+			let hasLearning = mode === 'learning' || mode === 'complete';
+
+			// Score HEXACO via backend if we have personality answers
+			if (hasPersonality && Object.keys(hexacoAnswers).length > 0) {
+				results = await submitAnswers(hexacoAnswers);
+			}
 
 			// Score study items on frontend
-			const studyProfile = scoreStudyProfile(studyAnswers);
+			if (hasLearning && Object.keys(studyAnswers).length > 0) {
+				results.studyProfile = scoreStudyProfile(studyAnswers);
+			}
 
-			// Merge: attach studyProfile to results
-			results.studyProfile = studyProfile;
+			// Score learner items on frontend
+			if (hasLearning && Object.keys(learnerAnswers).length > 0) {
+				results.learnerProfile = scoreLearnerProfile(learnerAnswers);
+			}
+
+			// Store which quiz mode was used
+			results.quizMode = mode;
 
 			testResults.set(results);
 			const currentName = get(studentName);
@@ -129,6 +170,12 @@
 	let currentAnswer = $derived(currentItem ? ans[currentItem.id] : undefined);
 	let allAnswered = $derived(items.length > 0 && items.every((item) => ans[item.id] !== undefined));
 	let isLastQuestion = $derived(idx === items.length - 1);
+
+	let modeLabel = $derived(
+		mode === 'learning' ? 'Learning Assessment' :
+		mode === 'personality' ? 'Personality Profile' :
+		'Complete Assessment'
+	);
 </script>
 
 <div class="max-w-2xl mx-auto px-4 py-8">
@@ -148,8 +195,9 @@
 	{:else if currentItem}
 		<!-- Question card -->
 		<div class="bg-white rounded-2xl shadow-sm p-8 mb-6">
-			<div class="text-sm text-gray-400 mb-1 font-medium">
-				Question {idx + 1} of {items.length}
+			<div class="flex items-center justify-between text-sm text-gray-400 mb-1">
+				<span class="font-medium">Question {idx + 1} of {items.length}</span>
+				<span class="text-xs px-2 py-0.5 rounded-full bg-gray-100">{modeLabel}</span>
 			</div>
 
 			<p class="text-xl font-semibold text-gray-900 mb-8 leading-relaxed min-h-[3.5rem]">
