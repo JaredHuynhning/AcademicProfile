@@ -12,10 +12,11 @@ import { generateGroup } from './section-07-group.js';
 import { generateStrengths } from './section-08-strengths.js';
 import { generateGuide } from './section-09-guide.js';
 import { generateTutor } from './section-10-tutor.js';
+import { generateStudyProfile } from './section-11-study-profile.js';
 
 /**
- * Generate the full 10-section report.
- * @param {object} results - The HEXACO results object with dimensions, narrative, archetypes
+ * Generate the full report (10 core sections + optional study profile).
+ * @param {object} results - The HEXACO results object with dimensions, narrative, archetypes, and optional studyProfile
  * @param {string} name - Student name
  * @returns {object} All section data for rendering
  */
@@ -30,6 +31,7 @@ export function generateReport(results, name) {
 		group: generateGroup(results),
 		strengths: generateStrengths(results),
 		guide: generateGuide(results),
-		tutor: generateTutor(results)
+		tutor: generateTutor(results),
+		studyProfile: generateStudyProfile(results)
 	};
 }

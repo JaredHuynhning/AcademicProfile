@@ -5,6 +5,8 @@
 	import { fetchItems, submitAnswers } from '$lib/api/client.js';
 	import { testItems, answers, currentIndex, testResults, studentName, isComplete } from '$lib/stores/test.js';
 	import { saveReport } from '$lib/stores/reports.js';
+	import { studyItems } from '$lib/data/study-items.js';
+	import { scoreStudyProfile } from '$lib/scoring/study-scorer.js';
 
 	let loading = $state(true);
 	let submitting = $state(false);
@@ -16,11 +18,26 @@
 
 	const labels = ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'];
 
+	/**
+	 * Fisher-Yates shuffle — deterministic in-place.
+	 */
+	function shuffle(arr) {
+		const a = [...arr];
+		for (let i = a.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[a[i], a[j]] = [a[j], a[i]];
+		}
+		return a;
+	}
+
 	onMount(async () => {
 		try {
 			const data = await fetchItems();
-			items = data.items;
-			testItems.set(items);
+			// Merge HEXACO items (from backend) + study items (frontend), then shuffle
+			const hexacoItems = data.items;
+			const allItems = shuffle([...hexacoItems, ...studyItems.map((i) => ({ id: i.id, text: i.text }))]);
+			items = allItems;
+			testItems.set(allItems);
 		} catch (e) {
 			error = 'Failed to load questions. Is the backend running?';
 		}
@@ -77,12 +94,27 @@
 		submitting = true;
 		error = '';
 		try {
-			// Convert numeric keys to strings for JSON
-			const stringAnswers = {};
+			// Split answers: IDs 1-60 → backend, IDs 61-90 → frontend scorer
+			const hexacoAnswers = {};
+			const studyAnswers = {};
 			for (const [k, v] of Object.entries(ans)) {
-				stringAnswers[String(k)] = v;
+				const id = parseInt(k);
+				if (id <= 60) {
+					hexacoAnswers[String(id)] = v;
+				} else {
+					studyAnswers[id] = v;
+				}
 			}
-			const results = await submitAnswers(stringAnswers);
+
+			// Score HEXACO via backend (unchanged)
+			const results = await submitAnswers(hexacoAnswers);
+
+			// Score study items on frontend
+			const studyProfile = scoreStudyProfile(studyAnswers);
+
+			// Merge: attach studyProfile to results
+			results.studyProfile = studyProfile;
+
 			testResults.set(results);
 			const currentName = get(studentName);
 			saveReport(currentName, results);

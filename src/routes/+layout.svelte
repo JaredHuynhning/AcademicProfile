@@ -45,6 +45,6 @@
 	</main>
 
 	<footer class="text-center py-6 text-xs text-gray-400 no-print">
-		Based on the HEXACO-PI-R by Lee & Ashton (2018)
+		Based on the HEXACO-PI-R (Lee & Ashton, 2018), ASSIST (Entwistle), AMS (Vallerand), MSLQ (Pintrich)
 	</footer>
 </div>

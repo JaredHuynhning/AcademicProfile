@@ -154,7 +154,52 @@
 			{/if}
 		</section>
 
-		<!-- D. Tutor Matches -->
+		<!-- D. Study & Motivation Profile (if available) -->
+		{#if results.studyProfile}
+			{@const sp = results.studyProfile}
+			<section class="bg-white rounded-2xl shadow-sm p-8 space-y-6 print-break-before">
+				<h2 class="text-xl font-bold text-gray-900">Study & Motivation Profile</h2>
+
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+					<!-- Study Approach -->
+					<div class="bg-indigo-50 rounded-xl p-4">
+						<h3 class="font-semibold text-indigo-900 text-sm mb-2">Dominant Study Approach</h3>
+						<p class="text-2xl font-bold text-indigo-700 capitalize">{sp.dominantApproach}</p>
+						<div class="mt-2 space-y-1 text-xs text-indigo-600">
+							<div class="flex justify-between"><span>Deep</span><span>{sp.studyApproaches.deep.score}/5</span></div>
+							<div class="flex justify-between"><span>Strategic</span><span>{sp.studyApproaches.strategic.score}/5</span></div>
+							<div class="flex justify-between"><span>Surface</span><span>{sp.studyApproaches.surface.score}/5</span></div>
+						</div>
+					</div>
+
+					<!-- Motivation -->
+					<div class="bg-amber-50 rounded-xl p-4">
+						<h3 class="font-semibold text-amber-900 text-sm mb-2">Motivation Profile</h3>
+						<p class="text-2xl font-bold text-amber-700 capitalize">{sp.motivationProfile.replace('-', ' ')}</p>
+						<div class="mt-2 space-y-1 text-xs text-amber-600">
+							<div class="flex justify-between"><span>Intrinsic</span><span>{sp.motivation.intrinsic.score}/5</span></div>
+							<div class="flex justify-between"><span>Identified</span><span>{sp.motivation.identified.score}/5</span></div>
+							<div class="flex justify-between"><span>External</span><span>{sp.motivation.external.score}/5</span></div>
+							<div class="flex justify-between"><span>SDI</span><span>{sp.motivation.sdi}</span></div>
+						</div>
+					</div>
+
+					<!-- Self-Regulation -->
+					<div class="bg-emerald-50 rounded-xl p-4">
+						<h3 class="font-semibold text-emerald-900 text-sm mb-2">Self-Regulation</h3>
+						<p class="text-2xl font-bold text-emerald-700 capitalize">{sp.regulationStrength}</p>
+						<div class="mt-2 space-y-1 text-xs text-emerald-600">
+							<div class="flex justify-between"><span>Self-Efficacy</span><span>{sp.selfRegulation.selfEfficacy.score}/5</span></div>
+							<div class="flex justify-between"><span>Planning</span><span>{sp.selfRegulation.planning.score}/5</span></div>
+							<div class="flex justify-between"><span>Effort</span><span>{sp.selfRegulation.effortRegulation.score}/5</span></div>
+							<div class="flex justify-between"><span>Help-Seeking</span><span>{sp.selfRegulation.helpSeeking.score}/5</span></div>
+						</div>
+					</div>
+				</div>
+			</section>
+		{/if}
+
+		<!-- E. Tutor Matches -->
 		<section class="print-break-before">
 			<h2 class="text-xl font-bold text-gray-900 mb-4">Your Top Tutor Matches</h2>
 			<div class="space-y-4">

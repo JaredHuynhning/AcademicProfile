@@ -32,8 +32,8 @@
 		<div class="flex items-start gap-4 bg-white rounded-xl p-5 shadow-sm">
 			<div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold shrink-0">1</div>
 			<div>
-				<h3 class="font-semibold text-gray-900">Answer 60 questions</h3>
-				<p class="text-sm text-gray-500">Rate how much each statement sounds like you. Takes about 8-10 minutes.</p>
+				<h3 class="font-semibold text-gray-900">Answer 90 questions</h3>
+				<p class="text-sm text-gray-500">Rate how much each statement sounds like you. Takes about 12-15 minutes.</p>
 			</div>
 		</div>
 		<div class="flex items-start gap-4 bg-white rounded-xl p-5 shadow-sm">
@@ -97,7 +97,8 @@
 	</div>
 
 	<p class="text-center text-xs text-gray-400 mt-6">
-		Based on the HEXACO-PI-R validated personality assessment.
+		Based on the HEXACO-PI-R personality assessment, ASSIST study approaches,
+		AMS academic motivation, and MSLQ self-regulation scales.
 		Your answers are stored locally on your device only.
 	</p>
 </div>

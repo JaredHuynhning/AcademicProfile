@@ -33,7 +33,7 @@ export const studentName = persistedWritable(NAME_KEY, '');
 export const progress = derived(
 	[answers, testItems],
 	([$answers, $testItems]) => {
-		const total = $testItems.length || 60;
+		const total = $testItems.length || 90;
 		const answered = Object.keys($answers).length;
 		return {
 			answered,

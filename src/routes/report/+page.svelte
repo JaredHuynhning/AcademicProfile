@@ -16,6 +16,7 @@
 	import ReportStrengths from '$lib/components/report/ReportStrengths.svelte';
 	import ReportGuide from '$lib/components/report/ReportGuide.svelte';
 	import ReportTutor from '$lib/components/report/ReportTutor.svelte';
+	import ReportStudyProfile from '$lib/components/report/ReportStudyProfile.svelte';
 
 	let results = $state(null);
 	let name = $state('');
@@ -32,7 +33,8 @@
 		{ id: 'section-group', label: 'Groups', num: '8' },
 		{ id: 'section-strengths', label: 'Strengths', num: '9' },
 		{ id: 'section-guide', label: 'Guide', num: '10' },
-		{ id: 'section-tutor', label: 'Tutor Match', num: '10' }
+		{ id: 'section-tutor', label: 'Tutor Match', num: '10' },
+		{ id: 'section-study-profile', label: 'Study Profile', num: '11' }
 	];
 
 	onMount(() => {
@@ -150,11 +152,14 @@
 			<ReportStrengths data={report.strengths} />
 			<ReportGuide data={report.guide} />
 			<ReportTutor data={report.tutor} />
+			{#if report.studyProfile}
+				<ReportStudyProfile data={report.studyProfile} />
+			{/if}
 
 			<!-- Print Footer -->
 			<div class="print-only text-center border-t border-gray-300 pt-4 mt-8 text-xs text-gray-400">
 				<p>HEXACO Learning Personality Profile — {name || 'Student'}</p>
-				<p class="mt-1">Based on the HEXACO-PI-R by Lee & Ashton (2018)</p>
+				<p class="mt-1">Based on the HEXACO-PI-R (Lee & Ashton, 2018), ASSIST, AMS, MSLQ</p>
 				<p class="mt-1">Generated {report.cover.date}</p>
 			</div>
 

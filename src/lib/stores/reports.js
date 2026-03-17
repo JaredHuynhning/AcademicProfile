@@ -13,7 +13,18 @@ function loadReports() {
 			localStorage.setItem(REPORTS_KEY, JSON.stringify(sampleProfiles));
 			return [...sampleProfiles];
 		}
-		return JSON.parse(stored);
+		// Ensure all sample profiles are present (handles new samples added in code)
+		const reports = JSON.parse(stored);
+		const existingIds = new Set(reports.map((r) => r.id));
+		const missing = sampleProfiles.filter((s) => !existingIds.has(s.id));
+		if (missing.length > 0) {
+			// Replace stale samples + append new ones
+			const userReports = reports.filter((r) => !r.id.startsWith('sample-'));
+			const merged = [...userReports, ...sampleProfiles];
+			localStorage.setItem(REPORTS_KEY, JSON.stringify(merged));
+			return merged;
+		}
+		return reports;
 	} catch {
 		return [];
 	}
