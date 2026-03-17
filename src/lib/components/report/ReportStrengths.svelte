@@ -3,57 +3,77 @@
 </script>
 
 <section class="report-section print-break-before" id="section-strengths">
-	<h2 class="text-2xl font-extrabold text-gray-900 mb-1">Strengths, Challenges & Self-Awareness</h2>
-	<p class="text-sm text-gray-500 mb-6">Your top strengths deep-analysed, challenges reframed, and reflections for growth.</p>
+	<h2 class="text-2xl font-extrabold text-gray-900 mb-1">Strengths, Challenges & Growth</h2>
+	<p class="text-sm text-gray-500 mb-6">Each dimension analysed: what you do well, where to grow, and what to do about it.</p>
 
-	<!-- Top Strengths -->
-	<div class="bg-white rounded-2xl shadow-sm p-5 mb-4">
-		<h3 class="font-bold text-green-800 mb-4 flex items-center gap-2">
-			<span class="text-green-500">✦</span> Your Top Strengths
-		</h3>
-		<div class="space-y-4">
-			{#each data.strengths as strength}
-				<div class="border-l-3 pl-4 print-break-avoid" style="border-color: {strength.color}">
-					<div class="flex items-center gap-2 mb-1">
-						<span class="text-sm font-bold text-gray-900">{strength.name}</span>
-						<span class="text-xs text-gray-500">({strength.dimShort})</span>
-						<span class="text-xs font-bold" style="color: {strength.color}">{strength.score}/5</span>
-					</div>
-					<div class="space-y-1.5 text-xs text-gray-600 leading-relaxed">
-						<p><strong class="text-gray-700">Academic Impact:</strong> {strength.analysis.academic}</p>
-						<p><strong class="text-gray-700">In the Classroom:</strong> {strength.analysis.classroom}</p>
-						<p><strong class="text-gray-700">How to Leverage:</strong> {strength.analysis.leverage}</p>
-					</div>
-					<div class="bg-green-50 rounded p-2 mt-2">
-						<p class="text-xs text-green-800"><strong>Action Tip:</strong> {strength.leverageTip}</p>
-					</div>
-				</div>
-			{/each}
-		</div>
-	</div>
+	<!-- Per-Dimension Breakdown -->
+	{#each data.dimensions as dim}
+		{#if dim.strengths.length > 0 || dim.weaknesses.length > 0}
+			<div class="bg-white rounded-2xl shadow-sm p-5 mb-4 print-break-avoid">
+				<h3 class="font-bold text-gray-900 mb-3 flex items-center gap-2">
+					<span>{dim.icon}</span>
+					<span>{dim.name}</span>
+					<span class="text-sm font-medium" style="color: {dim.color}">{dim.score}/5</span>
+				</h3>
 
-	<!-- Challenges (Reframed) -->
-	<div class="bg-white rounded-2xl shadow-sm p-5 mb-4">
-		<h3 class="font-bold text-blue-800 mb-2 flex items-center gap-2">
-			<span class="text-blue-500">↗</span> Growth Edges
-		</h3>
-		<p class="text-xs text-gray-500 mb-4">These are not weaknesses. They are areas where small improvements create big results.</p>
-		<div class="space-y-4">
-			{#each data.challenges as challenge}
-				<div class="border-l-3 pl-4 print-break-avoid" style="border-color: {challenge.color}">
-					<div class="flex items-center gap-2 mb-1">
-						<span class="text-sm font-bold text-gray-900">{challenge.name}</span>
-						<span class="text-xs text-gray-500">({challenge.dimShort})</span>
-						<span class="text-xs font-bold" style="color: {challenge.color}">{challenge.score}/5</span>
+				<!-- Strengths -->
+				{#if dim.strengths.length > 0}
+					<div class="mb-3">
+						<h4 class="text-xs font-bold text-green-700 uppercase tracking-wide mb-2 flex items-center gap-1">
+							<span class="text-green-500">+</span> Strengths
+						</h4>
+						<div class="space-y-2">
+							{#each dim.strengths as strength}
+								<div class="border-l-3 border-green-400 pl-3">
+									<div class="flex items-center gap-2 mb-0.5">
+										<span class="text-sm font-semibold text-gray-900">{strength.name}</span>
+										<span class="text-xs font-bold text-green-600">{strength.score}/5</span>
+									</div>
+									<p class="text-xs text-gray-600 leading-relaxed">{strength.analysis}</p>
+									<p class="text-xs text-green-700 mt-1"><strong>Leverage:</strong> {strength.leverageTip}</p>
+								</div>
+							{/each}
+						</div>
 					</div>
-					<p class="text-xs text-gray-700 leading-relaxed mb-1.5 italic">{challenge.reframe}</p>
-					<div class="bg-blue-50 rounded p-2">
-						<p class="text-xs text-blue-800"><strong>Growth Tip:</strong> {challenge.supportTip}</p>
+				{/if}
+
+				<!-- Weaknesses -->
+				{#if dim.weaknesses.length > 0}
+					<div class="mb-3">
+						<h4 class="text-xs font-bold text-amber-700 uppercase tracking-wide mb-2 flex items-center gap-1">
+							<span class="text-amber-500">!</span> Growth Areas
+						</h4>
+						<div class="space-y-2">
+							{#each dim.weaknesses as weakness}
+								<div class="border-l-3 border-amber-400 pl-3">
+									<div class="flex items-center gap-2 mb-0.5">
+										<span class="text-sm font-semibold text-gray-900">{weakness.name}</span>
+										<span class="text-xs font-bold text-amber-600">{weakness.score}/5</span>
+									</div>
+									<p class="text-xs text-gray-600 leading-relaxed">{weakness.challenge}</p>
+									<p class="text-xs text-amber-700 mt-1"><strong>Action:</strong> {weakness.actionTip}</p>
+								</div>
+							{/each}
+						</div>
 					</div>
+				{/if}
+
+				<!-- What To Do -->
+				<div class="bg-blue-50 rounded-lg p-3">
+					<p class="text-xs text-blue-800"><strong>What To Do:</strong> {dim.whatToDo}</p>
 				</div>
-			{/each}
-		</div>
-	</div>
+			</div>
+		{:else}
+			<div class="bg-white rounded-2xl shadow-sm p-5 mb-4 print-break-avoid">
+				<h3 class="font-bold text-gray-900 mb-2 flex items-center gap-2">
+					<span>{dim.icon}</span>
+					<span>{dim.name}</span>
+					<span class="text-sm font-medium" style="color: {dim.color}">{dim.score}/5</span>
+				</h3>
+				<p class="text-xs text-gray-500">Your scores in this area are balanced. Continue developing steadily across all facets.</p>
+			</div>
+		{/if}
+	{/each}
 
 	<!-- Self-Reflection -->
 	<div class="bg-white rounded-2xl shadow-sm p-5 mb-4 print-break-avoid">

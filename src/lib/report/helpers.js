@@ -155,3 +155,57 @@ export function pickByLevel(score, { high = [], moderate = [], low = [] }) {
 	if (isLow(score)) return low;
 	return moderate;
 }
+
+/**
+ * Inverse facets: high score = challenge, low score = strength.
+ * These are facets where scoring high is NOT desirable in an educational context.
+ */
+const INVERSE_FACETS = new Set(['anxiety', 'fearfulness', 'dependence']);
+
+export function isInverseFacet(facetKey) {
+	return INVERSE_FACETS.has(facetKey);
+}
+
+/**
+ * Classify a single facet as strength/weakness/neutral, accounting for inverse facets.
+ * - Standard facets: high (>=3.5) = strength, low (<2.5) = weakness
+ * - Inverse facets: high (>=3.5) = weakness, low (<2.5) = strength
+ * - Moderate (2.5-3.4) = neutral for both
+ */
+export function classifyFacetDirection(facetKey, score) {
+	const inverse = isInverseFacet(facetKey);
+	if (score >= 3.5) return inverse ? 'weakness' : 'strength';
+	if (score < 2.5) return inverse ? 'strength' : 'weakness';
+	return 'neutral';
+}
+
+/**
+ * Classify all facets within a dimension into strengths/weaknesses/neutral.
+ * Returns { strengths: [...], weaknesses: [...], neutral: [...] }
+ */
+export function classifyDimensionFacets(dimKey, dimension) {
+	const strengths = [];
+	const weaknesses = [];
+	const neutral = [];
+
+	for (const [facetKey, facet] of Object.entries(dimension.facets)) {
+		const direction = classifyFacetDirection(facetKey, facet.score);
+		const entry = { key: facetKey, name: facet.name, score: facet.score, dimKey };
+		if (direction === 'strength') strengths.push(entry);
+		else if (direction === 'weakness') weaknesses.push(entry);
+		else neutral.push(entry);
+	}
+
+	strengths.sort((a, b) => {
+		const aInv = isInverseFacet(a.key);
+		const bInv = isInverseFacet(b.key);
+		return aInv === bInv ? b.score - a.score : (aInv ? a.score - b.score : b.score - a.score);
+	});
+	weaknesses.sort((a, b) => {
+		const aInv = isInverseFacet(a.key);
+		const bInv = isInverseFacet(b.key);
+		return aInv === bInv ? (aInv ? b.score - a.score : a.score - b.score) : (aInv ? -1 : 1);
+	});
+
+	return { strengths, weaknesses, neutral };
+}

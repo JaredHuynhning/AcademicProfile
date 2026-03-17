@@ -1,257 +1,206 @@
 /**
- * Section 9: Strengths, Challenges & Self-Awareness
- * Deep analysis of top/bottom facets with reframing and reflection
+ * Section 8: Strengths, Challenges & Growth
+ * Per-dimension breakdown with inverse-aware facet classification.
+ * Inverse facets (anxiety, fearfulness, dependence): high = weakness, low = strength.
  */
-import { topFacets, bottomFacets, DIM_COLORS, DIM_SHORT, formatScore } from './helpers.js';
+import {
+	DIM_ORDER, DIM_COLORS, DIM_SHORT, DIM_ICONS, DIM_NAMES,
+	formatScore, classifyDimensionFacets, isInverseFacet
+} from './helpers.js';
 
 export function generateStrengths(results) {
-	const top = topFacets(results.dimensions, 5);
-	const bottom = bottomFacets(results.dimensions, 5);
+	const allStrengths = [];
+	const allWeaknesses = [];
 
-	return {
-		strengths: top.map((f) => ({
+	const dimensions = DIM_ORDER.map((key) => {
+		const dim = results.dimensions[key];
+		const classified = classifyDimensionFacets(key, dim);
+
+		const strengths = classified.strengths.map((f) => ({
 			...f,
 			score: formatScore(f.score),
-			color: DIM_COLORS[f.dimKey],
-			dimShort: DIM_SHORT[f.dimKey],
+			rawScore: f.score,
 			analysis: getStrengthAnalysis(f.key, f.score),
 			leverageTip: getLeverageTip(f.key)
-		})),
-		challenges: bottom.map((f) => ({
+		}));
+
+		const weaknesses = classified.weaknesses.map((f) => ({
 			...f,
 			score: formatScore(f.score),
-			color: DIM_COLORS[f.dimKey],
-			dimShort: DIM_SHORT[f.dimKey],
-			reframe: getReframe(f.key, f.score),
-			supportTip: getSupportTip(f.key)
-		})),
-		selfReflection: buildSelfReflection(results.dimensions),
-		growthMindset: buildGrowthMindset(top, bottom)
+			rawScore: f.score,
+			challenge: getWeaknessAnalysis(f.key, f.score),
+			actionTip: getActionTip(f.key)
+		}));
+
+		allStrengths.push(...strengths);
+		allWeaknesses.push(...weaknesses);
+
+		return {
+			key,
+			name: DIM_NAMES[key],
+			shortName: DIM_SHORT[key],
+			icon: DIM_ICONS[key],
+			score: formatScore(dim.score),
+			color: DIM_COLORS[key],
+			level: dim.level,
+			strengths,
+			weaknesses,
+			whatToDo: buildWhatToDo(key, strengths, weaknesses, dim)
+		};
+	});
+
+	return {
+		dimensions,
+		selfReflection: buildSelfReflection(),
+		growthMindset: buildGrowthMindset(allStrengths, allWeaknesses)
 	};
 }
 
 function getStrengthAnalysis(facetKey, score) {
 	const analyses = {
-		organization: {
-			academic: 'Your natural sense of order means you rarely lose track of assignments. Notes are always findable, deadlines always met.',
-			classroom: 'Teachers can rely on you to keep group projects on schedule. You set the standard for preparation.',
-			leverage: 'Offer to be the project coordinator in group work, your planning skills benefit everyone.'
-		},
-		diligence: {
-			academic: 'You put consistent effort into your work, even when the subject is not your favourite. This steady approach builds deep knowledge over time.',
-			classroom: 'Teachers notice and appreciate your reliable work ethic. You complete what you start.',
-			leverage: 'Use your diligence as a foundation for tackling increasingly challenging material, your effort will pay compound dividends.'
-		},
-		perfectionism: {
-			academic: 'You hold yourself to high standards and double-check your work. Your assignments are typically thorough and polished.',
-			classroom: 'Your attention to detail catches errors that others miss. Quality is your hallmark.',
-			leverage: 'Channel perfectionism into fields that reward precision, science, mathematics, editing, programming.'
-		},
-		prudence: {
-			academic: 'You think before you act, considering consequences carefully. This reduces careless mistakes and impulsive decisions.',
-			classroom: 'You are a steadying influence in group work, helping the team avoid hasty decisions.',
-			leverage: 'Your careful nature is an asset in research projects and long-term planning tasks.'
-		},
-		fairness: {
-			academic: 'You play by the rules and ensure equal contribution in group work. Others trust your integrity.',
-			classroom: 'You are the person others turn to when they need an honest opinion or fair arbitration.',
-			leverage: 'Your fairness makes you an excellent peer tutor or study group leader.'
-		},
-		sincerity: {
-			academic: 'You are genuine in your interactions and do not pretend to understand when you do not. This honesty accelerates your learning.',
-			classroom: 'Teachers appreciate your authenticity, they know where you really stand.',
-			leverage: 'Use your sincerity to build deep, trust-based study partnerships.'
-		},
-		social_self_esteem: {
-			academic: 'You believe in your own worth and abilities, which translates to confidence in tackling challenging academic tasks.',
-			classroom: 'You participate without excessive self-doubt, which allows you to focus on learning rather than worrying.',
-			leverage: 'Your self-assurance helps you take on leadership roles and advocate for your ideas.'
-		},
-		social_boldness: {
-			academic: 'You are comfortable speaking up in class, asking questions, and presenting work. This active engagement deepens understanding.',
-			classroom: 'You volunteer for presentations and are not afraid to challenge ideas in discussion.',
-			leverage: 'Seek out debate clubs, presentation opportunities, and roles that use your confidence.'
-		},
-		sociability: {
-			academic: 'You build connections easily, making it natural to form study groups and collaborative partnerships.',
-			classroom: 'You create a positive social atmosphere that makes group work enjoyable for everyone.',
-			leverage: 'Organise study groups or peer tutoring sessions, your sociability makes learning social.'
-		},
-		liveliness: {
-			academic: 'You bring energy and enthusiasm to learning, which is contagious and motivating for those around you.',
-			classroom: 'Your positive energy lifts the mood and keeps group sessions engaging.',
-			leverage: 'Channel your liveliness into dynamic study methods, teach-backs, debates, and interactive revision.'
-		},
-		inquisitiveness: {
-			academic: 'You naturally ask "why?" and "what if?", this deepens understanding beyond surface-level memorisation.',
-			classroom: 'Your questions often lead to richer class discussions that benefit everyone.',
-			leverage: 'Pursue independent research projects and extra-curricular academic exploration.'
-		},
-		creativity: {
-			academic: 'You think outside the box and find novel approaches to problems. This is invaluable in subjects that reward original thinking.',
-			classroom: 'Your creative contributions make group projects more innovative and interesting.',
-			leverage: 'Seek subjects and assignments that reward creative thinking, art, design, creative writing, innovation challenges.'
-		},
-		unconventionality: {
-			academic: 'You are willing to challenge established thinking and try unusual approaches. This drives innovation.',
-			classroom: 'You bring fresh perspectives that challenge groupthink and expand everyone\'s thinking.',
-			leverage: 'Use your unconventional thinking in brainstorming phases, then partner with organised peers for execution.'
-		},
-		aesthetic_appreciation: {
-			academic: 'You notice beauty and design in the world, which enriches your experience across artistic and scientific subjects.',
-			classroom: 'Your aesthetic sensibility brings quality to presentations, projects, and creative work.',
-			leverage: 'Incorporate visual and aesthetic elements into your study materials, beautiful notes are more memorable.'
-		},
-		forgiveness: {
-			academic: 'You do not hold grudges after group conflicts, allowing you to maintain productive partnerships.',
-			classroom: 'Your ability to move past disagreements keeps group dynamics healthy.',
-			leverage: 'Your forgiving nature makes you an excellent long-term study partner and team member.'
-		},
-		gentleness: {
-			academic: 'You give feedback kindly and support others\' learning without being harsh or judgmental.',
-			classroom: 'Peers feel safe sharing ideas around you, which creates a richer learning environment.',
-			leverage: 'Your gentle approach makes you an excellent peer tutor or mentor for younger students.'
-		},
-		flexibility: {
-			academic: 'You adapt easily to changes in plans, assignments, and group dynamics.',
-			classroom: 'You handle unexpected changes (new topics, reshuffled groups) without resistance.',
-			leverage: 'Your flexibility is an asset in rapidly changing environments, use it in interdisciplinary projects.'
-		},
-		patience: {
-			academic: 'You can work steadily on challenging material without frustration, building understanding over time.',
-			classroom: 'You wait for others to finish their thoughts and do not rush group decisions.',
-			leverage: 'Your patience is a superpower for mastering complex, multi-step problems.'
-		},
-		greed_avoidance: {
-			academic: 'You are not motivated by grades alone, you value genuine understanding over surface achievements.',
-			classroom: 'You share resources freely and do not hoard knowledge or materials.',
-			leverage: 'Your focus on intrinsic motivation leads to deeper, more lasting learning.'
-		},
-		modesty: {
-			academic: 'You do not boast about achievements, which makes you approachable and genuine.',
-			classroom: 'Peers are comfortable working with you because you do not make others feel inferior.',
-			leverage: 'While modesty is admirable, ensure you also advocate for yourself when needed, your achievements deserve recognition.'
-		},
-		fearfulness: {
-			academic: 'Your awareness of risk helps you prepare thoroughly and avoid careless mistakes.',
-			classroom: 'You think carefully about consequences before acting, which prevents impulsive errors.',
-			leverage: 'Channel your caution into thorough preparation, it gives you a genuine advantage in exams.'
-		},
-		anxiety: {
-			academic: 'A moderate level of anxiety actually improves performance by driving preparation and focus.',
-			classroom: 'Your concern about outcomes motivates you to study and prepare more than if you felt no pressure.',
-			leverage: 'Learn to distinguish productive anxiety (drives preparation) from unproductive anxiety (causes paralysis).'
-		},
-		dependence: {
-			academic: 'You value emotional support and connection, which can be channelled into strong study partnerships.',
-			classroom: 'You work well with teachers and mentors who provide regular encouragement.',
-			leverage: 'Build a support network of trusted study partners and mentors who understand your needs.'
-		},
-		sentimentality: {
-			academic: 'You connect emotionally with material, which creates stronger and more personal memories.',
-			classroom: 'Your emotional engagement makes humanities and social science topics come alive for you.',
-			leverage: 'Use emotional connections to material as memory anchors, stories stick better than facts.'
-		}
+		organization: 'Your natural sense of order means you rarely lose track of assignments. Notes are findable, deadlines met.',
+		diligence: 'You put consistent effort into your work, even when the subject is not your favourite. This builds deep knowledge over time.',
+		perfectionism: 'You hold yourself to high standards and double-check your work. Your assignments are thorough and polished.',
+		prudence: 'You think before you act and consider consequences. You rarely make impulsive decisions.',
+		fairness: 'You play by the rules and ensure equal contribution in group work. Others trust your integrity.',
+		sincerity: 'You are genuine in your interactions. This honesty accelerates your learning.',
+		social_self_esteem: 'You believe in your own worth and abilities, which translates to confidence in tackling challenging tasks.',
+		social_boldness: 'You are comfortable speaking up in class, asking questions, and presenting work.',
+		sociability: 'You build connections easily, making it natural to form study groups and collaborative partnerships.',
+		liveliness: 'You bring energy and enthusiasm to learning, which is contagious and motivating for those around you.',
+		inquisitiveness: 'You naturally ask "why?" and "what if?", deepening understanding beyond surface-level memorisation.',
+		creativity: 'You think outside the box and find novel approaches to problems.',
+		unconventionality: 'You are willing to challenge established thinking and try unusual approaches.',
+		aesthetic_appreciation: 'You notice beauty and design in the world, enriching your experience across subjects.',
+		forgiveness: 'You do not hold grudges after group conflicts, maintaining productive partnerships.',
+		gentleness: 'You give feedback kindly and support others\' learning without being harsh.',
+		flexibility: 'You adapt easily to changes in plans, assignments, and group dynamics.',
+		patience: 'You can work steadily on challenging material without frustration.',
+		greed_avoidance: 'You value genuine understanding over surface achievements and share resources freely.',
+		modesty: 'You do not boast about achievements, making you approachable and genuine.',
+		sentimentality: 'You connect emotionally with material, creating stronger and more personal memories.',
+		// Inverse facets — low score = strength
+		fearfulness: 'You face challenges without being paralysed by risk. This courage leads to growth experiences.',
+		anxiety: 'You stay calm under pressure, allowing clear thinking during exams and deadlines.',
+		dependence: 'You are emotionally self-sufficient and solve problems independently.'
 	};
-
-	return analyses[facetKey] || {
-		academic: 'This trait contributes positively to your academic profile.',
-		classroom: 'It supports effective learning in the classroom.',
-		leverage: 'Look for opportunities where this strength can make the biggest impact.'
-	};
+	return analyses[facetKey] || 'This trait contributes positively to your academic profile.';
 }
 
 function getLeverageTip(facetKey) {
 	const tips = {
-		organization: 'Create a "study command centre" with all your notes, schedules, and materials in one organised system.',
-		diligence: 'Set stretch goals in your favourite subject, your work ethic can take you further than you think.',
-		perfectionism: 'Use your high standards selectively, perfection on key assignments, "good enough" on daily tasks.',
-		prudence: 'Before group decisions, offer to create a quick pros/cons analysis, teams value this.',
-		fairness: 'Volunteer to resolve disputes or mediate, your sense of fairness is a leadership quality.',
-		sincerity: 'Be the person who asks "I don\'t understand this" in class, others will thank you.',
-		social_self_esteem: 'Take on challenges that stretch your abilities, your confidence will carry you through.',
+		organization: 'Create a "study command centre" with all your notes, schedules, and materials in one system.',
+		diligence: 'Set stretch goals in your favourite subject — your work ethic can take you further than you think.',
+		perfectionism: 'Use your high standards selectively: perfection on key assignments, "good enough" on daily tasks.',
+		prudence: 'Before group decisions, offer to create a quick pros/cons analysis.',
+		fairness: 'Volunteer to resolve disputes or mediate — your fairness is a leadership quality.',
+		sincerity: 'Be the person who asks "I don\'t understand this" in class — others will thank you.',
+		social_self_esteem: 'Take on challenges that stretch your abilities — your confidence will carry you through.',
 		social_boldness: 'Present at assemblies, lead discussions, or mentor younger students.',
 		sociability: 'Organise study events that combine social time with productive learning.',
-		liveliness: 'Design engaging revision activities for your study group, games, quizzes, competitions.',
-		inquisitiveness: 'Keep an "interesting questions" notebook, revisit them when you need study motivation.',
+		liveliness: 'Design engaging revision activities for your study group: games, quizzes, competitions.',
+		inquisitiveness: 'Keep an "interesting questions" notebook — revisit them when you need motivation.',
 		creativity: 'Submit creative alternatives to standard assignments where teachers allow it.',
 		unconventionality: 'Propose innovative approaches in group projects, back them up with evidence.',
-		aesthetic_appreciation: 'Make your notes and presentations visually beautiful, it aids your recall.',
-		forgiveness: 'Be the first to reconnect after group disagreements, it restores productivity quickly.',
-		gentleness: 'Offer to explain difficult concepts to struggling classmates, gentle teaching is effective teaching.',
-		flexibility: 'When plans change, help others adapt, your calm flexibility is reassuring.',
-		patience: 'Tackle the subjects others give up on too quickly, your persistence reveals hidden understanding.',
-		greed_avoidance: 'Focus on learning for understanding rather than grades, this produces deeper, more transferable knowledge.',
+		aesthetic_appreciation: 'Make your notes and presentations visually beautiful — it aids recall.',
+		forgiveness: 'Be the first to reconnect after group disagreements — it restores productivity quickly.',
+		gentleness: 'Offer to explain difficult concepts to struggling classmates.',
+		flexibility: 'When plans change, help others adapt — your calm flexibility is reassuring.',
+		patience: 'Tackle the subjects others give up on too quickly — your persistence reveals hidden understanding.',
+		greed_avoidance: 'Focus on learning for understanding rather than grades.',
 		modesty: 'When you achieve something significant, practise saying "thank you" instead of "it was nothing."',
-		fearfulness: 'Use your caution to prepare thoroughly, but set a limit on preparation to avoid over-studying.',
-		anxiety: 'Develop a pre-exam routine that channels anxiety into focused preparation.',
-		dependence: 'Choose study partners who are reliable and supportive, your best work comes with encouragement.',
-		sentimentality: 'Connect dry topics to human stories, every subject has a narrative that can engage your emotions.'
+		sentimentality: 'Connect dry topics to human stories — every subject has a narrative that can engage your emotions.',
+		fearfulness: 'Your courage is an asset — use it to try new extracurriculars and stretch experiences.',
+		anxiety: 'Your calm demeanour is an asset in group work — others look to you for stability under pressure.',
+		dependence: 'Your independence lets you thrive in self-directed learning — pursue independent study projects.'
 	};
 	return tips[facetKey] || 'Look for opportunities to apply this strength in your daily academic life.';
 }
 
-function getReframe(facetKey, score) {
-	const reframes = {
-		organization: 'Not disorganised: you think flexibly and adapt to changing circumstances. Your mind works in creative patterns rather than rigid structures.',
-		diligence: 'Not lazy: you conserve energy for what truly matters to you. When you find your passion, your dedication is remarkable.',
-		perfectionism: 'Not careless: you focus on the big picture rather than getting lost in details. This efficiency is valuable in many careers.',
-		prudence: 'Not reckless: you are spontaneous and action-oriented. While this means occasional mistakes, it also means you seize opportunities others miss.',
-		fairness: 'Not unfair: you are pragmatic and results-oriented. You understand that real-world success often requires strategic thinking.',
-		sincerity: 'Not insincere: you are socially skilled and diplomatic. You read situations carefully and adapt your communication.',
-		social_self_esteem: 'Not insecure: you are self-aware and realistic about your abilities. This humility drives genuine improvement.',
-		social_boldness: 'Not timid: you are thoughtful and deliberate. When you do speak up, your contributions are well-considered and valuable.',
-		sociability: 'Not antisocial: you are selective about your social energy. You form deep, meaningful connections rather than many surface-level ones.',
-		liveliness: 'Not dull: you are calm and steady. Your consistent energy is an anchor for those around you, especially in stressful times.',
-		inquisitiveness: 'Not incurious: you are focused and practical. You learn what you need efficiently without getting lost in tangents.',
-		creativity: 'Not uncreative: you excel at implementation and refinement. You take existing ideas and make them work reliably.',
-		unconventionality: 'Not boring: you are grounded and reliable. People trust your judgement because it is based on proven approaches.',
-		aesthetic_appreciation: 'Not insensitive: you are pragmatic and results-focused. You value function over form, which is efficient.',
-		forgiveness: 'Not vindictive: you have strong boundaries and remember lessons from past experiences. This protects you from repeat harm.',
-		gentleness: 'Not harsh: you are direct and honest. People know where they stand with you, which some find refreshing.',
-		flexibility: 'Not rigid: you have strong principles and preferences. Your consistency makes you predictable and reliable.',
-		patience: 'Not impatient: you are action-oriented and efficient. You drive progress and do not tolerate unnecessary delays.',
-		greed_avoidance: 'Not greedy: you are ambitious and goal-oriented. This drive pushes you to achieve things others only dream about.',
-		modesty: 'Not arrogant: you know your worth and are not afraid to show it. Self-advocacy is an important life skill.',
-		fearfulness: 'Not fearless: you embrace challenges without overthinking risks. This courage leads to growth experiences.',
-		anxiety: 'Not anxious: you stay calm under pressure. While this is an advantage, remember to prepare adequately rather than relying on composure alone.',
-		dependence: 'Not clingy: you are independent and self-sufficient. You solve problems on your own, which is a valuable life skill.',
-		sentimentality: 'Not cold: you are analytical and objective. You make decisions based on logic, which serves you well in many academic and professional contexts.'
+function getWeaknessAnalysis(facetKey, score) {
+	const analyses = {
+		// Standard facets — low score = weakness
+		organization: 'Organisation is a challenge. Materials get lost, plans are vague. Start with one small system and build from there.',
+		diligence: 'You find it hard to sustain effort, especially on tasks that feel pointless. External structure helps.',
+		perfectionism: 'You tend to rush through without checking details. Important work benefits from one extra review.',
+		prudence: 'You act on impulse, which can lead to avoidable mistakes. Pause before important decisions.',
+		fairness: 'You may bend rules when it benefits you. Consider how this affects trust with others.',
+		sincerity: 'You may use charm or diplomacy to avoid difficult truths. Practise authentic communication.',
+		social_self_esteem: 'You doubt your social worth. Others likely see more value in you than you see in yourself.',
+		social_boldness: 'You find it hard to speak up in groups. Start with one comment per class and build from there.',
+		sociability: 'You prefer solitude, which is valid, but some collaboration strengthens learning. Don\'t completely isolate.',
+		liveliness: 'Your energy is low-key. Adding one energising element to your routine can help engagement.',
+		inquisitiveness: 'You learn what you need but don\'t explore further. Finding personal relevance in topics can help.',
+		creativity: 'You prefer proven methods. Try "what if?" thinking occasionally to build creative confidence.',
+		unconventionality: 'You stick to conventional approaches. Reading outside your comfort zone can broaden your perspective.',
+		aesthetic_appreciation: 'You are practical rather than aesthetic. Try colour-coding notes to see if visual aids help.',
+		forgiveness: 'You hold grudges, which creates tension in groups. Practise separating the person from the problem.',
+		gentleness: 'You are blunt and direct. Consider how your delivery lands — a gentle correction teaches better.',
+		flexibility: 'You resist change. Practise saying "What is the best way forward?" when plans shift.',
+		patience: 'You get frustrated quickly. Take 3 deep breaths before reacting — patience improves with practice.',
+		greed_avoidance: 'You are driven by rewards and recognition. Channel this ambition productively, but don\'t let it override your values.',
+		modesty: 'You believe you are special and want others to know it. True leadership also requires humility.',
+		sentimentality: 'You are emotionally detached. Connecting with the human side of what you study can aid memory.',
+		// Inverse facets — high score = weakness
+		fearfulness: 'You tend to avoid situations that feel risky or unfamiliar. New environments can feel overwhelming.',
+		anxiety: 'You worry more than most, especially about things going wrong. Exam periods and deadlines can feel overwhelming.',
+		dependence: 'You rely heavily on others for emotional support. Building some independence will serve you well.'
 	};
-	return reframes[facetKey] || 'This is not a weakness, it is a different strength that you have not fully explored yet.';
+	return analyses[facetKey] || 'This is an area where small improvements can create big results.';
 }
 
-function getSupportTip(facetKey) {
+function getActionTip(facetKey) {
 	const tips = {
-		organization: 'Try a simple "top 3 tasks" daily list, minimal structure that still provides direction.',
-		diligence: 'Start with the smallest possible task to build momentum. Action creates motivation, not the other way around.',
-		perfectionism: 'For important work, set a timer for "quality review", when it rings, submit what you have.',
-		prudence: 'Before acting impulsively, ask yourself "Will I be glad I did this tomorrow?"',
-		fairness: 'Reflect on a time when you wished someone treated you more fairly, use that empathy to guide your actions.',
-		sincerity: 'Practice saying what you really think in low-stakes situations to build the habit of authenticity.',
-		social_self_esteem: 'Keep a "wins" journal, write down one thing you did well each day to build genuine confidence.',
+		// Standard facets — low score
+		organization: 'Try a simple "top 3 tasks" daily list — minimal structure that still provides direction.',
+		diligence: 'Start with the smallest possible task to build momentum. Action creates motivation.',
+		perfectionism: 'For important work, set a timer for "quality review" — when it rings, submit what you have.',
+		prudence: 'Before acting, ask yourself "Will I be glad I did this tomorrow?"',
+		fairness: 'Reflect on a time when you wished someone treated you more fairly — use that empathy to guide your actions.',
+		sincerity: 'Practise saying what you really think in low-stakes situations to build authenticity.',
+		social_self_esteem: 'Keep a "wins" journal — write down one thing you did well each day.',
 		social_boldness: 'Set a micro-challenge: ask one question in class this week, or share one idea in a group.',
-		sociability: 'Schedule one social study session per week, keep it short and structured to ease in.',
-		liveliness: 'Add one energising element to your study routine, music, a walk between sessions, or a fun warm-up activity.',
-		inquisitiveness: 'Before each class, write one question about the topic, this primes your brain for engagement.',
-		creativity: 'Try "what if?" thinking once a week, take a problem and brainstorm three unusual solutions.',
-		unconventionality: 'Read one article outside your comfort zone each week, broaden your perspective gradually.',
-		aesthetic_appreciation: 'Try colour-coding your notes or creating visual summaries, you might discover a hidden appreciation.',
-		forgiveness: 'When someone frustrates you in a group, pause and consider what pressures they might be under.',
+		sociability: 'Schedule one social study session per week — keep it short and structured.',
+		liveliness: 'Add one energising element to your study routine: music, a walk, or a fun warm-up activity.',
+		inquisitiveness: 'Before each class, write one question about the topic to prime your brain.',
+		creativity: 'Try "what if?" thinking once a week — brainstorm three unusual solutions to a problem.',
+		unconventionality: 'Read one article outside your comfort zone each week.',
+		aesthetic_appreciation: 'Try colour-coding your notes — you might discover visual aids help.',
+		forgiveness: 'When someone frustrates you, pause and consider what pressures they might be under.',
 		gentleness: 'Before giving feedback, ask yourself "How would I want to hear this?"',
-		flexibility: 'When plans change, practice saying "Okay, what is the best way forward?" instead of resisting.',
-		patience: 'When frustrated, take 3 deep breaths before reacting. Patience is a skill that improves with practice.',
-		greed_avoidance: 'Set goals that are about learning, not just results, "understand chapter 5" not just "get an A."',
-		modesty: 'Practice accepting compliments with a simple "Thank you", you deserve recognition for your efforts.',
-		fearfulness: 'Face one small fear each week, the more you practice courage, the more natural it becomes.',
-		anxiety: 'Learn a calming technique (box breathing: 4-4-4-4) and practice it daily, not just when anxious.',
-		dependence: 'Build a support network of 2-3 trusted people you can turn to when you need encouragement.',
-		sentimentality: 'Watch a short documentary about the human side of what you are studying, emotional connection aids memory.'
+		flexibility: 'When plans change, practise saying "Okay, what is the best way forward?"',
+		patience: 'When frustrated, take 3 deep breaths before reacting.',
+		greed_avoidance: 'Set goals about learning, not just results: "understand chapter 5" not just "get an A."',
+		modesty: 'Practise accepting compliments with a simple "Thank you."',
+		sentimentality: 'Watch a short documentary about the human side of what you are studying.',
+		// Inverse facets — high score
+		fearfulness: 'Face one small fear each week — the more you practise courage, the more natural it becomes.',
+		anxiety: 'Learn box breathing (4-4-4-4) and practise daily, not just when anxious. Build a calming toolkit.',
+		dependence: 'Try solving one problem completely on your own before asking for help — build your independence muscle.'
 	};
-	return tips[facetKey] || 'Set one small, specific goal related to this area and practice it weekly.';
+	return tips[facetKey] || 'Set one small, specific goal related to this area and practise it weekly.';
 }
 
-function buildSelfReflection(dimensions) {
+function buildWhatToDo(dimKey, strengths, weaknesses, dim) {
+	if (strengths.length === 0 && weaknesses.length === 0) {
+		return 'Your scores in this area are balanced. Continue developing steadily across all facets.';
+	}
+
+	const parts = [];
+
+	if (strengths.length > 0) {
+		const names = strengths.map(s => s.name).join(' and ');
+		parts.push(`Lean into your ${names} — ${strengths.length === 1 ? 'this is a' : 'these are'} genuine asset${strengths.length === 1 ? '' : 's'}.`);
+	}
+
+	if (weaknesses.length > 0) {
+		parts.push(...weaknesses.map(w => w.actionTip));
+	}
+
+	return parts.join(' ');
+}
+
+function buildSelfReflection() {
 	return [
 		{
 			question: 'What kind of learning environment makes you feel most alive and engaged?',
@@ -276,10 +225,22 @@ function buildSelfReflection(dimensions) {
 	];
 }
 
-function buildGrowthMindset(top, bottom) {
+function buildGrowthMindset(allStrengths, allWeaknesses) {
+	const topStrength = allStrengths.sort((a, b) => {
+		if (isInverseFacet(a.key) && !isInverseFacet(b.key)) return 1;
+		if (!isInverseFacet(a.key) && isInverseFacet(b.key)) return -1;
+		return isInverseFacet(a.key) ? a.rawScore - b.rawScore : b.rawScore - a.rawScore;
+	})[0];
+
+	const topWeakness = allWeaknesses.sort((a, b) => {
+		if (isInverseFacet(a.key) && !isInverseFacet(b.key)) return -1;
+		if (!isInverseFacet(a.key) && isInverseFacet(b.key)) return 1;
+		return isInverseFacet(a.key) ? b.rawScore - a.rawScore : a.rawScore - b.rawScore;
+	})[0];
+
 	return {
-		message: 'Your personality traits are tendencies, not limits. The brain is remarkably adaptable: every time you practice a behaviour, you strengthen the neural pathways that support it.',
+		message: 'Your personality traits are tendencies, not limits. The brain is remarkably adaptable: every time you practise a behaviour, you strengthen the neural pathways that support it.',
 		keyPrinciple: 'Your top strengths are your foundation. Your growth areas are your opportunities. Neither defines your ceiling: effort and strategy do.',
-		actionStep: `This week, use your strongest trait (${top[0]?.name || 'your top strength'}) to support your biggest growth area (${bottom[0]?.name || 'your growth edge'}). For example, if you are high in Diligence but low in Sociability, commit to attending one study group session and staying for the full time.`
+		actionStep: `This week, use your strongest trait (${topStrength?.name || 'your top strength'}) to support your biggest growth area (${topWeakness?.name || 'your growth edge'}). For example, if you are high in Diligence but low in Sociability, commit to attending one study group session and staying for the full time.`
 	};
 }
