@@ -12,14 +12,14 @@
 </script>
 
 {#if data}
-	<section id="section-study-profile" class="report-section print-break-before">
+	<section id="section-study-profile" class="report-section">
 		<h2 class="text-2xl font-extrabold text-gray-900 mb-1 flex items-center gap-2">
 			<span class="text-violet-600">11</span> Study & Motivation Profile
 		</h2>
 		<p class="text-sm text-gray-500 mb-6">Based on validated study approach, academic motivation, and self-regulation assessments</p>
 
 		<!-- A. Dominant Study Approach -->
-		<div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+		<div class="bg-white rounded-xl shadow-sm p-6 mb-6 print-break-avoid">
 			<h3 class="font-bold text-gray-900 mb-3 flex items-center gap-2">
 				<span class="text-xl">{data.approach.icon}</span> Your Study Approach: {data.approach.label}
 			</h3>
@@ -69,7 +69,7 @@
 		</div>
 
 		<!-- B. Motivation Profile -->
-		<div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+		<div class="bg-white rounded-xl shadow-sm p-6 mb-6 print-break-avoid">
 			<h3 class="font-bold text-gray-900 mb-3 flex items-center gap-2">
 				<span class="text-xl">{data.motivation.icon}</span> Motivation: {data.motivation.label}
 			</h3>
@@ -143,7 +143,7 @@
 		</div>
 
 		<!-- C. Self-Regulation -->
-		<div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+		<div class="bg-white rounded-xl shadow-sm p-6 mb-6 print-break-avoid">
 			<h3 class="font-bold text-gray-900 mb-1">Self-Regulation Skills</h3>
 			<p class="text-sm text-gray-500 mb-4">
 				Overall strength: <span class="font-semibold capitalize">{data.regulationStrength}</span>

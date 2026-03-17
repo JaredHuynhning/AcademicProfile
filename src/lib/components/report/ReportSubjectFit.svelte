@@ -13,7 +13,7 @@
 </script>
 
 {#if data}
-	<section id="section-subject-fit" class="report-section print-break-before">
+	<section id="section-subject-fit" class="report-section">
 		<h2 class="text-2xl font-extrabold text-gray-900 mb-1 flex items-center gap-2">
 			<span class="text-blue-600">13</span> Subject Interests & Confidence
 		</h2>

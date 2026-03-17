@@ -27,7 +27,7 @@
 </script>
 
 {#if data}
-	<section id="section-root-cause" class="report-section print-break-before">
+	<section id="section-root-cause" class="report-section">
 		<h2 class="text-2xl font-extrabold text-gray-900 mb-1 flex items-center gap-2">
 			<span class="text-rose-600">15</span> Root Cause Analysis
 		</h2>
@@ -42,7 +42,7 @@
 		</div>
 
 		<!-- Primary Pattern -->
-		<div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+		<div class="bg-white rounded-xl shadow-sm p-6 mb-6 print-break-avoid">
 			<div class="flex items-start justify-between mb-3">
 				<h3 class="font-bold text-gray-900 flex items-center gap-2">
 					<span class="text-xl">{data.primaryPattern.icon}</span> {data.primaryPattern.title}

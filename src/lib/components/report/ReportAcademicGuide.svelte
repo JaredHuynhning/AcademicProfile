@@ -59,7 +59,7 @@
 </script>
 
 {#if data}
-	<section id="section-academic-guide" class="report-section print-break-before">
+	<section id="section-academic-guide" class="report-section">
 		<div class="flex items-start justify-between mb-1">
 			<h2 class="text-2xl font-extrabold text-gray-900 flex items-center gap-2">
 				<span class="text-teal-600">16</span> Academic Guide for Teachers & Parents

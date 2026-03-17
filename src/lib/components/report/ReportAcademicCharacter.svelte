@@ -9,14 +9,14 @@
 </script>
 
 {#if data}
-	<section id="section-academic-character" class="report-section print-break-before">
+	<section id="section-academic-character" class="report-section">
 		<h2 class="text-2xl font-extrabold text-gray-900 mb-1 flex items-center gap-2">
 			<span class="text-emerald-600">12</span> Academic Character
 		</h2>
 		<p class="text-sm text-gray-500 mb-6">Your grit, focus, procrastination patterns, and energy: the engine behind your learning</p>
 
 		<!-- Grit & Resilience -->
-		<div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+		<div class="bg-white rounded-xl shadow-sm p-6 mb-6 print-break-avoid">
 			<h3 class="font-bold text-gray-900 mb-1 flex items-center gap-2">
 				<span class="text-xl">🔥</span> Grit & Resilience
 			</h3>
@@ -96,7 +96,7 @@
 		</div>
 
 		<!-- Focus & Procrastination -->
-		<div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+		<div class="bg-white rounded-xl shadow-sm p-6 mb-6 print-break-avoid">
 			<h3 class="font-bold text-gray-900 mb-1 flex items-center gap-2">
 				<span class="text-xl">🎯</span> Focus & Procrastination
 			</h3>
@@ -165,7 +165,7 @@
 		</div>
 
 		<!-- Energy & Stamina -->
-		<div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+		<div class="bg-white rounded-xl shadow-sm p-6 mb-6 print-break-avoid">
 			<h3 class="font-bold text-gray-900 mb-1 flex items-center gap-2">
 				<span class="text-xl">⚡</span> Energy & Stamina
 			</h3>

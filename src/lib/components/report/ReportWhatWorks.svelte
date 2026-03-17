@@ -3,14 +3,14 @@
 </script>
 
 {#if data}
-	<section id="section-what-works" class="report-section print-break-before">
+	<section id="section-what-works" class="report-section">
 		<h2 class="text-2xl font-extrabold text-gray-900 mb-1 flex items-center gap-2">
 			<span class="text-amber-600">14</span> What Works For You
 		</h2>
 		<p class="text-sm text-gray-500 mb-6">Your instruction manual: how you learn best, what motivates you, and what holds you back in exams</p>
 
 		<!-- Teacher Preference -->
-		<div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+		<div class="bg-white rounded-xl shadow-sm p-6 mb-6 print-break-avoid">
 			<h3 class="font-bold text-gray-900 mb-3 flex items-center gap-2">
 				<span class="text-xl">{data.teacher.icon}</span> Teaching Style: {data.teacher.label}
 			</h3>
@@ -47,7 +47,7 @@
 		</div>
 
 		<!-- Response Type -->
-		<div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+		<div class="bg-white rounded-xl shadow-sm p-6 mb-6 print-break-avoid">
 			<h3 class="font-bold text-gray-900 mb-3 flex items-center gap-2">
 				<span class="text-xl">{data.response.icon}</span> Motivation Style: {data.response.label}
 			</h3>
@@ -84,7 +84,7 @@
 		</div>
 
 		<!-- Exam Barrier Diagnosis -->
-		<div class="bg-white rounded-xl shadow-sm p-6">
+		<div class="bg-white rounded-xl shadow-sm p-6 print-break-avoid">
 			<h3 class="font-bold text-gray-900 mb-3 flex items-center gap-2">
 				<span class="text-xl">{data.examBarrier.icon}</span> Exam Barrier: {data.examBarrier.label}
 			</h3>
