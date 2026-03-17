@@ -79,7 +79,7 @@
 					</span>
 					<div>
 						<span class="text-sm font-medium text-gray-800">{fmt.format}</span>
-						<span class="text-xs text-gray-500 ml-1">— {fmt.reason}</span>
+						<span class="text-xs text-gray-500 ml-1">/ {fmt.reason}</span>
 					</div>
 				</div>
 			{/each}

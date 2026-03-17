@@ -303,7 +303,7 @@
 
 			<!-- Print Footer -->
 			<div class="print-only text-center border-t border-gray-300 pt-4 mt-8 text-xs text-gray-400">
-				<p>{printTitle} — {name || 'Student'}</p>
+				<p>{printTitle}: {name || 'Student'}</p>
 				<p class="mt-1">{printBasis}</p>
 				<p class="mt-1">Generated {reportDate}</p>
 			</div>

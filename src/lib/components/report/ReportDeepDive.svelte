@@ -27,7 +27,7 @@
 							<h3 class="text-lg font-bold text-gray-900">{dim.name}</h3>
 							<span class="text-xs font-bold px-2 py-0.5 rounded-full"
 								style="background: {dim.color}15; color: {dim.color}">
-								{dim.score}/5 — {levelLabel(dim.level)}
+								{dim.score}/5 / {levelLabel(dim.level)}
 							</span>
 						</div>
 					</div>

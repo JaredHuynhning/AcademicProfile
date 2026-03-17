@@ -37,7 +37,7 @@
 		<h3 class="font-bold text-blue-800 mb-2 flex items-center gap-2">
 			<span class="text-blue-500">↗</span> Growth Edges
 		</h3>
-		<p class="text-xs text-gray-500 mb-4">These are not weaknesses — they are areas where small improvements create big results.</p>
+		<p class="text-xs text-gray-500 mb-4">These are not weaknesses. They are areas where small improvements create big results.</p>
 		<div class="space-y-4">
 			{#each data.challenges as challenge}
 				<div class="border-l-3 pl-4 print-break-avoid" style="border-color: {challenge.color}">

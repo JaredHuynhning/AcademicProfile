@@ -29,7 +29,7 @@
 		<div class="flex items-center gap-3">
 			<span class="text-sm font-medium px-2.5 py-0.5 rounded-full"
 				style="background: {color}20; color: {color}">
-				{dimension.score.toFixed(1)} — {levelLabels[dimension.level]}
+				{dimension.score.toFixed(1)} / {levelLabels[dimension.level]}
 			</span>
 			<span class="text-gray-400 transition-transform dimension-toggle-arrow {expanded ? 'rotate-180' : ''}">▼</span>
 		</div>

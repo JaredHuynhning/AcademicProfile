@@ -5,6 +5,48 @@
 
 import { classifyLevel, isHigh, isLow, dimScore } from './helpers.js';
 
+const REG_TIPS = {
+	selfEfficacy: {
+		strength: 'Your self-belief is solid. Use it to tackle challenges slightly beyond your comfort zone.',
+		weakness: 'Build confidence through small wins. Focus on what you CAN do, then stretch gradually.'
+	},
+	planning: {
+		strength: 'You plan well. Keep using study schedules and goal-setting to stay ahead.',
+		weakness: 'Try planning just one week at a time. Even 5 minutes of planning on Sunday evening makes a big difference.'
+	},
+	effortRegulation: {
+		strength: 'You push through tough work. This persistence is one of the strongest predictors of success.',
+		weakness: 'When work feels boring or hard, try the 15-minute challenge: commit to just 15 minutes, then decide if you continue.'
+	},
+	testAnxiety: {
+		strength: 'You stay relatively calm during exams. This gives you a real advantage in showing what you know.',
+		weakness: 'Exam nerves are holding you back. Practice tests under timed conditions build familiarity and reduce anxiety.'
+	},
+	helpSeeking: {
+		strength: 'Asking for help is a sign of maturity. Keep using teachers and classmates as resources.',
+		weakness: 'Asking for help is not a weakness. Try asking one question per class this week to build the habit.'
+	}
+};
+
+const MOTIVATION_TIPS = {
+	intrinsic: {
+		strength: 'Your genuine curiosity is your most powerful learning tool. Feed it with questions and exploration.',
+		weakness: 'Try finding one interesting angle in each subject. Curiosity can be sparked, not just born.'
+	},
+	identified: {
+		strength: 'You see the value in education for your future. This keeps you going even when content is boring.',
+		weakness: 'Try connecting what you learn to your personal goals. Even boring subjects build skills you will use.'
+	},
+	external: {
+		strength: 'Rewards and grades motivate you. Use this by setting up personal reward systems for study milestones.',
+		high: 'You rely heavily on external rewards. Try finding one reason YOU care about a topic, beyond grades.'
+	},
+	amotivation: {
+		strength: 'You see purpose in your learning. This is a real strength that many students lack.',
+		weakness: 'You are questioning the point of school. Talk to someone about what matters to you. Purpose makes everything easier.'
+	}
+};
+
 /**
  * Approach descriptions for the report narrative.
  */
@@ -182,11 +224,17 @@ function generateRegulationAssessment(selfReg) {
 		{ key: 'helpSeeking', label: 'Help-Seeking', icon: '🤝', desc: 'Willingness to ask for support when stuck' }
 	];
 
-	return items.map((item) => ({
-		...item,
-		score: selfReg[item.key].score,
-		level: selfReg[item.key].level
-	}));
+	return items.map((item) => {
+		const score = selfReg[item.key].score;
+		const classification = score >= 3.0 ? 'strength' : 'weakness';
+		return {
+			...item,
+			score,
+			level: selfReg[item.key].level,
+			classification,
+			tip: REG_TIPS[item.key][classification]
+		};
+	});
 }
 
 /**
@@ -215,10 +263,26 @@ export function generateStudyProfile(results) {
 		motivationProfile: sp.motivationProfile,
 		motivation,
 		motivationScores: {
-			intrinsic: { ...sp.motivation.intrinsic, label: 'Intrinsic', color: '#22c55e' },
-			identified: { ...sp.motivation.identified, label: 'Identified', color: '#3b82f6' },
-			external: { ...sp.motivation.external, label: 'External', color: '#f97316' },
-			amotivation: { ...sp.motivation.amotivation, label: 'Amotivation', color: '#ef4444' }
+			intrinsic: {
+				...sp.motivation.intrinsic, label: 'Intrinsic', color: '#22c55e',
+				classification: sp.motivation.intrinsic.score >= 3.0 ? 'strength' : 'weakness',
+				tip: MOTIVATION_TIPS.intrinsic[sp.motivation.intrinsic.score >= 3.0 ? 'strength' : 'weakness']
+			},
+			identified: {
+				...sp.motivation.identified, label: 'Identified', color: '#3b82f6',
+				classification: sp.motivation.identified.score >= 3.0 ? 'strength' : 'weakness',
+				tip: MOTIVATION_TIPS.identified[sp.motivation.identified.score >= 3.0 ? 'strength' : 'weakness']
+			},
+			external: {
+				...sp.motivation.external, label: 'External', color: '#f97316',
+				classification: sp.motivation.external.score >= 4.0 ? 'weakness' : 'strength',
+				tip: sp.motivation.external.score >= 4.0 ? MOTIVATION_TIPS.external.high : MOTIVATION_TIPS.external.strength
+			},
+			amotivation: {
+				...sp.motivation.amotivation, label: 'Amotivation', color: '#ef4444',
+				classification: sp.motivation.amotivation.score < 2.5 ? 'strength' : 'weakness',
+				tip: sp.motivation.amotivation.score < 2.5 ? MOTIVATION_TIPS.amotivation.strength : MOTIVATION_TIPS.amotivation.weakness
+			}
 		},
 		sdi: sp.motivation.sdi,
 

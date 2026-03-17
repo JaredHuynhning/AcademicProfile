@@ -104,7 +104,7 @@
 						<span class="text-xs font-medium px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">~20 min</span>
 						<span class="text-xs font-medium px-2 py-0.5 rounded-full bg-amber-50 text-amber-700">Recommended</span>
 					</div>
-					<p class="text-sm text-gray-500">All 120 questions — personality + learning combined. Get the full picture with cross-system insights.</p>
+					<p class="text-sm text-gray-500">All 120 questions. Personality + learning combined. Get the full picture with cross-system insights.</p>
 				</div>
 			</div>
 		</button>

@@ -67,11 +67,26 @@
 			<p class="text-sm text-gray-600 italic mb-4">{data.motivation.insight}</p>
 
 			<!-- Motivation scores as narrative badges -->
-			<div class="flex flex-wrap gap-2 mb-4">
+			<div class="flex flex-wrap gap-2 mb-2">
 				{#each Object.entries(data.motivationScores) as [key, m]}
 					<span class="text-xs font-semibold px-3 py-1.5 rounded-full" style="background: {m.color}15; color: {m.color}">
 						{m.label}: {m.score}/5 ({m.level})
 					</span>
+					{#if m.classification}
+						<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded self-center {m.classification === 'strength' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+							{m.classification === 'strength' ? 'Strength' : 'Needs Work'}
+						</span>
+					{/if}
+				{/each}
+			</div>
+			<!-- Motivation tips -->
+			<div class="space-y-1 mb-4">
+				{#each Object.entries(data.motivationScores) as [key, m]}
+					{#if m.tip}
+						<p class="text-[10px] text-gray-500 italic flex items-start gap-1.5">
+							<span class="font-semibold text-gray-600 shrink-0">{m.label}:</span> {m.tip}
+						</p>
+					{/if}
 				{/each}
 			</div>
 
@@ -99,10 +114,18 @@
 							<div class="flex items-center gap-2 mb-0.5">
 								<span class="font-medium text-gray-700 text-sm">{r.label}</span>
 								<span class="text-xs font-semibold px-2 py-0.5 rounded-full {levelBadge(r.level)}">
-									{r.score}/5 — {r.level}
+									{r.score}/5 / {r.level}
 								</span>
 							</div>
 							<p class="text-xs text-gray-500">{r.desc}</p>
+							{#if r.classification}
+								<div class="flex items-center gap-1.5 mt-1">
+									<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded {r.classification === 'strength' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+										{r.classification === 'strength' ? 'Strength' : 'Needs Work'}
+									</span>
+								</div>
+								<p class="text-[10px] text-gray-500 mt-0.5 italic">{r.tip}</p>
+							{/if}
 						</div>
 					</div>
 				{/each}

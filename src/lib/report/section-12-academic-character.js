@@ -6,6 +6,42 @@
 
 import { dimScore, isHigh, isLow } from './helpers.js';
 
+const TIPS = {
+	perseverance: {
+		strength: 'Your persistence is a real asset. Challenge yourself with harder problems to keep growing.',
+		weakness: 'Break big tasks into smaller milestones. Celebrate completing each one to build your follow-through muscle.'
+	},
+	consistency: {
+		strength: 'Your ability to stick with goals is rare. Use this strength to build long-term projects.',
+		weakness: 'Try committing to just one key goal per term. Track your progress visually to stay motivated.'
+	},
+	overall: {
+		strength: 'Your overall grit is strong. This is one of the best predictors of academic success.',
+		weakness: 'Building grit takes time. Focus on finishing what you start, even small things.'
+	},
+	concentration: {
+		strength: 'Your focus is a strength. Protect it by keeping your phone out of your study space.',
+		weakness: 'Try the Pomodoro technique: 25 minutes focused, then a 5-minute break. A phone-free study zone helps.'
+	},
+	procrastination: {
+		strength: 'You start tasks without needing a push. Keep using this self-starter habit.',
+		weakness: 'Use the 2-minute rule: commit to just 2 minutes of starting. Momentum usually carries you further.'
+	},
+	vitality: {
+		strength: 'Your energy is a real advantage. Channel it into your most challenging subjects early in the day.',
+		weakness: 'Protect your sleep above all else. Short, focused study blocks (20\u201325 mins) work better than long sessions.'
+	},
+	netEnergy: {
+		strength: 'You generally feel energised for learning. Make the most of this by tackling hard topics when fresh.',
+		weakness: 'Your energy runs low. Check sleep, screen time, and physical activity. Schedule demanding study for your best hours.'
+	}
+};
+
+function withClassification(metric, tipKey) {
+	const cls = metric.score >= 3.0 ? 'strength' : 'weakness';
+	return { ...metric, classification: cls, tip: TIPS[tipKey][cls] };
+}
+
 const GRIT_NARRATIVES = {
 	high: {
 		perseverance: 'You show strong perseverance: when you start something, you see it through to the end, even when it gets tough. This is one of the most important predictors of long-term academic success.',
@@ -92,22 +128,22 @@ export function generateAcademicCharacter(results) {
 
 	return {
 		grit: {
-			overall: lp.grit.overall,
-			perseverance: lp.grit.perseverance,
-			consistency: lp.grit.consistency,
+			overall: withClassification(lp.grit.overall, 'overall'),
+			perseverance: withClassification(lp.grit.perseverance, 'perseverance'),
+			consistency: withClassification(lp.grit.consistency, 'consistency'),
 			perseveranceNarrative: GRIT_NARRATIVES[gritLevel].perseverance,
 			consistencyNarrative: GRIT_NARRATIVES[gritLevel].consistency,
 			overallNarrative: GRIT_NARRATIVES[gritLevel].combined
 		},
 		focus: {
-			concentration: lp.focus.concentration,
-			procrastination: lp.focus.procrastination,
+			concentration: withClassification(lp.focus.concentration, 'concentration'),
+			procrastination: withClassification(lp.focus.procrastination, 'procrastination'),
 			concentrationNarrative: FOCUS_NARRATIVES.concentration[concLevel],
 			procrastinationNarrative: FOCUS_NARRATIVES.procrastination[procLevel]
 		},
 		energy: {
-			netEnergy: lp.energy.netEnergy,
-			vitality: lp.energy.vitality,
+			netEnergy: withClassification(lp.energy.netEnergy, 'netEnergy'),
+			vitality: withClassification(lp.energy.vitality, 'vitality'),
 			depletion: lp.energy.depletion,
 			narrative: ENERGY_NARRATIVES[energyLevel]
 		},

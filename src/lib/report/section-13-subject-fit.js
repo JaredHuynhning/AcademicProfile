@@ -9,6 +9,36 @@ const SUBJECT_META = {
 	science: { name: 'Science & Technology', icon: '🔬', color: '#22c55e' }
 };
 
+const PASSION_TIPS = {
+	maths: {
+		strength: 'Your interest in maths is a real asset. Explore problem-solving competitions or real-world applications to deepen it.',
+		weakness: 'Maths may feel dry right now. Try connecting it to things you care about: games, music, sports statistics, or coding.'
+	},
+	english: {
+		strength: 'Your love of language is a strength. Explore creative writing, journalism, or debate to stretch it further.',
+		weakness: "English might feel pointless right now. Try podcasts, song lyrics, or stories in genres you actually enjoy."
+	},
+	science: {
+		strength: 'Your curiosity about science is powerful. Explore experiments, science YouTube channels, or STEM clubs.',
+		weakness: "Science may seem disconnected from your life. Look for the 'why' behind everyday things: cooking, weather, your phone."
+	}
+};
+
+const CONFIDENCE_TIPS = {
+	maths: {
+		strength: 'You trust your maths ability. Use this confidence to tackle extension problems and help classmates.',
+		weakness: 'You doubt yourself in maths, but confidence builds through small wins. Start with problems you CAN solve and work up.'
+	},
+	english: {
+		strength: 'You believe in your English skills. Push yourself with longer essays, creative pieces, or public speaking.',
+		weakness: 'Confidence in English grows through practice, not talent. Ask for specific feedback on one skill at a time.'
+	},
+	science: {
+		strength: 'You feel capable in science. Challenge yourself with independent experiments or research projects.',
+		weakness: 'Science confidence comes from doing, not reading. Hands-on experiments and practice problems build real self-belief.'
+	}
+};
+
 const ALIGNMENT_NARRATIVES = {
 	aligned: {
 		maths: 'You both enjoy maths and believe you can do well in it. This alignment of passion and confidence is the ideal combination, lean into problem-solving challenges and consider maths-related enrichment.',
@@ -46,6 +76,9 @@ export function generateSubjectFit(results) {
 		const meta = SUBJECT_META[key];
 		const narrative = ALIGNMENT_NARRATIVES[subject.alignment]?.[key] || '';
 
+		const passionClassification = subject.passion >= 3.5 ? 'strength' : 'weakness';
+		const confidenceClassification = subject.confidence >= 3.5 ? 'strength' : 'weakness';
+
 		return {
 			key,
 			...meta,
@@ -53,6 +86,10 @@ export function generateSubjectFit(results) {
 			confidence: subject.confidence,
 			alignment: subject.alignment,
 			alignmentLabel: formatAlignment(subject.alignment),
+			passionClassification,
+			confidenceClassification,
+			passionTip: PASSION_TIPS[key][passionClassification],
+			confidenceTip: CONFIDENCE_TIPS[key][confidenceClassification],
 			narrative
 		};
 	});

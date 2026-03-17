@@ -26,7 +26,7 @@ export const studyItems = [
 
 	// Surface approach (3 items)
 	{ id: 68, text: 'I often memorise things without really understanding what they mean.', domain: 'studyApproaches', subscale: 'surface', reverse: false },
-	{ id: 69, text: 'I only study what\'s required for the test — nothing more.', domain: 'studyApproaches', subscale: 'surface', reverse: false },
+	{ id: 69, text: 'I only study what\'s required for the test. Nothing more.', domain: 'studyApproaches', subscale: 'surface', reverse: false },
 	{ id: 70, text: 'I find it hard to see the point of a lot of what we have to learn at school.', domain: 'studyApproaches', subscale: 'surface', reverse: false },
 
 	// ─── Domain 2: Motivation Type (IDs 71-80) ─────────────────────────
@@ -45,7 +45,7 @@ export const studyItems = [
 	{ id: 77, text: 'I work harder when there\'s a reward involved, like praise or prizes.', domain: 'motivation', subscale: 'external', reverse: false },
 
 	// Amotivation (3 items)
-	{ id: 78, text: 'Honestly, I\'m not sure why I go to school — I don\'t see what I get out of it.', domain: 'motivation', subscale: 'amotivation', reverse: false },
+	{ id: 78, text: 'Honestly, I\'m not sure why I go to school. I don\'t see what I get out of it.', domain: 'motivation', subscale: 'amotivation', reverse: false },
 	{ id: 79, text: 'I feel like no matter how much I study, it won\'t make a difference.', domain: 'motivation', subscale: 'amotivation', reverse: false },
 	{ id: 80, text: 'I can\'t be bothered putting effort into schoolwork most of the time.', domain: 'motivation', subscale: 'amotivation', reverse: false },
 

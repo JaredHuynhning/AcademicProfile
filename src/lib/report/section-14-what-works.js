@@ -125,18 +125,41 @@ export function generateWhatWorks(results) {
 	const responseType = RESPONSE_TYPES[tp.responseType];
 	const barrierDiagnosis = BARRIER_DIAGNOSES[eb.primaryBarrier];
 
+	// Teacher preference insights
+	const teacherInsights = [];
+	if (tp.structure >= 3.5) teacherInsights.push({ type: 'strength', text: 'You respond well to clear expectations and structure' });
+	else teacherInsights.push({ type: 'weakness', text: 'Low structure preference means you need teachers who adapt to your pace' });
+	if (tp.warmth >= 3.5) teacherInsights.push({ type: 'strength', text: 'You thrive with encouraging, relationship-focused teachers' });
+	else teacherInsights.push({ type: 'weakness', text: 'You may not need warmth from teachers, but watch for disengagement without it' });
+
+	// Response type insights
+	const responseInsights = [];
+	if (tp.carrot >= 3.5) responseInsights.push({ type: 'strength', text: 'Positive reinforcement energises you' });
+	if (tp.stick >= 3.5) responseInsights.push({ type: 'strength', text: 'Clear accountability keeps you on track' });
+	if (tp.carrot < 2.5) responseInsights.push({ type: 'weakness', text: 'You may not respond much to praise alone' });
+	if (tp.stick < 2.5) responseInsights.push({ type: 'weakness', text: 'Consequences and pressure tend to backfire with you' });
+
+	// Exam barrier insights
+	const examInsights = [];
+	if (eb.preparation >= 3.5) examInsights.push({ type: 'strength', text: 'You recognise that preparation drives results' });
+	if (eb.anxiety >= 3.0) examInsights.push({ type: 'weakness', text: 'Exam anxiety is limiting your performance' });
+	if (eb.timeManagement >= 3.0) examInsights.push({ type: 'weakness', text: 'Time management in exams needs work' });
+	if (eb.external >= 3.0) examInsights.push({ type: 'weakness', text: 'You tend to blame external factors for poor results' });
+
 	return {
 		teacher: {
 			...teacherProfile,
 			profile: tp.profile,
 			structureScore: tp.structure,
-			warmthScore: tp.warmth
+			warmthScore: tp.warmth,
+			insights: teacherInsights
 		},
 		response: {
 			...responseType,
 			carrotScore: tp.carrot,
 			stickScore: tp.stick,
-			type: tp.responseType
+			type: tp.responseType,
+			insights: responseInsights
 		},
 		examBarrier: {
 			...barrierDiagnosis,
@@ -146,7 +169,8 @@ export function generateWhatWorks(results) {
 				external: eb.external,
 				anxiety: eb.anxiety,
 				timeManagement: eb.timeManagement
-			}
+			},
+			insights: examInsights
 		}
 	};
 }

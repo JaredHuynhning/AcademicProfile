@@ -15,7 +15,7 @@
 						<span class="font-semibold text-gray-900 text-sm">{row.name}</span>
 						<span class="text-xs font-bold px-2 py-0.5 rounded-full"
 							style="background: {row.color}15; color: {row.color}">
-							{row.score}/5 — {row.level}
+							{row.score}/5 / {row.level}
 						</span>
 					</div>
 					<p class="text-sm text-gray-600 leading-relaxed">{row.oneLiner}</p>
@@ -26,7 +26,7 @@
 
 	<div class="bg-blue-50 rounded-xl p-4 mt-4 print-break-avoid">
 		<p class="text-xs text-blue-800 leading-relaxed">
-			<strong>How to read these scores:</strong> Scores reflect tendencies, not abilities. A low score in Extraversion does not mean you lack social skills — it means you prefer quieter settings. There are no "good" or "bad" scores. Each level brings unique strengths and growth opportunities.
+			<strong>How to read these scores:</strong> Scores reflect tendencies, not abilities. A low score in Extraversion does not mean you lack social skills. It means you prefer quieter settings. There are no "good" or "bad" scores. Each level brings unique strengths and growth opportunities.
 		</p>
 	</div>
 </section>
