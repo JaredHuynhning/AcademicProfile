@@ -5,28 +5,29 @@ import { sampleProfiles } from '$lib/data/sample-profiles.js';
 const REPORTS_KEY = 'hexaco_saved_reports';
 
 function loadReports() {
-	if (typeof window === 'undefined') return [];
+	if (typeof window === 'undefined') return [...sampleProfiles];
 	try {
 		const stored = localStorage.getItem(REPORTS_KEY);
-		if (stored === null) {
-			// First load — seed with sample profiles
-			localStorage.setItem(REPORTS_KEY, JSON.stringify(sampleProfiles));
-			return [...sampleProfiles];
-		}
-		// Ensure all sample profiles are present (handles new samples added in code)
-		const reports = JSON.parse(stored);
-		const existingIds = new Set(reports.map((r) => r.id));
-		const missing = sampleProfiles.filter((s) => !existingIds.has(s.id));
-		if (missing.length > 0) {
-			// Replace stale samples + append new ones
-			const userReports = reports.filter((r) => !r.id.startsWith('sample-'));
+		const reports = stored ? JSON.parse(stored) : [];
+
+		// Always ensure all sample profiles are present and up-to-date
+		const userReports = reports.filter((r) => !r.id.startsWith('sample-'));
+		const sampleIds = new Set(sampleProfiles.map((s) => s.id));
+		const existingSampleIds = new Set(
+			reports.filter((r) => r.id.startsWith('sample-')).map((r) => r.id)
+		);
+		const needsUpdate =
+			sampleProfiles.length !== existingSampleIds.size ||
+			sampleProfiles.some((s) => !existingSampleIds.has(s.id));
+
+		if (needsUpdate) {
 			const merged = [...userReports, ...sampleProfiles];
 			localStorage.setItem(REPORTS_KEY, JSON.stringify(merged));
 			return merged;
 		}
 		return reports;
 	} catch {
-		return [];
+		return [...sampleProfiles];
 	}
 }
 
