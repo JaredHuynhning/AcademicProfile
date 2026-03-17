@@ -1,5 +1,11 @@
 {
   "framework": "sveltekit",
   "buildCommand": "npm run build",
-  "outputDirectory": ".svelte-kit/output"
+  "outputDirectory": ".svelte-kit/output",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://bazi-olc3.onrender.com/api/:path*"
+    }
+  ]
 }
