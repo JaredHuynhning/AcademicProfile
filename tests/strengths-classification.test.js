@@ -46,11 +46,11 @@ assert.equal(
 	'High diligence is a strength'
 );
 
-console.log('Test 6: Social Boldness 1.3 should be weakness');
+console.log('Test 6: Social Boldness 1.3 should be preference (not weakness)');
 assert.equal(
 	classifyFacetDirection('social_boldness', 1.3),
-	'weakness',
-	'Low social boldness is a weakness'
+	'preference',
+	'Low social boldness is a preference, not a weakness'
 );
 
 console.log('Test 7: Moderate scores are neutral');
@@ -120,8 +120,8 @@ const cResult = classifyDimensionFacets('C', conscientiousnessDim);
 assert.equal(cResult.strengths.length, 4, 'All 4 conscientiousness facets should be strengths');
 assert.equal(cResult.weaknesses.length, 0, 'No weaknesses in high-conscientiousness');
 
-// ---- Test 5: Extraversion with low scores ----
-console.log('Test 10: Extraversion with low scores = weaknesses');
+// ---- Test 5: Extraversion with low scores = preferences, NOT weaknesses ----
+console.log('Test 10: Low extraversion facets are preferences, not weaknesses');
 const extraversionDim = {
 	name: 'Extraversion',
 	score: 2.1,
@@ -135,15 +135,17 @@ const extraversionDim = {
 };
 
 const xResult = classifyDimensionFacets('X', extraversionDim);
+// Low extraversion facets should be preferences, NOT weaknesses
 assert.ok(
-	xResult.weaknesses.some(f => f.key === 'social_boldness'),
-	'Social Boldness 1.3 should be a weakness'
+	xResult.preferences.some(f => f.key === 'social_boldness'),
+	'Social Boldness 1.3 should be a preference (not weakness)'
 );
 assert.ok(
-	xResult.weaknesses.some(f => f.key === 'sociability'),
-	'Sociability 2.0 should be a weakness'
+	xResult.preferences.some(f => f.key === 'sociability'),
+	'Sociability 2.0 should be a preference (not weakness)'
 );
-// Social Self-Esteem 2.7 = moderate → neutral (neither strength nor weakness)
+assert.equal(xResult.weaknesses.length, 0, 'No extraversion facets should be weaknesses');
+// Social Self-Esteem 2.7 = moderate → neutral
 assert.ok(
 	!xResult.strengths.some(f => f.key === 'social_self_esteem') &&
 	!xResult.weaknesses.some(f => f.key === 'social_self_esteem'),

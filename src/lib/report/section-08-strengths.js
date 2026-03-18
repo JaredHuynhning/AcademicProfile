@@ -32,6 +32,13 @@ export function generateStrengths(results) {
 			actionTip: getActionTip(f.key)
 		}));
 
+		const preferences = (classified.preferences || []).map((f) => ({
+			...f,
+			score: formatScore(f.score),
+			rawScore: f.score,
+			description: getPreferenceDescription(f.key, f.score)
+		}));
+
 		allStrengths.push(...strengths);
 		allWeaknesses.push(...weaknesses);
 
@@ -45,6 +52,7 @@ export function generateStrengths(results) {
 			level: dim.level,
 			strengths,
 			weaknesses,
+			preferences,
 			whatToDo: buildWhatToDo(key, strengths, weaknesses, dim)
 		};
 	});
@@ -115,6 +123,16 @@ function getLeverageTip(facetKey) {
 		dependence: 'Your independence lets you thrive in self-directed learning — pursue independent study projects.'
 	};
 	return tips[facetKey] || 'Look for opportunities to apply this strength in your daily academic life.';
+}
+
+function getPreferenceDescription(facetKey, score) {
+	const descriptions = {
+		social_self_esteem: 'You are self-aware and realistic about your abilities. This quiet self-assessment drives genuine improvement.',
+		social_boldness: 'You are thoughtful and deliberate. When you do speak up, your contributions are well-considered and carry weight.',
+		sociability: 'You prefer small groups or solo time. This is a valid learning style — you form deep, meaningful connections rather than many surface-level ones.',
+		liveliness: 'You have a calm, steady energy. Your consistency is an anchor for those around you, especially in stressful times.'
+	};
+	return descriptions[facetKey] || 'This reflects your natural social style, not a limitation.';
 }
 
 function getWeaknessAnalysis(facetKey, score) {

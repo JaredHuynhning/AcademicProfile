@@ -162,37 +162,55 @@ export function pickByLevel(score, { high = [], moderate = [], low = [] }) {
  */
 const INVERSE_FACETS = new Set(['anxiety', 'fearfulness', 'dependence']);
 
+/**
+ * Preference facets: low scores are valid preferences, not weaknesses.
+ * All Extraversion facets — introversion is a style, not a deficit.
+ */
+const PREFERENCE_FACETS = new Set(['social_self_esteem', 'social_boldness', 'sociability', 'liveliness']);
+
 export function isInverseFacet(facetKey) {
 	return INVERSE_FACETS.has(facetKey);
 }
 
+export function isPreferenceFacet(facetKey) {
+	return PREFERENCE_FACETS.has(facetKey);
+}
+
 /**
- * Classify a single facet as strength/weakness/neutral, accounting for inverse facets.
+ * Classify a single facet as strength/weakness/neutral/preference.
  * - Standard facets: high (>=3.5) = strength, low (<2.5) = weakness
  * - Inverse facets: high (>=3.5) = weakness, low (<2.5) = strength
- * - Moderate (2.5-3.4) = neutral for both
+ * - Preference facets: high (>=3.5) = strength, low (<2.5) = preference (NOT weakness)
+ * - Moderate (2.5-3.4) = neutral for all
  */
 export function classifyFacetDirection(facetKey, score) {
 	const inverse = isInverseFacet(facetKey);
+	const preference = isPreferenceFacet(facetKey);
 	if (score >= 3.5) return inverse ? 'weakness' : 'strength';
-	if (score < 2.5) return inverse ? 'strength' : 'weakness';
+	if (score < 2.5) {
+		if (inverse) return 'strength';
+		if (preference) return 'preference';
+		return 'weakness';
+	}
 	return 'neutral';
 }
 
 /**
- * Classify all facets within a dimension into strengths/weaknesses/neutral.
- * Returns { strengths: [...], weaknesses: [...], neutral: [...] }
+ * Classify all facets within a dimension into strengths/weaknesses/neutral/preferences.
+ * Returns { strengths: [...], weaknesses: [...], neutral: [...], preferences: [...] }
  */
 export function classifyDimensionFacets(dimKey, dimension) {
 	const strengths = [];
 	const weaknesses = [];
 	const neutral = [];
+	const preferences = [];
 
 	for (const [facetKey, facet] of Object.entries(dimension.facets)) {
 		const direction = classifyFacetDirection(facetKey, facet.score);
 		const entry = { key: facetKey, name: facet.name, score: facet.score, dimKey };
 		if (direction === 'strength') strengths.push(entry);
 		else if (direction === 'weakness') weaknesses.push(entry);
+		else if (direction === 'preference') preferences.push(entry);
 		else neutral.push(entry);
 	}
 
@@ -207,7 +225,7 @@ export function classifyDimensionFacets(dimKey, dimension) {
 		return aInv === bInv ? (aInv ? b.score - a.score : a.score - b.score) : (aInv ? -1 : 1);
 	});
 
-	return { strengths, weaknesses, neutral };
+	return { strengths, weaknesses, neutral, preferences };
 }
 
 /**

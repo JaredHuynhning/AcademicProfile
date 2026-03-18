@@ -8,7 +8,7 @@
 
 	<!-- Per-Dimension Breakdown -->
 	{#each data.dimensions as dim}
-		{#if dim.strengths.length > 0 || dim.weaknesses.length > 0}
+		{#if dim.strengths.length > 0 || dim.weaknesses.length > 0 || (dim.preferences && dim.preferences.length > 0)}
 			<div class="bg-white rounded-2xl shadow-sm p-5 mb-4 print-break-avoid">
 				<h3 class="font-bold text-gray-900 mb-3 flex items-center gap-2">
 					<span>{dim.icon}</span>
@@ -52,6 +52,26 @@
 									</div>
 									<p class="text-xs text-gray-600 leading-relaxed">{weakness.challenge}</p>
 									<p class="text-xs text-amber-700 mt-1"><strong>Action:</strong> {weakness.actionTip}</p>
+								</div>
+							{/each}
+						</div>
+					</div>
+				{/if}
+
+				<!-- Preferences (Your Style) -->
+				{#if dim.preferences && dim.preferences.length > 0}
+					<div class="mb-3">
+						<h4 class="text-xs font-bold text-violet-700 uppercase tracking-wide mb-2 flex items-center gap-1">
+							<span class="text-violet-500">~</span> Your Style
+						</h4>
+						<div class="space-y-2">
+							{#each dim.preferences as pref}
+								<div class="border-l-3 border-violet-300 pl-3">
+									<div class="flex items-center gap-2 mb-0.5">
+										<span class="text-sm font-semibold text-gray-900">{pref.name}</span>
+										<span class="text-xs font-bold text-violet-600">{pref.score}/5</span>
+									</div>
+									<p class="text-xs text-gray-600 leading-relaxed">{pref.description}</p>
 								</div>
 							{/each}
 						</div>
