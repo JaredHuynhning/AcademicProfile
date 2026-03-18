@@ -40,9 +40,9 @@
 	let availableTabs = $derived(() => {
 		if (!report) return [];
 		const tabs = [];
-		if (report.hasPersonality) tabs.push({ id: 'personality', label: 'Personality Profile', icon: '🧠' });
-		if (report.hasLearning) tabs.push({ id: 'academic', label: 'Academic Assessment', icon: '📚' });
-		if (report.hasComplete) tabs.push({ id: 'complete', label: 'Complete Profile', icon: '🎯' });
+		if (report.hasPersonality) tabs.push({ id: 'personality', label: 'Personality', icon: '🧠' });
+		if (report.hasLearning) tabs.push({ id: 'academic', label: 'Academic', icon: '📚' });
+		if (report.hasComplete) tabs.push({ id: 'complete', label: 'Complete', icon: '🎯' });
 		return tabs;
 	});
 
