@@ -18,6 +18,14 @@ import { generateSubjectFit } from './section-13-subject-fit.js';
 import { generateWhatWorks } from './section-14-what-works.js';
 import { generateRootCause } from './section-15-root-cause.js';
 import { generateAcademicGuide } from './section-16-academic-guide.js';
+import { generateExecutiveSummary } from './section-c1-executive-summary.js';
+import { generateWhoYouAre } from './section-c2-who-you-are.js';
+import { generateHowYouLearn } from './section-c3-how-you-learn.js';
+import { generateWhatsWorking } from './section-c4-whats-working.js';
+import { generateBarriers } from './section-c5-barriers.js';
+import { generateActionPlan } from './section-c6-action-plan.js';
+import { generateUnifiedGuide } from './section-c7-guide.js';
+import { runCrossReferenceEngine } from './cross-reference-engine.js';
 
 /**
  * Generate the full report.
@@ -34,6 +42,12 @@ export function generateReport(results, name) {
 	const hasPersonality = !!results.dimensions;
 	const hasStudy = !!results.studyProfile;
 	const hasLearner = !!results.learnerProfile;
+	const hasComplete = hasPersonality && hasStudy && hasLearner;
+
+	let crossRefResult = null;
+	if (hasComplete) {
+		crossRefResult = runCrossReferenceEngine(results.dimensions, results.studyProfile, results.learnerProfile);
+	}
 
 	return {
 		// Personality sections (require HEXACO)
@@ -56,9 +70,21 @@ export function generateReport(results, name) {
 		rootCause: hasLearner ? generateRootCause(results) : null,
 		academicGuide: (hasStudy || hasLearner) ? generateAcademicGuide(results) : null,
 
+		// Complete Profile sections (require all three datasets)
+		executiveSummary: hasComplete ? generateExecutiveSummary(results, crossRefResult) : null,
+		whoYouAre: hasComplete ? generateWhoYouAre(results, crossRefResult) : null,
+		howYouLearn: hasComplete ? generateHowYouLearn(results, crossRefResult) : null,
+		whatsWorking: hasComplete ? generateWhatsWorking(results, crossRefResult) : null,
+		barriers: hasComplete ? generateBarriers(results, crossRefResult) : null,
+		actionPlan: hasComplete ? generateActionPlan(results, crossRefResult) : null,
+		unifiedGuide: hasComplete ? generateUnifiedGuide(results, crossRefResult) : null,
+
 		// Metadata
 		quizMode: results.quizMode || 'complete',
 		hasPersonality,
+		hasStudy,
+		hasLearner,
+		hasComplete,
 		hasLearning: hasStudy || hasLearner
 	};
 }

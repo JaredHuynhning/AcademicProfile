@@ -22,6 +22,13 @@
 	import ReportWhatWorks from '$lib/components/report/ReportWhatWorks.svelte';
 	import ReportRootCause from '$lib/components/report/ReportRootCause.svelte';
 	import ReportAcademicGuide from '$lib/components/report/ReportAcademicGuide.svelte';
+	import ReportExecutiveSummary from '$lib/components/report/ReportExecutiveSummary.svelte';
+	import ReportWhoYouAre from '$lib/components/report/ReportWhoYouAre.svelte';
+	import ReportHowYouLearn from '$lib/components/report/ReportHowYouLearn.svelte';
+	import ReportWhatsWorking from '$lib/components/report/ReportWhatsWorking.svelte';
+	import ReportBarriers from '$lib/components/report/ReportBarriers.svelte';
+	import ReportActionPlan from '$lib/components/report/ReportActionPlan.svelte';
+	import ReportUnifiedGuide from '$lib/components/report/ReportUnifiedGuide.svelte';
 
 	let results = $state(null);
 	let name = $state('');
@@ -35,6 +42,7 @@
 		const tabs = [];
 		if (report.hasPersonality) tabs.push({ id: 'personality', label: 'Personality Profile', icon: '🧠' });
 		if (report.hasLearning) tabs.push({ id: 'academic', label: 'Academic Assessment', icon: '📚' });
+		if (report.hasComplete) tabs.push({ id: 'complete', label: 'Complete Profile', icon: '🎯' });
 		return tabs;
 	});
 
@@ -68,6 +76,14 @@
 			if (report.whatWorks) s.push({ id: 'section-what-works', label: 'What Works', num: '14' });
 			if (report.rootCause) s.push({ id: 'section-root-cause', label: 'Root Cause', num: '15' });
 			if (report.academicGuide) s.push({ id: 'section-academic-guide', label: 'Guide', num: '16' });
+		} else if (activeTab === 'complete') {
+			if (report.executiveSummary) s.push({ id: 'section-executive-summary', label: 'Summary', num: 'C1' });
+			if (report.whoYouAre) s.push({ id: 'section-who-you-are', label: 'Who You Are', num: 'C2' });
+			if (report.howYouLearn) s.push({ id: 'section-how-you-learn', label: 'How You Learn', num: 'C3' });
+			if (report.whatsWorking) s.push({ id: 'section-whats-working', label: "What's Working", num: 'C4' });
+			if (report.barriers) s.push({ id: 'section-barriers', label: 'Barriers', num: 'C5' });
+			if (report.actionPlan) s.push({ id: 'section-action-plan', label: 'Action Plan', num: 'C6' });
+			if (report.unifiedGuide) s.push({ id: 'section-unified-guide', label: 'Guide', num: 'C7' });
 		}
 		return s;
 	});
@@ -151,12 +167,14 @@
 	);
 
 	let printTitle = $derived(
-		activeTab === 'personality' ? 'Personality Profile' : 'Academic Assessment'
+		activeTab === 'complete' ? 'Complete Student Profile'
+			: activeTab === 'personality' ? 'Personality Profile'
+			: 'Academic Assessment'
 	);
 
 	let printBasis = $derived(
-		activeTab === 'personality'
-			? 'Based on HEXACO-PI-R personality assessment'
+		activeTab === 'complete' ? 'Based on HEXACO-PI-R + Grit-S, SVS, ASSIST, AMS, MSLQ, TIMSS assessments'
+			: activeTab === 'personality' ? 'Based on HEXACO-PI-R personality assessment'
 			: 'Based on Grit-S, SVS, ASSIST, AMS, MSLQ, TIMSS'
 	);
 </script>
@@ -298,6 +316,19 @@
 							Take Learning Assessment
 						</button>
 					</div>
+				{/if}
+			{/if}
+
+			<!-- Complete Profile Sections (C1-C7) -->
+			{#if activeTab === 'complete'}
+				{#if report.hasComplete}
+					<ReportExecutiveSummary data={report.executiveSummary} />
+					<ReportWhoYouAre data={report.whoYouAre} />
+					<ReportHowYouLearn data={report.howYouLearn} />
+					<ReportWhatsWorking data={report.whatsWorking} />
+					<ReportBarriers data={report.barriers} />
+					<ReportActionPlan data={report.actionPlan} />
+					<ReportUnifiedGuide data={report.unifiedGuide} />
 				{/if}
 			{/if}
 
