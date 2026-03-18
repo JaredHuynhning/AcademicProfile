@@ -209,3 +209,32 @@ export function classifyDimensionFacets(dimKey, dimension) {
 
 	return { strengths, weaknesses, neutral };
 }
+
+/**
+ * Learning Archetype — 3×3 matrix of conscientiousness level × dominant study approach,
+ * with personality modifiers from Emotionality, Extraversion, and Openness.
+ * Used by consolidated report sections C1 and C3.
+ */
+const ARCHETYPE_MATRIX = {
+	high: { deep: 'Disciplined Scholar', strategic: 'Organised Achiever', surface: 'Dutiful Worker' },
+	moderate: { deep: 'Curious Explorer', strategic: 'Adaptable Learner', surface: 'Passive Absorber' },
+	low: { deep: 'Passionate Drifter', strategic: 'Tactical Crammer', surface: 'Disengaged Scanner' }
+};
+
+export function getLearningArchetype(dimensions, studyProfile) {
+	const cLevel = classifyLevel(dimensions.C.score);
+	const approach = studyProfile.dominantApproach || 'strategic';
+	let label = ARCHETYPE_MATRIX[cLevel]?.[approach] || 'Balanced Learner';
+
+	const modifiers = [];
+	const anxiety = dimensions.E.facets.anxiety?.score || 0;
+	if (anxiety >= 4.0) modifiers.push('with anxiety overlay');
+	if (dimensions.X.score < 2.5) modifiers.push('solo preference');
+	else if (dimensions.X.score >= 4.0) modifiers.push('social energiser');
+	if (dimensions.O.score >= 4.0) modifiers.push('creative thinker');
+
+	if (modifiers.length > 0) {
+		label += ' — ' + modifiers.join(', ');
+	}
+	return label;
+}
