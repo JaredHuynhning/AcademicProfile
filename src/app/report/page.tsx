@@ -11,92 +11,23 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 
-// ─── Generic field renderers ──────────────────────────────────────────────────
+// ─── Field classification helpers ────────────────────────────────────────────
 
-function StringField({ value }: { value: string }) {
-  return <p className="text-espresso/80 leading-relaxed mb-3">{value}</p>;
-}
-
-function ArrayField({ value }: { value: unknown[] }) {
-  const allStrings = value.every((v) => typeof v === "string");
-  if (allStrings) {
-    return (
-      <ul className="space-y-1.5 mb-3">
-        {(value as string[]).map((item, i) => (
-          <li key={i} className="flex items-start gap-2 text-espresso/80 leading-relaxed">
-            <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-warm-gray/40 shrink-0" />
-            {item}
-          </li>
-        ))}
-      </ul>
-    );
-  }
-  // Array of objects — render each as a card
-  return (
-    <div className="space-y-3 mb-3">
-      {value.map((item, i) => (
-        <ObjectCard key={i} data={item as Record<string, unknown>} />
-      ))}
-    </div>
-  );
-}
-
-function StrengthsWeaknessesField({
-  strengths,
-  weaknesses,
-}: {
-  strengths: unknown[];
-  weaknesses: unknown[];
-}) {
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-      {strengths.length > 0 && (
-        <Card className="!p-4">
-          <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-2">
-            Strengths
-          </p>
-          <ul className="space-y-1">
-            {(strengths as Record<string, unknown>[]).map((s, i) => (
-              <li key={i} className="text-sm text-espresso/80">
-                {typeof s === "string" ? s : (s.name as string) || JSON.stringify(s)}
-              </li>
-            ))}
-          </ul>
-        </Card>
-      )}
-      {weaknesses.length > 0 && (
-        <Card className="!p-4">
-          <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-2">
-            Growth Areas
-          </p>
-          <ul className="space-y-1">
-            {(weaknesses as Record<string, unknown>[]).map((w, i) => (
-              <li key={i} className="text-sm text-espresso/80">
-                {typeof w === "string" ? w : (w.name as string) || JSON.stringify(w)}
-              </li>
-            ))}
-          </ul>
-        </Card>
-      )}
-    </div>
-  );
-}
-
-// Keys to never render (internal/technical)
-const SKIP_OBJECT_KEYS = new Set([
+// Keys that are internal metadata — never render
+const SKIP_KEYS = new Set([
   "key", "icon", "color", "rawScore", "classification", "rank", "role",
   "shortName", "radarData", "passionClassification", "confidenceClassification",
   "matchPercent", "match_score", "dualFire", "type", "impact", "profile",
   "percentile", "structureScore", "warmthScore", "carrotScore", "stickScore",
-  "barrier", "scores", "sdi", "item_count",
+  "barrier", "sdi", "item_count", "dim", "name", "date",
 ]);
 
-// Keys whose values are display names/titles
+// Keys whose values are titles/names to display prominently
 const TITLE_KEYS = new Set(["name", "title", "label", "style", "preferred", "metric"]);
 
-// Keys whose values are long-form narratives
-const NARRATIVE_KEYS = new Set([
-  "description", "desc", "narrative", "details", "summary", "explanation",
+// Keys whose values are short text to display as body content
+const TEXT_KEYS = new Set([
+  "text", "description", "desc", "narrative", "details", "summary", "explanation",
   "message", "keyPrinciple", "actionStep", "approach", "idealFor", "bestWhen",
   "notIdeal", "tip", "tutorTip", "strategy", "challenge", "analysis",
   "leverageTip", "actionTip", "whatToDo", "understandingProfile",
@@ -107,18 +38,149 @@ const NARRATIVE_KEYS = new Set([
 function formatLabel(key: string): string {
   return key
     .replace(/([A-Z])/g, " $1")
+    .replace(/_/g, " ")
     .replace(/^./, (s) => s.toUpperCase())
     .trim();
 }
 
+function formatLevel(val: string): string {
+  return val.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+/** Extract the best displayable text from an object */
+function extractDisplayText(obj: Record<string, unknown> | null | undefined): string | null {
+  if (!obj) return null;
+  for (const key of TEXT_KEYS) {
+    if (typeof obj[key] === "string" && (obj[key] as string).length > 0) {
+      return obj[key] as string;
+    }
+  }
+  return null;
+}
+
+/** Extract the title from an object */
+function extractTitle(obj: Record<string, unknown> | null | undefined): string | null {
+  if (!obj) return null;
+  for (const key of TITLE_KEYS) {
+    if (typeof obj[key] === "string" && (obj[key] as string).length > 0) {
+      return obj[key] as string;
+    }
+  }
+  return null;
+}
+
+// ─── Generic field renderers ──────────────────────────────────────────────────
+
+function BulletList({ items }: { items: string[] }) {
+  return (
+    <ul className="space-y-1.5 mb-3">
+      {items.map((item, i) => (
+        <li key={i} className="flex items-start gap-2 text-espresso/80 leading-relaxed">
+          <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-warm-gray/40 shrink-0" />
+          {item}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function StrengthsWeaknessesField({
+  strengths,
+  weaknesses,
+}: {
+  strengths: unknown[];
+  weaknesses: unknown[];
+}) {
+  const getText = (item: unknown): string => {
+    if (typeof item === "string") return item;
+    if (typeof item === "object" && item !== null) {
+      const obj = item as Record<string, unknown>;
+      return (obj.name as string) || (obj.text as string) || (obj.description as string) || JSON.stringify(item);
+    }
+    return String(item);
+  };
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+      {strengths.length > 0 && (
+        <Card className="!p-4">
+          <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-2">
+            Strengths
+          </p>
+          <BulletList items={strengths.map(getText)} />
+        </Card>
+      )}
+      {weaknesses.length > 0 && (
+        <Card className="!p-4">
+          <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-2">
+            Growth Areas
+          </p>
+          <BulletList items={weaknesses.map(getText)} />
+        </Card>
+      )}
+    </div>
+  );
+}
+
+/** Render an array — string[] as bullet list in a card, object[] smartly */
+function ArrayField({ value, label }: { value: unknown[]; label?: string }) {
+  if (value.length === 0) return null;
+
+  // All strings → bullet list inside a card
+  const allStrings = value.every((v) => typeof v === "string");
+  if (allStrings) {
+    return (
+      <Card className="!p-4 mb-3">
+        {label && (
+          <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-2">
+            {label}
+          </p>
+        )}
+        <BulletList items={value as string[]} />
+      </Card>
+    );
+  }
+
+  // Object array — check if they're simple text objects (like motivators: { text, dim, icon })
+  const allObjects = value.every((v) => typeof v === "object" && v !== null && !Array.isArray(v));
+  if (allObjects) {
+    const texts = (value as Record<string, unknown>[]).map(extractDisplayText);
+    const allHaveText = texts.every((t) => t !== null);
+
+    // Simple text objects → render as bullet list
+    if (allHaveText) {
+      return (
+        <Card className="!p-4 mb-3">
+          {label && (
+            <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-2">
+              {label}
+            </p>
+          )}
+          <BulletList items={texts as string[]} />
+        </Card>
+      );
+    }
+
+    // Complex objects with strengths/weaknesses or rich content
+    return (
+      <div className="space-y-3 mb-3">
+        {(value as Record<string, unknown>[]).map((item, i) => (
+          <ObjectCard key={i} data={item} />
+        ))}
+      </div>
+    );
+  }
+
+  return null;
+}
+
 function ObjectCard({ data }: { data: Record<string, unknown> }) {
   if (!data) return null;
-  const hasStrengthsWeaknesses =
-    data && Array.isArray(data.strengths) && Array.isArray(data.weaknesses);
 
-  if (hasStrengthsWeaknesses) {
-    const cardName = typeof data.name === "string" ? data.name : null;
+  // Strengths/weaknesses pattern
+  if (Array.isArray(data.strengths) && Array.isArray(data.weaknesses)) {
+    const cardName = extractTitle(data);
     const color = typeof data.color === "string" ? data.color : undefined;
+    const whatToDo = typeof data.whatToDo === "string" ? data.whatToDo : null;
     return (
       <div className="mb-4">
         {cardName && (
@@ -130,51 +192,116 @@ function ObjectCard({ data }: { data: Record<string, unknown> }) {
           strengths={data.strengths as unknown[]}
           weaknesses={data.weaknesses as unknown[]}
         />
-        {typeof data.whatToDo === "string" && (
-          <p className="text-sm text-espresso/70 mt-2 italic">{data.whatToDo}</p>
+        {whatToDo && (
+          <p className="text-sm text-espresso/70 mt-2 italic">{whatToDo}</p>
         )}
       </div>
     );
   }
 
-  // Extract meaningful fields
-  const titleVal = Object.entries(data).find(([k]) => TITLE_KEYS.has(k));
+  // Collect renderable content
+  const title = extractTitle(data);
   const color = typeof data.color === "string" ? data.color : undefined;
   const score = typeof data.score === "string" || typeof data.score === "number" ? data.score : null;
-  const level = typeof data.level === "string" ? data.level : null;
+  const level = typeof data.level === "string" ? formatLevel(data.level) : null;
 
-  const narratives = Object.entries(data).filter(
-    ([k, v]) => NARRATIVE_KEYS.has(k) && typeof v === "string" && (v as string).length > 10
-  );
-  const arrayEntries = Object.entries(data).filter(
-    ([k, v]) => !SKIP_OBJECT_KEYS.has(k) && Array.isArray(v) && (v as unknown[]).length > 0
-  );
+  // Gather text content (descriptions, tips, etc.)
+  const texts: string[] = [];
+  for (const [k, v] of Object.entries(data)) {
+    if (TEXT_KEYS.has(k) && typeof v === "string" && v.length > 5) {
+      texts.push(v);
+    }
+  }
+
+  // Gather non-skipped string/number fields that aren't title, text, or score
+  const extraFields: { key: string; value: string }[] = [];
+  for (const [k, v] of Object.entries(data)) {
+    if (SKIP_KEYS.has(k) || TITLE_KEYS.has(k) || TEXT_KEYS.has(k)) continue;
+    if (k === "score" || k === "level" || k === "color") continue;
+    if (typeof v === "string" && v.length > 2) {
+      extraFields.push({ key: k, value: formatLevel(v) });
+    }
+  }
+
+  // Gather arrays
+  const arrays: { key: string; value: unknown[] }[] = [];
+  for (const [k, v] of Object.entries(data)) {
+    if (SKIP_KEYS.has(k)) continue;
+    if (Array.isArray(v) && v.length > 0) {
+      arrays.push({ key: k, value: v });
+    }
+  }
+
+  // Sub-objects
+  const subObjects: { key: string; value: Record<string, unknown> }[] = [];
+  for (const [k, v] of Object.entries(data)) {
+    if (SKIP_KEYS.has(k)) continue;
+    if (typeof v === "object" && v !== null && !Array.isArray(v)) {
+      subObjects.push({ key: k, value: v as Record<string, unknown> });
+    }
+  }
+
+  // If nothing to show, return null
+  const hasContent = title || score || texts.length > 0 || extraFields.length > 0 || arrays.length > 0 || subObjects.length > 0;
+  if (!hasContent) return null;
 
   return (
     <Card className="!p-4">
-      {titleVal && (
+      {title && (
         <p className="font-semibold text-espresso mb-1" style={color ? { color } : undefined}>
-          {String(titleVal[1])}
+          {title}
           {score != null && <Badge className="ml-2">{String(score)}</Badge>}
           {level && <span className="text-sm text-warm-gray ml-2">{level}</span>}
         </p>
       )}
-      {!titleVal && score != null && (
+      {!title && score != null && (
         <Badge className="mb-2" color={color}>{String(score)}</Badge>
       )}
-      {narratives.map(([key, value]) => (
-        <p key={key} className="text-sm text-espresso/70 leading-relaxed mb-2">
-          {String(value)}
-        </p>
+      {texts.map((t, i) => (
+        <p key={i} className="text-sm text-espresso/70 leading-relaxed mb-2">{t}</p>
       ))}
-      {arrayEntries.map(([key, value]) => (
-        <div key={key} className="mt-2">
-          <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-1">
-            {formatLabel(key)}
-          </p>
-          <ArrayField value={value as unknown[]} />
-        </div>
+      {extraFields.map(({ key, value }) => (
+        <p key={key} className="text-sm text-espresso/70 leading-relaxed mb-1">{value}</p>
       ))}
+      {arrays.map(({ key, value }) => {
+        const allStr = value.every((v) => typeof v === "string");
+        if (allStr) {
+          return (
+            <div key={key} className="mt-2">
+              <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-1">
+                {formatLabel(key)}
+              </p>
+              <BulletList items={value as string[]} />
+            </div>
+          );
+        }
+        const texts = (value as Record<string, unknown>[]).map(extractDisplayText).filter(Boolean);
+        if (texts.length === value.length) {
+          return (
+            <div key={key} className="mt-2">
+              <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-1">
+                {formatLabel(key)}
+              </p>
+              <BulletList items={texts as string[]} />
+            </div>
+          );
+        }
+        return null;
+      })}
+      {subObjects.map(({ key, value }) => {
+        const subText = extractDisplayText(value);
+        if (subText) {
+          return (
+            <div key={key} className="mt-2">
+              <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-1">
+                {formatLabel(key)}
+              </p>
+              <p className="text-sm text-espresso/70 leading-relaxed">{subText}</p>
+            </div>
+          );
+        }
+        return null;
+      })}
     </Card>
   );
 }
@@ -184,10 +311,9 @@ function SectionField({ label, value }: { label: string; value: unknown }) {
   if (typeof value === "boolean") return null;
   if (typeof value === "string") {
     if (value.length === 0) return null;
-    return <StringField value={value} />;
+    return <p className="text-espresso/80 leading-relaxed mb-3">{value}</p>;
   }
   if (typeof value === "number") {
-    // Skip raw numbers unless they look like formatted scores (1-5 range)
     if (value > 5 || value < 0) return null;
     return (
       <div className="mb-3">
@@ -197,15 +323,12 @@ function SectionField({ label, value }: { label: string; value: unknown }) {
   }
   if (Array.isArray(value)) {
     if (value.length === 0) return null;
-    return <ArrayField value={value} />;
+    return <ArrayField value={value} label={label} />;
   }
   if (typeof value === "object") {
     const obj = value as Record<string, unknown>;
     if (!obj || Object.keys(obj).length === 0) return null;
-    const hasStrengthsWeaknesses =
-      obj.strengths != null && obj.weaknesses != null &&
-      Array.isArray(obj.strengths) && Array.isArray(obj.weaknesses);
-    if (hasStrengthsWeaknesses) {
+    if (Array.isArray(obj.strengths) && Array.isArray(obj.weaknesses)) {
       return (
         <StrengthsWeaknessesField
           strengths={obj.strengths as unknown[]}
@@ -219,20 +342,13 @@ function SectionField({ label, value }: { label: string; value: unknown }) {
 }
 
 function SectionContent({ data }: { data: Record<string, unknown> }) {
-  const CONTENT_SKIP = new Set([
-    "name", "date", "radarData", "quizMode",
-    ...SKIP_OBJECT_KEYS,
-  ]);
-
+  const CONTENT_SKIP = new Set(["name", "date", "radarData", "quizMode"]);
   const entries = Object.entries(data).filter(([k]) => !CONTENT_SKIP.has(k));
 
   return (
     <div className="space-y-4">
       {entries.map(([key, value]) => {
-        const label = key
-          .replace(/([A-Z])/g, " $1")
-          .replace(/^./, (s) => s.toUpperCase())
-          .trim();
+        const label = formatLabel(key);
         return <SectionField key={key} label={label} value={value} />;
       })}
     </div>
