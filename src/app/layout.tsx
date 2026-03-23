@@ -1,6 +1,8 @@
 import { Playfair_Display } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -26,7 +28,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${playfair.variable} ${satoshi.variable}`}>
       <body className="bg-cream text-espresso font-body antialiased">
+        <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   );
