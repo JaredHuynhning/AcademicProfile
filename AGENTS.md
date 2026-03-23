@@ -12,9 +12,17 @@
 
 | ID | Title | Status | Next Step |
 |----|-------|--------|-----------|
-| T1 | Frontend redesign with taste-skill | ready | Clarify scope and style variant |
+| T1 | Frontend redesign with taste-skill | active | Fix quiz mode selection on homepage |
 
 **Statuses:** `backlog` → `ready` → `active` → `done`
+
+### Ticket #T1 AC
+- [ ] Homepage shows 3 clickable assessment cards: Personality (~10 min), Learning (~10 min), Complete (~20 min)
+- [ ] Clicking a card sets the correct quiz mode and navigates to /test
+- [ ] Hero card "Begin Assessment" button defaults to complete mode
+- [ ] Features documented in feature-registry.md
+- [ ] No dead code in modified files
+- [ ] Code follows existing project patterns
 
 ---
 

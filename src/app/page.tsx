@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { GraduationCap, Brain, BookOpen, ChartBar } from "@phosphor-icons/react";
+import { GraduationCap, Brain, ChartBar } from "@phosphor-icons/react";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -16,11 +16,12 @@ const fadeUp = {
   viewport: { once: true, margin: "-50px" },
 };
 
-const assessmentAreas = [
-  { icon: Brain, title: "Personality", desc: "6 dimensions of who you are", color: "#8b5cf6", domain: "HEXACO-PI-R" },
-  { icon: GraduationCap, title: "Learning", desc: "Grit, focus, energy & more", color: "#22c55e", domain: "Grit-S, ASRS, SVS" },
-  { icon: BookOpen, title: "Study Style", desc: "Habits & strategies", color: "#3b82f6", domain: "Study approaches" },
-  { icon: ChartBar, title: "Full Report", desc: "23 sections, PDF-ready", color: "#f43f5e", domain: "Cross-referenced" },
+import type { QuizMode } from "@/lib/types";
+
+const assessmentModes: { icon: typeof Brain; title: string; desc: string; color: string; domain: string; mode: QuizMode; time: string }[] = [
+  { icon: Brain, title: "Personality Profile", desc: "6 dimensions of who you are", color: "#8b5cf6", domain: "HEXACO-PI-R", mode: "personality", time: "~10 min" },
+  { icon: GraduationCap, title: "Learning Assessment", desc: "Grit, focus, energy & study style", color: "#22c55e", domain: "Grit-S, ASRS, SVS + Study Approaches", mode: "learning", time: "~10 min" },
+  { icon: ChartBar, title: "Complete Assessment", desc: "Full personality + learning profile", color: "#f43f5e", domain: "All 120 questions, cross-referenced", mode: "complete", time: "~20 min" },
 ];
 
 export default function HomePage() {
@@ -29,9 +30,10 @@ export default function HomePage() {
   const { reports } = useReportsStore();
   const [inputName, setInputName] = useState(name);
 
-  const handleStart = () => {
-    setName(inputName);
-    setMode("complete");
+  const handleStart = (mode: QuizMode = "complete") => {
+    if (!inputName.trim()) return;
+    setName(inputName.trim());
+    setMode(mode);
     router.push("/test");
   };
 
@@ -67,21 +69,29 @@ export default function HomePage() {
         </Card>
       </motion.div>
 
-      {/* Bento Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {assessmentAreas.map((area, i) => (
+      {/* Assessment Modes */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {assessmentModes.map((area, i) => (
           <motion.div key={area.title} {...fadeUp} transition={{ ...fadeUp.transition, delay: 0.1 * (i + 1) }}>
-            <Card className="p-5">
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center mb-3"
-                style={{ backgroundColor: `${area.color}15`, color: area.color }}
+            <button onClick={() => handleStart(area.mode)} className="w-full text-left">
+              <Card
+                className="p-5 cursor-pointer hover:shadow-lg transition-shadow"
+                outerClassName="hover:scale-[1.01] transition-transform duration-500"
               >
-                <area.icon size={22} weight="duotone" />
-              </div>
-              <h3 className="font-semibold text-espresso">{area.title}</h3>
-              <p className="text-sm text-warm-gray mt-1">{area.desc}</p>
-              <p className="text-[10px] text-warm-gray/60 mt-2 uppercase tracking-wider">{area.domain}</p>
-            </Card>
+                <div className="flex items-center gap-3 mb-3">
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center"
+                    style={{ backgroundColor: `${area.color}15`, color: area.color }}
+                  >
+                    <area.icon size={22} weight="duotone" />
+                  </div>
+                  <Badge color={area.color}>{area.time}</Badge>
+                </div>
+                <h3 className="font-semibold text-espresso">{area.title}</h3>
+                <p className="text-sm text-warm-gray mt-1">{area.desc}</p>
+                <p className="text-[10px] text-warm-gray/60 mt-2 uppercase tracking-wider">{area.domain}</p>
+              </Card>
+            </button>
           </motion.div>
         ))}
       </div>
