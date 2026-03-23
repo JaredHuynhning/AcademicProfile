@@ -14,7 +14,7 @@ export interface QuizItem {
 export interface SubscaleScore {
   score: number;
   level: ClassifyLevel;
-  items: number[];
+  items: number;
 }
 
 export interface DimensionScore {
