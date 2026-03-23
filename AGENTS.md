@@ -1,31 +1,45 @@
-<!-- BEGIN:nextjs-agent-rules -->
-# This is NOT the Next.js you know
+# AcademicProfile
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-<!-- END:nextjs-agent-rules -->
+## Current State
+**Last session**: 2026-03-23 - Fixed low extraversion framing, widened sidebar, wired up Complete Profile tab with C1-C7 sections, added cross-reference engine
+**Next action**: Frontend redesign using taste-skill design principles
 
+---
 
+## Active Tickets
+<!-- Lightweight tracking - full details only when working on ticket -->
+<!-- Format: | ID | Title | Status | Next Step | -->
 
+| ID | Title | Status | Next Step |
+|----|-------|--------|-----------|
+| T1 | Frontend redesign with taste-skill | ready | Clarify scope and style variant |
 
+**Statuses:** `backlog` → `ready` → `active` → `done`
 
+---
 
+## Blocked / Waiting
+<!-- Items that can't proceed -->
+<!-- Format: - [ID] Title - Blocked on: [reason] -->
 
+---
 
+## Recently Completed
+<!-- Last 5 completed items - older ones can be deleted -->
+<!-- Format: - [DATE] [ID] Title -->
 
-<!-- compaction-checkpoint-start -->
-## Pre-Compaction Checkpoint
-**When**: 2026-03-24 02:47:39 | **Branch**: worktree-nextjs-redesign | **Activity**: 0
-0 msgs, 0
-0 tools, 0
-0 files
+---
 
-**Recent work**:
-- 
+## Gotchas
+<!-- Things that catch you out in this project -->
 
-**Modified files**:
-- 
+---
 
-**Dirty files** (0): 
+## Decisions
+<!-- Key decisions with brief rationale -->
 
-> Resume context: Read this section + git diff + recent session log to reconstruct state.
-<!-- compaction-checkpoint-end -->
+---
+
+## Session Log
+<!-- Last 3 sessions only - keeps context fresh -->
+<!-- Format: - [DATE]: Summary | Next -->
