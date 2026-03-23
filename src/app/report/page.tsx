@@ -20,6 +20,9 @@ const SKIP_KEYS = new Set([
   "matchPercent", "match_score", "dualFire", "type", "impact", "profile",
   "percentile", "structureScore", "warmthScore", "carrotScore", "stickScore",
   "barrier", "sdi", "item_count", "dim", "name", "date",
+  // Section-structural keys (lookup keys whose content is in companion objects)
+  "dominantApproach", "motivationProfile", "regulationStrength",
+  "approaches", "motivationScores", "scores", "quizMode",
 ]);
 
 // Keys whose values are titles/names to display prominently
@@ -32,7 +35,7 @@ const TEXT_KEYS = new Set([
   "notIdeal", "tip", "tutorTip", "strategy", "challenge", "analysis",
   "leverageTip", "actionTip", "whatToDo", "understandingProfile",
   "alignmentLabel", "passionTip", "confidenceTip", "fallbackMessage",
-  "oneMinuteBrief",
+  "oneMinuteBrief", "insight",
 ]);
 
 function formatLabel(key: string): string {
@@ -43,7 +46,9 @@ function formatLabel(key: string): string {
     .trim();
 }
 
+/** Title-case only short enum-like values (e.g. "very_high" → "Very High"). Leave sentences alone. */
 function formatLevel(val: string): string {
+  if (val.length > 30 || val.includes(".") || val.includes(",")) return val;
   return val.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
@@ -342,8 +347,7 @@ function SectionField({ label, value }: { label: string; value: unknown }) {
 }
 
 function SectionContent({ data }: { data: Record<string, unknown> }) {
-  const CONTENT_SKIP = new Set(["name", "date", "radarData", "quizMode"]);
-  const entries = Object.entries(data).filter(([k]) => !CONTENT_SKIP.has(k));
+  const entries = Object.entries(data).filter(([k]) => !SKIP_KEYS.has(k));
 
   return (
     <div className="space-y-4">
