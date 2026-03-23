@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { useQuizStore } from "@/lib/stores/quiz-store";
 import { useReportsStore } from "@/lib/stores/reports-store";
+import type { QuizMode } from "@/lib/types";
 
 const fadeUp = {
   initial: { opacity: 0, y: 24, filter: "blur(8px)" },
@@ -15,8 +16,6 @@ const fadeUp = {
   transition: { duration: 0.8, ease: [0.32, 0.72, 0, 1] as [number, number, number, number] },
   viewport: { once: true, margin: "-50px" },
 };
-
-import type { QuizMode } from "@/lib/types";
 
 const assessmentModes: { icon: typeof Brain; title: string; desc: string; color: string; domain: string; mode: QuizMode; time: string }[] = [
   { icon: Brain, title: "Personality Profile", desc: "6 dimensions of who you are", color: "#8b5cf6", domain: "HEXACO-PI-R", mode: "personality", time: "~10 min" },
@@ -27,7 +26,7 @@ const assessmentModes: { icon: typeof Brain; title: string; desc: string; color:
 export default function HomePage() {
   const router = useRouter();
   const { setName, setMode, name } = useQuizStore();
-  const { reports } = useReportsStore();
+  const { reports, loadReport } = useReportsStore();
   const [inputName, setInputName] = useState(name);
 
   const handleStart = (mode: QuizMode = "complete") => {
@@ -102,15 +101,20 @@ export default function HomePage() {
           <Badge className="mb-3">Previous Results</Badge>
           <h2 className="font-display text-2xl font-bold mb-4">Saved Reports</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {reports.slice(0, 4).map((report) => (
-              <Card
-                key={report.id}
-                className="p-4 cursor-pointer hover:shadow-lg transition-shadow"
-                outerClassName="hover:scale-[1.01] transition-transform duration-500"
+            {reports.slice(0, 4).map((r) => (
+              <button
+                key={r.id}
+                onClick={() => { loadReport(r); router.push("/report"); }}
+                className="w-full text-left"
               >
-                <p className="font-semibold">{report.name}</p>
-                <p className="text-sm text-warm-gray">{new Date(report.date).toLocaleDateString()}</p>
-              </Card>
+                <Card
+                  className="p-4 cursor-pointer hover:shadow-lg transition-shadow"
+                  outerClassName="hover:scale-[1.01] transition-transform duration-500"
+                >
+                  <p className="font-semibold">{r.name}</p>
+                  <p className="text-sm text-warm-gray" suppressHydrationWarning>{new Date(r.date).toLocaleDateString()}</p>
+                </Card>
+              </button>
             ))}
           </div>
         </motion.section>
