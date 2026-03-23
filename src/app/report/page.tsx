@@ -82,6 +82,35 @@ function StrengthsWeaknessesField({
   );
 }
 
+// Keys to never render (internal/technical)
+const SKIP_OBJECT_KEYS = new Set([
+  "key", "icon", "color", "rawScore", "classification", "rank", "role",
+  "shortName", "radarData", "passionClassification", "confidenceClassification",
+  "matchPercent", "match_score", "dualFire", "type", "impact", "profile",
+  "percentile", "structureScore", "warmthScore", "carrotScore", "stickScore",
+  "barrier", "scores", "sdi", "item_count",
+]);
+
+// Keys whose values are display names/titles
+const TITLE_KEYS = new Set(["name", "title", "label", "style", "preferred", "metric"]);
+
+// Keys whose values are long-form narratives
+const NARRATIVE_KEYS = new Set([
+  "description", "desc", "narrative", "details", "summary", "explanation",
+  "message", "keyPrinciple", "actionStep", "approach", "idealFor", "bestWhen",
+  "notIdeal", "tip", "tutorTip", "strategy", "challenge", "analysis",
+  "leverageTip", "actionTip", "whatToDo", "understandingProfile",
+  "alignmentLabel", "passionTip", "confidenceTip", "fallbackMessage",
+  "oneMinuteBrief",
+]);
+
+function formatLabel(key: string): string {
+  return key
+    .replace(/([A-Z])/g, " $1")
+    .replace(/^./, (s) => s.toUpperCase())
+    .trim();
+}
+
 function ObjectCard({ data }: { data: Record<string, unknown> }) {
   if (!data) return null;
   const hasStrengthsWeaknesses =
@@ -89,52 +118,59 @@ function ObjectCard({ data }: { data: Record<string, unknown> }) {
 
   if (hasStrengthsWeaknesses) {
     const cardName = typeof data.name === "string" ? data.name : null;
+    const color = typeof data.color === "string" ? data.color : undefined;
     return (
-      <div className="mb-2">
+      <div className="mb-4">
         {cardName && (
-          <p className="font-medium text-espresso mb-2">{cardName}</p>
+          <p className="font-semibold text-espresso mb-1" style={color ? { color } : undefined}>
+            {cardName}
+          </p>
         )}
         <StrengthsWeaknessesField
           strengths={data.strengths as unknown[]}
           weaknesses={data.weaknesses as unknown[]}
         />
+        {typeof data.whatToDo === "string" && (
+          <p className="text-sm text-espresso/70 mt-2 italic">{data.whatToDo}</p>
+        )}
       </div>
     );
   }
 
-  const primitiveEntries = Object.entries(data).filter(
-    ([, v]) => typeof v === "string" || typeof v === "number"
+  // Extract meaningful fields
+  const titleVal = Object.entries(data).find(([k]) => TITLE_KEYS.has(k));
+  const color = typeof data.color === "string" ? data.color : undefined;
+  const score = typeof data.score === "string" || typeof data.score === "number" ? data.score : null;
+  const level = typeof data.level === "string" ? data.level : null;
+
+  const narratives = Object.entries(data).filter(
+    ([k, v]) => NARRATIVE_KEYS.has(k) && typeof v === "string" && (v as string).length > 10
   );
-  const arrayEntries = Object.entries(data).filter(([, v]) => Array.isArray(v));
+  const arrayEntries = Object.entries(data).filter(
+    ([k, v]) => !SKIP_OBJECT_KEYS.has(k) && Array.isArray(v) && (v as unknown[]).length > 0
+  );
 
   return (
     <Card className="!p-4">
-      {primitiveEntries.map(([key, value]) => {
-        if (key === "color") return null;
-        if (key === "name" || key === "title" || key === "label") {
-          return (
-            <p key={key} className="font-medium text-espresso mb-1">
-              {String(value)}
-            </p>
-          );
-        }
-        if (key === "score" || key === "rawScore") {
-          return (
-            <Badge key={key} className="mb-2">
-              {String(value)}
-            </Badge>
-          );
-        }
-        return (
-          <p key={key} className="text-sm text-espresso/70 leading-relaxed mb-1">
-            {String(value)}
-          </p>
-        );
-      })}
+      {titleVal && (
+        <p className="font-semibold text-espresso mb-1" style={color ? { color } : undefined}>
+          {String(titleVal[1])}
+          {score != null && <Badge className="ml-2">{String(score)}</Badge>}
+          {level && <span className="text-sm text-warm-gray ml-2">{level}</span>}
+        </p>
+      )}
+      {!titleVal && score != null && (
+        <Badge className="mb-2" color={color}>{String(score)}</Badge>
+      )}
+      {narratives.map(([key, value]) => (
+        <p key={key} className="text-sm text-espresso/70 leading-relaxed mb-2">
+          {String(value)}
+        </p>
+      ))}
       {arrayEntries.map(([key, value]) => (
         <div key={key} className="mt-2">
           <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-1">
-            {key.replace(/([A-Z])/g, " $1").trim()}
+            {formatLabel(key)}
           </p>
           <ArrayField value={value as unknown[]} />
         </div>
@@ -151,6 +187,8 @@ function SectionField({ label, value }: { label: string; value: unknown }) {
     return <StringField value={value} />;
   }
   if (typeof value === "number") {
+    // Skip raw numbers unless they look like formatted scores (1-5 range)
+    if (value > 5 || value < 0) return null;
     return (
       <div className="mb-3">
         <Badge>{String(value)}</Badge>
@@ -181,9 +219,12 @@ function SectionField({ label, value }: { label: string; value: unknown }) {
 }
 
 function SectionContent({ data }: { data: Record<string, unknown> }) {
-  const SKIP_KEYS = new Set(["name", "date", "radarData"]);
+  const CONTENT_SKIP = new Set([
+    "name", "date", "radarData", "quizMode",
+    ...SKIP_OBJECT_KEYS,
+  ]);
 
-  const entries = Object.entries(data).filter(([k]) => !SKIP_KEYS.has(k));
+  const entries = Object.entries(data).filter(([k]) => !CONTENT_SKIP.has(k));
 
   return (
     <div className="space-y-4">
