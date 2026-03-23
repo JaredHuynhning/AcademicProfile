@@ -83,8 +83,9 @@ function StrengthsWeaknessesField({
 }
 
 function ObjectCard({ data }: { data: Record<string, unknown> }) {
+  if (!data) return null;
   const hasStrengthsWeaknesses =
-    Array.isArray(data.strengths) && Array.isArray(data.weaknesses);
+    data && Array.isArray(data.strengths) && Array.isArray(data.weaknesses);
 
   if (hasStrengthsWeaknesses) {
     const cardName = typeof data.name === "string" ? data.name : null;
@@ -144,7 +145,11 @@ function ObjectCard({ data }: { data: Record<string, unknown> }) {
 
 function SectionField({ label, value }: { label: string; value: unknown }) {
   if (value === null || value === undefined) return null;
-  if (typeof value === "string") return <StringField value={value} />;
+  if (typeof value === "boolean") return null;
+  if (typeof value === "string") {
+    if (value.length === 0) return null;
+    return <StringField value={value} />;
+  }
   if (typeof value === "number") {
     return (
       <div className="mb-3">
@@ -158,7 +163,9 @@ function SectionField({ label, value }: { label: string; value: unknown }) {
   }
   if (typeof value === "object") {
     const obj = value as Record<string, unknown>;
+    if (!obj || Object.keys(obj).length === 0) return null;
     const hasStrengthsWeaknesses =
+      obj.strengths != null && obj.weaknesses != null &&
       Array.isArray(obj.strengths) && Array.isArray(obj.weaknesses);
     if (hasStrengthsWeaknesses) {
       return (
