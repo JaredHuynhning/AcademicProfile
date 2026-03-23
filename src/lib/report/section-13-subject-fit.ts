@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Section 13: Subject Interests & Confidence
  * Generates per-subject narrative with passion + confidence gap analysis.

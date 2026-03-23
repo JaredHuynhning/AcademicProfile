@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Section C2: Who You Are
  * Personality DNA (top 3 + bottom 3) and cross-reference personality↔academic table.

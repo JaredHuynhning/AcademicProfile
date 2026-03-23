@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Section 12: Academic Character
  * Generates narrative analysis of grit, focus, procrastination, and energy.

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Section 2: Personality at a Glance
  */

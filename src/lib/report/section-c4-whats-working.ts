@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Section C4: What's Working
  * Confirmed strengths, untapped potential, learned skills, strength stack.

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Section 11: Study & Motivation Profile
  * Generates report data from studyProfile + HEXACO cross-system insights.

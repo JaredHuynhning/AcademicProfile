@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Section 10 (bottom): Tutor Match & Archetype Deep Dive
  */

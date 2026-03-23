@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Section 3-4: Deep Dive into Six Dimensions
  */

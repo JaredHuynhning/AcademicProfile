@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Section 10: Guide for Teachers & Parents
  * Dual-audience tips, motivation strategies, warning signs

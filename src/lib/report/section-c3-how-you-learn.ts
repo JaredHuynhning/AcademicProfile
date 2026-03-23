@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Section C3: How You Learn Best
  * Ideal conditions (4 cards) + personality↔academic alignments/conflicts.

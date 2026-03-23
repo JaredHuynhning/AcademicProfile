@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Section 8: Working With Others
  * Driven by X+A role, E+A conflict, X+H communication

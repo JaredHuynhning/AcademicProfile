@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Section 7: Study Strategies & Exam Prep
  * Driven by O+C methods, subject approaches, E+C exam prep

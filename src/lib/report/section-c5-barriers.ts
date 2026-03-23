@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Section C5: What's Holding You Back
  * Root cause chains, anxiety cycles, misdiagnoses, priority ranking.

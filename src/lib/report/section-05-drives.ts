@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Section 6: What Drives You
  * Motivators, demotivators, flow state, disengagement

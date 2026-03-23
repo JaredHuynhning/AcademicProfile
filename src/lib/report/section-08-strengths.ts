@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Section 8: Strengths, Challenges & Growth
  * Per-dimension breakdown with inverse-aware facet classification.

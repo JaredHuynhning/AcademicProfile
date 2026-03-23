@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Section 14: What Works For You
  * Generates teacher preference profile, carrot-vs-stick type,

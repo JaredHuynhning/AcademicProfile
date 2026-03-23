@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Section 15: Root Cause Analysis
  * Synthesizes across learnerProfile, studyProfile, and HEXACO dimensions

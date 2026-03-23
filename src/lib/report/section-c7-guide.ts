@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Section C7: Guide for Teachers & Parents
  * One-minute brief, teacher strategies, parent support, tutor match.

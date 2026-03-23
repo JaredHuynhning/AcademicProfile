@@ -38,7 +38,7 @@ import { runCrossReferenceEngine } from './cross-reference-engine';
  * @param {string} name - Student name
  * @returns {object} All section data for rendering
  */
-export function generateReport(results, name) {
+export function generateReport(results: any, name: string) {
 	const hasPersonality = !!results.dimensions;
 	const hasStudy = !!results.studyProfile;
 	const hasLearner = !!results.learnerProfile;

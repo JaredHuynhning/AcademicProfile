@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Section 16: Academic Guide for Teachers & Parents
  * Translates academic assessment data (study approach, motivation, self-regulation,

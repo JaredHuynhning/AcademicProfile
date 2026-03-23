@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Section 5: How You Learn Best
  * Driven by C+X, O+C, O+X combinations

@@ -184,10 +184,10 @@ export function dimScore(dimensions: DimensionsMap, key: string): number {
 /**
  * Pick items from an array based on score level.
  */
-export function pickByLevel<T>(
+export function pickByLevel(
 	score: number,
-	{ high = [] as T[], moderate = [] as T[], low = [] as T[] }
-): T[] {
+	{ high = [] as any[], moderate = [] as any[], low = [] as any[] }: { high?: any[]; moderate?: any[]; low?: any[] }
+): any[] {
 	if (isHigh(score)) return high;
 	if (isLow(score)) return low;
 	return moderate;

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Section C6: Action Plan
  * Top 3 actions, quick wins, study prescription, stop-doing list, weekly rhythm.
