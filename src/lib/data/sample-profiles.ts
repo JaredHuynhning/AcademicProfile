@@ -871,3 +871,4 @@ const rawProfiles: any[] = [
 ];
 
 export const sampleProfiles: SavedReport[] = rawProfiles as unknown as SavedReport[];
+export const SAMPLE_VERSION = 2;
