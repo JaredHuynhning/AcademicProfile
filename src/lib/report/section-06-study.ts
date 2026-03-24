@@ -251,24 +251,24 @@ function buildTimeManagement(dims: DimensionsMap) {
 	if (isHigh(dims.C.score)) {
 		return {
 			style: 'Structured Planner',
-			description: 'You naturally organise your time well. Build on this with formal planning tools.',
+			description: 'You naturally organise your time well. Your conscientiousness means you thrive with formal planning tools and detailed schedules. You are the type of student who benefits from planners, checklists, and structured revision timetables. The risk is over-planning and perfectionism. Leave buffer time for the unexpected and remember that "done" is better than "perfect".',
 			tools: ['Weekly study planner (paper or digital)', 'Subject-specific checklists', 'Colour-coded calendar blocking'],
-			warning: 'Watch for over-planning. Leave some buffer time for the unexpected.'
+			warning: 'Watch for over-planning. Leave some buffer time for the unexpected. If planning takes more than 10 minutes, you are procrastinating through planning.'
 		};
 	}
 	if (isLow(dims.C.score)) {
 		return {
 			style: 'Sprint Worker',
-			description: 'You work in bursts of energy rather than steady schedules. Design your system around this reality.',
-			tools: ['Pomodoro timer app', 'Simple daily "top 3 tasks" list', 'Visual countdown to deadlines'],
-			warning: 'Start assignments the day they are set. Even just 10 minutes of planning prevents last-minute panic.'
+			description: 'You work in bursts of energy rather than steady schedules. Traditional study planners will not work for you because you will abandon them within a week. Instead, design your system around this reality: short sprints, simple task lists, and external accountability (study partners, tutors, apps with reminders). Your key challenge is starting. Once you start, you often do good work.',
+			tools: ['Pomodoro timer app (25 min on, 5 min off)', 'Simple daily "top 3 tasks" list (not a full planner)', 'Visual countdown to deadlines on your wall or phone'],
+			warning: 'Start assignments the day they are set. Even just 10 minutes of planning prevents last-minute panic. The hardest part is the first 2 minutes.'
 		};
 	}
 	return {
 		style: 'Flexible Organiser',
-		description: 'You plan when needed but adapt easily. A light framework keeps you on track without feeling restrictive.',
+		description: 'You plan when needed but adapt easily. A light framework keeps you on track without feeling restrictive. You do not need a colour-coded study bible, but you do need a weekly check-in with yourself: what is due, what is most important, and when will you do it? This balance of structure and flexibility is actually an advantage in real-world environments.',
 		tools: ['Weekly planner with flexible daily tasks', 'Priority matrix (urgent vs important)', 'Regular weekly review of progress'],
-		warning: 'Identify your most productive time of day and protect it for the hardest work.'
+		warning: 'Identify your most productive time of day and protect it for the hardest work. Without this, your flexibility can become avoidance.'
 	};
 }
 

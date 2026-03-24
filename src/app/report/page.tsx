@@ -343,10 +343,12 @@ function ObjectCard({ data }: { data: Record<string, unknown> }) {
   const score = typeof data.score === "string" || typeof data.score === "number" ? data.score : null;
   const level = typeof data.level === "string" ? formatLevel(data.level) : null;
 
-  // Gather text content (descriptions, tips, etc.)
+  // Gather text content (descriptions, tips, etc.) — skip if same as title
   const texts: string[] = [];
   for (const [k, v] of Object.entries(data)) {
     if (TEXT_KEYS.has(k) && typeof v === "string" && v.length > 5) {
+      // Skip if this text duplicates or starts with the title
+      if (title && (v === title || v.startsWith(title) || title.startsWith(v.slice(0, 30)))) continue;
       texts.push(v);
     }
   }
