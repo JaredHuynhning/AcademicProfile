@@ -661,7 +661,7 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
     "whoYouAre", "glance",         // covered by deepDive
     "whatWorks", "howYouLearn",     // covered by whatsWorking + executiveSummary
     "rootCause",                    // covered by barriers
-    "guide", "tutor", "academicGuide", // covered by unifiedGuide
+    "guide", "academicGuide", // covered by unifiedGuide
   ]);
   const filteredOrder = hasComplete
     ? SECTION_ORDER.filter((s) => !skipInComplete.has(s.key))

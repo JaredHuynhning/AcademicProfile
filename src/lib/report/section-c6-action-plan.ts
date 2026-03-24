@@ -93,7 +93,26 @@ export function generateActionPlan(results, crossRefResult) {
 		description: `${weekday} ${weekend} Consistency matters more than duration. Three 30-minute sessions beat one 3-hour cramming session every time.`
 	};
 
+	// Build narrative prose
+	const narrativeParts = [];
+
+	if (topActions.length > 0) {
+		narrativeParts.push(`Based on the cross-analysis of your personality and academic data, the single most impactful change you can make is: ${topActions[0].description}`);
+	}
+
+	narrativeParts.push(`Your recommended study method is ${studyPrescription.method}. ${studyPrescription.rationale}`);
+
+	if (quickWins.length > 0) {
+		const qwText = quickWins.slice(0, 2).map(q => q.description).join(' Additionally, ');
+		narrativeParts.push(`For quick momentum: ${qwText}`);
+	}
+
+	narrativeParts.push(weeklyRhythm.description);
+
+	const narrative = narrativeParts.join('\n\n');
+
 	return {
+		narrative,
 		topActions,
 		quickWins,
 		studyPrescription,

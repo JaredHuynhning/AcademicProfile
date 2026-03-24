@@ -28,21 +28,22 @@ const SKIP_KEYS = new Set([
   "personalityRoot", "personalityScore", "academicSymptom", "academicScore",
   "visibleBehaviour", "id", "looksLike", "actuallyIs", "urgency",
   "alignment", "passion", "confidence", "weight", "evidence",
-  "dimKey", "facetKey",
+  "dimKey", "facetKey", "source", "audience", "dualFireNote",
+  "personality", "academic", "misdiagnosis", "fit",
 ]);
 
 // Keys whose values are titles/names to display prominently
-const TITLE_KEYS = new Set(["name", "title", "label", "style", "preferred", "metric"]);
+const TITLE_KEYS = new Set(["name", "title", "label", "style", "preferred", "metric", "format", "category", "tip"]);
 
 // Keys whose values are short text to display as body content
 const TEXT_KEYS = new Set([
   "text", "description", "desc", "narrative", "details", "summary", "explanation",
   "message", "keyPrinciple", "actionStep", "approach", "idealFor", "bestWhen",
-  "notIdeal", "tip", "tutorTip", "strategy", "challenge", "analysis",
+  "notIdeal", "tutorTip", "strategy", "challenge", "analysis",
   "leverageTip", "actionTip", "whatToDo", "understandingProfile",
   "alignmentLabel", "passionTip", "confidenceTip", "fallbackMessage",
   "oneMinuteBrief", "insight", "question", "misconception", "realCause",
-  "cycle", "fallbackMessage", "method", "rationale",
+  "cycle", "fallbackMessage", "method", "rationale", "action",
 ]);
 
 function formatLabel(key: string): string {
@@ -338,7 +339,7 @@ function ObjectCard({ data }: { data: Record<string, unknown> }) {
           weaknesses={data.weaknesses as unknown[]}
         />
         {whatToDo && (
-          <p className="text-espresso/70 mt-2 italic">{whatToDo}</p>
+          <p className="text-espresso/70 mt-2 italic">{clean(whatToDo)}</p>
         )}
       </div>
     );
@@ -354,8 +355,8 @@ function ObjectCard({ data }: { data: Record<string, unknown> }) {
   const texts: string[] = [];
   for (const [k, v] of Object.entries(data)) {
     if (TEXT_KEYS.has(k) && typeof v === "string" && v.length > 5) {
-      // Skip if this text duplicates or starts with the title
-      if (title && (v === title || v.startsWith(title) || title.startsWith(v.slice(0, 30)))) continue;
+      // Skip if this text is an exact duplicate of the title
+      if (title && v === title) continue;
       texts.push(v);
     }
   }
@@ -488,9 +489,51 @@ function SectionField({ label, value }: { label: string; value: unknown }) {
   return null;
 }
 
-function SectionContent({ data }: { data: Record<string, unknown> }) {
-  const entries = Object.entries(data).filter(([k]) => !SKIP_KEYS.has(k));
+// Keys that are rendered as part of the narrative — skip in structured rendering
+const NARRATIVE_KEYS = new Set([
+  "narrative", "archetype", "keyInsight", "fallbackMessage",
+  "learningStyle", "attentionProfile", "studyApproach", "timeManagement",
+  "selfReflection", "growthMindset", "oneMinuteBrief", "tutorMatch",
+  "priorityRanking", "weeklyRhythm", "studyPrescription",
+  // Executive summary — narrative already covers these
+  "topStrength", "topBarrier", "topAction",
+  // Barriers — narrative already covers these
+  "cycles", "misdiagnoses",
+]);
 
+function NarrativeParagraphs({ text }: { text: string }) {
+  const paragraphs = text.split('\n\n').filter(p => p.trim().length > 0);
+  return (
+    <div className="space-y-4 mb-6">
+      {paragraphs.map((p, i) => (
+        <p key={i} className="text-espresso/80 leading-relaxed text-[15px]">{clean(p)}</p>
+      ))}
+    </div>
+  );
+}
+
+function SectionContent({ data }: { data: Record<string, unknown> }) {
+  const narrative = typeof data.narrative === "string" ? data.narrative : null;
+
+  // When narrative exists, show it prominently then only structured elements
+  if (narrative) {
+    const structuredEntries = Object.entries(data).filter(
+      ([k]) => !SKIP_KEYS.has(k) && !NARRATIVE_KEYS.has(k)
+    );
+
+    return (
+      <div className="space-y-4">
+        <NarrativeParagraphs text={narrative} />
+        {structuredEntries.map(([key, value]) => {
+          const label = formatLabel(key);
+          return <SectionField key={key} label={label} value={value} />;
+        })}
+      </div>
+    );
+  }
+
+  // No narrative — render all fields generically
+  const entries = Object.entries(data).filter(([k]) => !SKIP_KEYS.has(k));
   return (
     <div className="space-y-4">
       {entries.map(([key, value]) => {
@@ -619,27 +662,17 @@ export default function ReportPage() {
   // to avoid redundancy — the complete sections cross-reference both
   const orderedSections: SectionDefinition[] = [];
   if (report.hasComplete) {
-    // Complete mode: comprehensive but deduplicated
+    // Complete mode: 9 focused narrative sections (no redundancy)
     orderedSections.push(
       { key: "cover", title: "Profile Summary", isCover: true },
       { key: "executiveSummary", title: "Executive Summary" },
-      // Personality in depth
-      { key: "deepDive", title: "Deep Dive: Your Personality" },
-      { key: "learning", title: "Learning Style" },
-      { key: "drives", title: "Drives & Motivation" },
-      { key: "study", title: "Study Approach" },
-      { key: "group", title: "Group Work & Collaboration" },
-      { key: "strengths", title: "Strengths & Growth" },
-      // Academic profile
-      { key: "studyProfile", title: "Study Profile" },
-      { key: "academicCharacter", title: "Academic Character" },
-      { key: "subjectFit", title: "Subject Fit" },
-      // Cross-referenced insights
-      { key: "whatsWorking", title: "What's Working" },
+      { key: "deepDive", title: "Your Personality" },
+      { key: "learning", title: "How You Learn" },
+      { key: "study", title: "Study Strategies & Exam Preparation" },
+      { key: "strengths", title: "Strengths & Growth Areas" },
       { key: "barriers", title: "Barriers to Learning" },
-      { key: "actionPlan", title: "Action Plan" },
-      // Consolidated guide
-      { key: "unifiedGuide", title: "Complete Guide" },
+      { key: "actionPlan", title: "Your Action Plan" },
+      { key: "unifiedGuide", title: "Guide for Teachers, Parents & Tutors" },
     );
   } else {
     if (report.hasPersonality) orderedSections.push(...PERSONALITY_SECTIONS);

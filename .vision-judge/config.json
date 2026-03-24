@@ -1,0 +1,58 @@
+{
+  "baseUrl": "http://localhost:3001",
+  "navigation": "direct",
+  "waitMs": 3000,
+  "maxFolds": 3,
+  "viewports": {
+    "desktop": { "width": 1280, "height": 720 }
+  },
+  "routes": ["/", "/test", "/report", "/reports"],
+  "interactions": [
+    {
+      "name": "homepage-fill-name",
+      "route": "/",
+      "steps": [
+        { "action": "type", "selector": "input[placeholder*='name']", "value": "TestStudent" },
+        { "action": "wait", "ms": 500 }
+      ],
+      "waitAfter": 500,
+      "description": "Fill in student name on homepage"
+    },
+    {
+      "name": "homepage-click-personality",
+      "route": "/",
+      "steps": [
+        { "action": "type", "selector": "input[placeholder*='name']", "value": "TestStudent" },
+        { "action": "wait", "ms": 300 },
+        { "action": "click", "text": "Personality Profile" },
+        { "action": "wait", "ms": 2000 }
+      ],
+      "waitAfter": 1000,
+      "description": "Click Personality card - should navigate to /test"
+    },
+    {
+      "name": "quiz-answer-question",
+      "route": "/test",
+      "steps": [
+        { "action": "wait", "ms": 1000 },
+        { "action": "click", "text": "3" },
+        { "action": "wait", "ms": 800 },
+        { "action": "click", "text": "4" },
+        { "action": "wait", "ms": 800 }
+      ],
+      "waitAfter": 500,
+      "description": "Answer 2 quiz questions"
+    },
+    {
+      "name": "reports-load-sophie",
+      "route": "/reports",
+      "steps": [
+        { "action": "wait", "ms": 1000 },
+        { "action": "click", "text": "Sophie Turner" },
+        { "action": "wait", "ms": 2000 }
+      ],
+      "waitAfter": 1000,
+      "description": "Click Sophie Turner saved report"
+    }
+  ]
+}

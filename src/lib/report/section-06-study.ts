@@ -14,13 +14,25 @@ interface Results {
 export function generateStudy(results: Results) {
 	const dims = results.dimensions;
 	const oc = analyzeOC(dims.O.score, dims.C.score);
+	const tm = buildTimeManagement(dims);
+	const methods = buildMethods(dims);
+
+	const topMethods = methods.slice(0, 3).map(m => m.name).join(', ');
+
+	const narrative = [
+		`Your study approach is best described as "${oc.label}". ${oc.description}`,
+		`As a "${tm.style}" type, ${tm.description}`,
+		`The study methods that best suit your personality are: ${topMethods}. These leverage your natural tendencies rather than fighting against them. ${methods[0]?.description || ''}`,
+		tm.warning
+	].join('\n\n');
 
 	return {
+		narrative,
 		studyApproach: oc,
-		methods: buildMethods(dims),
+		methods,
 		subjectStrategies: buildSubjectStrategies(dims),
 		examPrep: buildExamPrep(dims),
-		timeManagement: buildTimeManagement(dims),
+		timeManagement: tm,
 		weeklyPlan: buildWeeklyPlan(dims)
 	};
 }

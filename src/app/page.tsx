@@ -37,6 +37,7 @@ export default function HomePage() {
   const [inputDob, setInputDob] = useState(dob);
   const [errors, setErrors] = useState<{ name?: boolean; email?: boolean; dob?: boolean }>({});
   const [shakeKey, setShakeKey] = useState(0);
+  const [showModes, setShowModes] = useState(false);
 
   const validate = () => {
     const nameEmpty = !inputName.trim();
@@ -50,11 +51,15 @@ export default function HomePage() {
     return true;
   };
 
-  const handleStart = (mode: QuizMode = "complete") => {
+  const handleBegin = () => {
     if (!validate()) return;
     setName(inputName.trim());
     setEmail(inputEmail.trim());
     setDob(inputDob);
+    setShowModes(true);
+  };
+
+  const handleModeSelect = (mode: QuizMode) => {
     setMode(mode);
     router.push("/test");
   };
@@ -111,40 +116,56 @@ export default function HomePage() {
               {(errors.name || errors.email || errors.dob) && (
                 <p className="text-xs text-red-400 -mt-1">Please fill in all fields to continue</p>
               )}
-              <Button onClick={() => handleStart()} icon className="justify-center">
-                Begin Assessment
-              </Button>
+              {!showModes && (
+                <Button onClick={handleBegin} icon className="justify-center">
+                  Begin Assessment
+                </Button>
+              )}
             </motion.div>
           </div>
         </Card>
       </motion.div>
 
-      {/* Assessment Modes */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {assessmentModes.map((area, i) => (
-          <motion.div key={area.title} {...fadeUp} transition={{ ...fadeUp.transition, delay: 0.1 * (i + 1) }}>
-            <button onClick={() => handleStart(area.mode)} className="w-full text-left">
-              <Card
-                className="p-5 cursor-pointer hover:shadow-lg transition-shadow"
-                outerClassName="hover:scale-[1.01] transition-transform duration-500"
+      {/* Assessment Mode Selection — shown after form validation */}
+      {showModes && (
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
+        >
+          <p className="text-center text-warm-gray mb-4">Choose your assessment type</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {assessmentModes.map((area, i) => (
+              <motion.div
+                key={area.title}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.1 * i }}
               >
-                <div className="flex items-center gap-3 mb-3">
-                  <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center"
-                    style={{ backgroundColor: `${area.color}15`, color: area.color }}
+                <button onClick={() => handleModeSelect(area.mode)} className="w-full text-left">
+                  <Card
+                    className="p-5 cursor-pointer hover:shadow-lg transition-shadow"
+                    outerClassName="hover:scale-[1.01] transition-transform duration-500"
                   >
-                    <area.icon size={22} weight="duotone" />
-                  </div>
-                  <Badge color={area.color}>{area.time}</Badge>
-                </div>
-                <h3 className="font-semibold text-espresso">{area.title}</h3>
-                <p className="text-sm text-warm-gray mt-1">{area.desc}</p>
-                <p className="text-[10px] text-warm-gray/60 mt-2 uppercase tracking-wider">{area.domain}</p>
-              </Card>
-            </button>
-          </motion.div>
-        ))}
-      </div>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div
+                        className="w-10 h-10 rounded-xl flex items-center justify-center"
+                        style={{ backgroundColor: `${area.color}15`, color: area.color }}
+                      >
+                        <area.icon size={22} weight="duotone" />
+                      </div>
+                      <Badge color={area.color}>{area.time}</Badge>
+                    </div>
+                    <h3 className="font-semibold text-espresso">{area.title}</h3>
+                    <p className="text-sm text-warm-gray mt-1">{area.desc}</p>
+                    <p className="text-[10px] text-warm-gray/60 mt-2 uppercase tracking-wider">{area.domain}</p>
+                  </Card>
+                </button>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      )}
 
       {/* Saved Reports */}
       {reports.length > 0 && (

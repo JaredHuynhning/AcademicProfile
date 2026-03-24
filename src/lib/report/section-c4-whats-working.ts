@@ -55,8 +55,8 @@ export function generateWhatsWorking(results, crossRefResult) {
 
 	// Strength stack: top 5 combined by impact
 	const allStrengths = [
-		...confirmed.map((i) => ({ rank: 0, name: i.insight.split(' — ')[0].slice(0, 60), source: 'confirmed', description: i.insight, impact: i.impact })),
-		...untapped.map((i) => ({ rank: 0, name: i.insight.split(' — ')[0].slice(0, 60), source: 'untapped', description: i.insight, impact: i.impact || 0 }))
+		...confirmed.map((i) => ({ rank: 0, source: 'confirmed', description: i.insight + (i.action ? ` ${i.action}` : ''), impact: i.impact })),
+		...untapped.map((i) => ({ rank: 0, source: 'untapped', description: i.insight + (i.action ? ` ${i.action}` : ''), impact: i.impact || 0 }))
 	]
 		.sort((a, b) => b.impact - a.impact)
 		.slice(0, 5)
