@@ -84,48 +84,9 @@ export function QuizShell() {
       loadedItems = [...studyItems, ...learnerItems];
     }
     setItems(loadedItems);
-    setIndex(0);
-  }, [quizMode, setItems, setIndex]);
+  }, [quizMode, setItems]);
 
   const currentItem = items[currentIndex] ?? null;
-
-  const handleAnswer = useCallback(
-    (value: LikertScore) => {
-      if (!currentItem) return;
-      setAnswer(currentItem.id, value);
-
-      const nextIndex = currentIndex + 1;
-      if (nextIndex >= items.length) {
-        finishQuiz();
-        return;
-      }
-
-      const nextItem = items[nextIndex];
-      const domainChanged = nextItem.domain !== currentItem.domain;
-
-      setDirection("forward");
-
-      if (domainChanged) {
-        const count = getDomainItemCount(items, nextItem.domain);
-        setInterstitial({ visible: true, domain: nextItem.domain, count });
-      } else {
-        setIndex(nextIndex);
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentItem, currentIndex, items, setAnswer, setIndex]
-  );
-
-  const handleInterstitialComplete = useCallback(() => {
-    setInterstitial((prev) => ({ ...prev, visible: false }));
-    setIndex(currentIndex + 1);
-  }, [currentIndex, setIndex]);
-
-  const handleBack = useCallback(() => {
-    if (currentIndex === 0) return;
-    setDirection("back");
-    setIndex(currentIndex - 1);
-  }, [currentIndex, setIndex]);
 
   const finishQuiz = useCallback(() => {
     const results: import("@/lib/types").TestResults = {
@@ -154,6 +115,43 @@ export function QuizShell() {
     router.push("/report");
   }, [quizMode, answers, setResults, router]);
 
+  const handleAnswer = useCallback(
+    (value: LikertScore) => {
+      if (!currentItem) return;
+      setAnswer(currentItem.id, value);
+
+      const nextIndex = currentIndex + 1;
+      if (nextIndex >= items.length) {
+        finishQuiz();
+        return;
+      }
+
+      const nextItem = items[nextIndex];
+      const domainChanged = nextItem.domain !== currentItem.domain;
+
+      setDirection("forward");
+
+      if (domainChanged) {
+        const count = getDomainItemCount(items, nextItem.domain);
+        setInterstitial({ visible: true, domain: nextItem.domain, count });
+      } else {
+        setIndex(nextIndex);
+      }
+    },
+    [currentItem, currentIndex, items, setAnswer, setIndex, finishQuiz]
+  );
+
+  const handleInterstitialComplete = useCallback(() => {
+    setInterstitial((prev) => ({ ...prev, visible: false }));
+    setIndex(currentIndex + 1);
+  }, [currentIndex, setIndex]);
+
+  const handleBack = useCallback(() => {
+    if (currentIndex === 0) return;
+    setDirection("back");
+    setIndex(currentIndex - 1);
+  }, [currentIndex, setIndex]);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (interstitial.visible) return;
@@ -169,7 +167,7 @@ export function QuizShell() {
   }, [handleAnswer, handleBack, interstitial.visible]);
 
   const total = items.length;
-  const answered = Object.keys(answers).length;
+  const answered = currentIndex;
   const percent = total > 0 ? (answered / total) * 100 : 0;
   const minutesLeft = Math.ceil(((total - answered) * 8) / 60);
 

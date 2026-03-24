@@ -37,7 +37,7 @@ export function QuizCard({ item, currentAnswer, onAnswer, direction }: QuizCardP
         initial="enter"
         animate="center"
         exit="exit"
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        transition={{ type: "tween", duration: 0.2, ease: "easeOut" }}
       >
         <Card className="min-h-[280px] flex flex-col gap-6">
           <p className="font-display text-xl font-semibold text-espresso leading-snug">

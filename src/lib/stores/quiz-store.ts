@@ -42,7 +42,7 @@ export const useQuizStore = create<QuizState>()(
       setName: (name) => set({ name }),
       setEmail: (email) => set({ email }),
       setDob: (dob) => set({ dob }),
-      setMode: (mode) => set({ quizMode: mode }),
+      setMode: (mode) => set({ quizMode: mode, answers: {}, currentIndex: 0, results: null, progress: { answered: 0, total: 0, percent: 0 } }),
       setItems: (items) => set({ items }),
       setAnswer: (itemId, value) => {
         const answers = { ...get().answers, [itemId]: value };
@@ -58,6 +58,7 @@ export const useQuizStore = create<QuizState>()(
       name: "hexaco_quiz_state",
       partialize: (state) => ({
         answers: state.answers,
+        currentIndex: state.currentIndex,
         name: state.name,
         email: state.email,
         dob: state.dob,
