@@ -7,6 +7,7 @@ import { generateReport } from "@/lib/report";
 import { ReportSection } from "@/components/report/ReportSection";
 import { StickyNav } from "@/components/report/StickyNav";
 import { FloatingTOC } from "@/components/report/FloatingTOC";
+import { downloadReportPDF } from "@/components/pdf/ReportPDF";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -491,14 +492,18 @@ export default function ReportPage() {
     saveReport(name || "Student", results!);
   }
 
+  async function handleDownloadPDF() {
+    await downloadReportPDF(name || "Student", results!, report as Record<string, unknown>);
+  }
+
   return (
     <>
-      <StickyNav studentName={name || "Student Report"} onSave={handleSave} />
+      <StickyNav studentName={name || "Student Report"} onSave={handleSave} onDownloadPDF={handleDownloadPDF} />
       <FloatingTOC items={tocItems} />
 
       <main className="bg-cream min-h-screen pt-20 pb-24">
         {/* Page header */}
-        <div className="max-w-4xl mx-auto px-6 pt-10 pb-4">
+        <div className="max-w-4xl mx-auto px-6 pt-4 pb-4">
           <Badge className="mb-4">Academic Profile Report</Badge>
           <h1 className="font-display text-4xl md:text-5xl font-bold text-espresso">
             {name || "Student"}
