@@ -655,15 +655,10 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
     day: "numeric",
   });
 
-  // When complete mode: replace bare "whoYouAre" with rich personality sections
+  // Complete mode: show all sections for maximum depth
   const hasComplete = report.hasComplete;
-  const completeSections = [
-    "cover", "executiveSummary",
-    "deepDive", "drives", "strengths",  // rich personality detail
-    "howYouLearn", "whatsWorking", "barriers", "actionPlan", "unifiedGuide",
-  ];
   const filteredOrder = hasComplete
-    ? SECTION_ORDER.filter((s) => completeSections.includes(s.key))
+    ? SECTION_ORDER.filter((s) => s.key !== "whoYouAre") // Skip bare scores section
     : SECTION_ORDER;
 
   const activeSections = filteredOrder.filter(

@@ -76,15 +76,49 @@ function extractTitle(obj: Record<string, unknown> | null | undefined): string |
   return null;
 }
 
+/** Clean em dashes and tidy text for display */
+function clean(text: string): string {
+  return text.replace(/ — /g, ": ").replace(/—/g, ": ").replace(/ – /g, ": ");
+}
+
 // ─── Generic field renderers ──────────────────────────────────────────────────
 
 function BulletList({ items }: { items: string[] }) {
   return (
-    <ul className="space-y-1.5 mb-3">
+    <ul className="space-y-2 mb-3">
       {items.map((item, i) => (
         <li key={i} className="flex items-start gap-2 text-espresso/80 leading-relaxed">
-          <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-warm-gray/40 shrink-0" />
-          {item}
+          <span className="mt-2 w-1.5 h-1.5 rounded-full bg-warm-gray/40 shrink-0" />
+          {clean(item)}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function getRichText(item: unknown): { title: string; detail?: string } {
+  if (typeof item === "string") return { title: item };
+  if (typeof item === "object" && item !== null) {
+    const obj = item as Record<string, unknown>;
+    const name = (obj.name as string) || (obj.text as string) || "";
+    // For strengths: use analysis or leverageTip
+    const detail = (obj.analysis as string) || (obj.leverageTip as string) ||
+      (obj.challenge as string) || (obj.actionTip as string) ||
+      (obj.description as string) || (obj.tip as string) || "";
+    return { title: name, detail: detail.length > 5 ? detail : undefined };
+  }
+  return { title: String(item) };
+}
+
+function RichBulletList({ items }: { items: { title: string; detail?: string }[] }) {
+  return (
+    <ul className="space-y-4">
+      {items.map((item, i) => (
+        <li key={i}>
+          <p className="font-medium text-espresso">{clean(item.title)}</p>
+          {item.detail && (
+            <p className="text-espresso/60 leading-relaxed mt-1">{clean(item.detail)}</p>
+          )}
         </li>
       ))}
     </ul>
@@ -98,30 +132,22 @@ function StrengthsWeaknessesField({
   strengths: unknown[];
   weaknesses: unknown[];
 }) {
-  const getText = (item: unknown): string => {
-    if (typeof item === "string") return item;
-    if (typeof item === "object" && item !== null) {
-      const obj = item as Record<string, unknown>;
-      return (obj.name as string) || (obj.text as string) || (obj.description as string) || JSON.stringify(item);
-    }
-    return String(item);
-  };
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
       {strengths.length > 0 && (
         <Card className="!p-4">
-          <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-2">
+          <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-3">
             Strengths
           </p>
-          <BulletList items={strengths.map(getText)} />
+          <RichBulletList items={strengths.map(getRichText)} />
         </Card>
       )}
       {weaknesses.length > 0 && (
         <Card className="!p-4">
-          <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-2">
+          <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-3">
             Growth Areas
           </p>
-          <BulletList items={weaknesses.map(getText)} />
+          <RichBulletList items={weaknesses.map(getRichText)} />
         </Card>
       )}
     </div>
@@ -216,7 +242,7 @@ function ObjectCard({ data }: { data: Record<string, unknown> }) {
           weaknesses={data.weaknesses as unknown[]}
         />
         {whatToDo && (
-          <p className="text-sm text-espresso/70 mt-2 italic">{whatToDo}</p>
+          <p className="text-espresso/70 mt-2 italic">{whatToDo}</p>
         )}
       </div>
     );
@@ -284,10 +310,10 @@ function ObjectCard({ data }: { data: Record<string, unknown> }) {
         <Badge className="mb-2" color={color}>{String(score)}</Badge>
       )}
       {texts.map((t, i) => (
-        <p key={i} className="text-sm text-espresso/70 leading-relaxed mb-2">{t}</p>
+        <p key={i} className="text-espresso/70 leading-relaxed mb-2">{clean(t)}</p>
       ))}
       {extraFields.map(({ key, value }) => (
-        <p key={key} className="text-sm text-espresso/70 leading-relaxed mb-1">{value}</p>
+        <p key={key} className="text-espresso/70 leading-relaxed mb-1">{value}</p>
       ))}
       {arrays.map(({ key, value }) => {
         const allStr = value.every((v) => typeof v === "string");
@@ -319,7 +345,7 @@ function ObjectCard({ data }: { data: Record<string, unknown> }) {
           <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-1">
             {formatLabel(key)}
           </p>
-          <p className="text-sm text-espresso/70 leading-relaxed">{text}</p>
+          <p className="text-espresso/70 leading-relaxed">{text}</p>
         </div>
       ))}
     </Card>
@@ -331,7 +357,7 @@ function SectionField({ label, value }: { label: string; value: unknown }) {
   if (typeof value === "boolean") return null;
   if (typeof value === "string") {
     if (value.length === 0) return null;
-    return <p className="text-espresso/80 leading-relaxed mb-3">{value}</p>;
+    return <p className="text-espresso/80 leading-relaxed mb-3">{clean(value)}</p>;
   }
   if (typeof value === "number") {
     if (value > 5 || value < 0) return null;
@@ -492,21 +518,33 @@ export default function ReportPage() {
   // to avoid redundancy — the complete sections cross-reference both
   const orderedSections: SectionDefinition[] = [];
   if (report.hasComplete) {
-    // Complete mode: cover + executive summary + rich personality sections
-    // + learning/working/barriers/action/guide
-    // Replaces bare "Who You Are" (just scores) with detailed personality sections
+    // Complete mode: show EVERYTHING for maximum depth and detail
     orderedSections.push(
       { key: "cover", title: "Profile Summary", isCover: true },
       { key: "executiveSummary", title: "Executive Summary" },
-      // Rich personality detail (replaces "Who You Are")
-      { key: "deepDive", title: "Deep Dive — Your Personality" },
+      // Full personality detail
+      { key: "glance", title: "Personality at a Glance" },
+      { key: "deepDive", title: "Deep Dive: Your Personality" },
+      { key: "learning", title: "Learning Style" },
       { key: "drives", title: "Drives & Motivation" },
+      { key: "study", title: "Study Approach" },
+      { key: "group", title: "Group Work & Collaboration" },
       { key: "strengths", title: "Strengths & Growth" },
-      // Cross-referenced learning + action
+      // Study & academic detail
+      { key: "studyProfile", title: "Study Profile" },
+      { key: "academicCharacter", title: "Academic Character" },
+      { key: "subjectFit", title: "Subject Fit" },
+      // Cross-referenced insights
       { key: "howYouLearn", title: "How You Learn" },
       { key: "whatsWorking", title: "What's Working" },
+      { key: "whatWorks", title: "What Works for You" },
       { key: "barriers", title: "Barriers to Learning" },
+      { key: "rootCause", title: "Root Cause Analysis" },
       { key: "actionPlan", title: "Action Plan" },
+      // Guides
+      { key: "guide", title: "Tutor's Guide" },
+      { key: "tutor", title: "Parent & Tutor Tips" },
+      { key: "academicGuide", title: "Academic Guide" },
       { key: "unifiedGuide", title: "Complete Guide" },
     );
   } else {
