@@ -29,17 +29,17 @@ const SKIP_KEYS = new Set([
   "visibleBehaviour", "id", "looksLike", "actuallyIs", "urgency",
   "alignment", "passion", "confidence", "weight", "evidence",
   "dimKey", "facetKey", "source", "audience", "dualFireNote",
-  "personality", "academic", "misdiagnosis",
+  "personality", "academic", "misdiagnosis", "fit",
 ]);
 
 // Keys whose values are titles/names to display prominently
-const TITLE_KEYS = new Set(["name", "title", "label", "style", "preferred", "metric"]);
+const TITLE_KEYS = new Set(["name", "title", "label", "style", "preferred", "metric", "format", "category", "tip"]);
 
 // Keys whose values are short text to display as body content
 const TEXT_KEYS = new Set([
   "text", "description", "desc", "narrative", "details", "summary", "explanation",
   "message", "keyPrinciple", "actionStep", "approach", "idealFor", "bestWhen",
-  "notIdeal", "tip", "tutorTip", "strategy", "challenge", "analysis",
+  "notIdeal", "tutorTip", "strategy", "challenge", "analysis",
   "leverageTip", "actionTip", "whatToDo", "understandingProfile",
   "alignmentLabel", "passionTip", "confidenceTip", "fallbackMessage",
   "oneMinuteBrief", "insight", "question", "misconception", "realCause",
@@ -339,7 +339,7 @@ function ObjectCard({ data }: { data: Record<string, unknown> }) {
           weaknesses={data.weaknesses as unknown[]}
         />
         {whatToDo && (
-          <p className="text-espresso/70 mt-2 italic">{whatToDo}</p>
+          <p className="text-espresso/70 mt-2 italic">{clean(whatToDo)}</p>
         )}
       </div>
     );
