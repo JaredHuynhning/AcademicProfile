@@ -177,18 +177,33 @@ const SKIP_KEYS = new Set([
   "barrier", "sdi", "item_count", "dim", "name", "date", "scores",
   "dominantApproach", "motivationProfile", "regulationStrength",
   "approaches", "motivationScores", "quizMode",
+  "personalityRoot", "personalityScore", "academicSymptom", "academicScore",
+  "visibleBehaviour", "id", "looksLike", "actuallyIs", "urgency",
+  "alignment", "passion", "confidence", "weight", "evidence",
+  "dimKey", "facetKey", "source", "audience", "dualFireNote",
+  "personality", "academic", "misdiagnosis", "fit",
 ]);
 
-const TITLE_KEYS = new Set(["name", "title", "label", "style", "preferred", "metric"]);
+// Keys suppressed when narrative exists (covered by narrative prose)
+const NARRATIVE_KEYS = new Set([
+  "narrative", "archetype", "keyInsight", "fallbackMessage",
+  "learningStyle", "attentionProfile", "studyApproach", "timeManagement",
+  "selfReflection", "growthMindset", "oneMinuteBrief", "tutorMatch",
+  "priorityRanking", "weeklyRhythm", "studyPrescription",
+  "topStrength", "topBarrier", "topAction",
+  "cycles", "misdiagnoses",
+]);
+
+const TITLE_KEYS = new Set(["name", "title", "label", "style", "preferred", "metric", "format", "category", "tip"]);
 
 const TEXT_KEYS = new Set([
   "text", "description", "desc", "narrative", "details", "summary", "explanation",
   "message", "keyPrinciple", "actionStep", "approach", "idealFor", "bestWhen",
-  "notIdeal", "tip", "tutorTip", "strategy", "challenge", "analysis",
+  "notIdeal", "tutorTip", "strategy", "challenge", "analysis",
   "leverageTip", "actionTip", "whatToDo", "understandingProfile",
   "alignmentLabel", "passionTip", "confidenceTip", "fallbackMessage",
   "oneMinuteBrief", "insight", "question", "misconception", "realCause",
-  "cycle", "method", "rationale",
+  "cycle", "method", "rationale", "action",
 ]);
 
 function formatLabel(key: string): string {
@@ -345,7 +360,7 @@ function renderObject(data: Record<string, unknown>, keyIndex?: number): React.R
           weaknesses={data.weaknesses as unknown[]}
         />
         {typeof data.whatToDo === "string" && (
-          <Text style={[styles.body, { fontStyle: "italic" }]}>{data.whatToDo}</Text>
+          <Text style={[styles.body, { fontStyle: "italic" }]}>{(data.whatToDo as string).replace(/ — /g, ': ').replace(/—/g, ': ')}</Text>
         )}
       </View>
     );
@@ -545,7 +560,7 @@ function deepRenderValue(value: unknown, label?: string, depth?: number): React.
             weaknesses={obj.weaknesses as unknown[]}
           />
           {typeof obj.whatToDo === "string" && (
-            <Text style={[styles.body, { fontStyle: "italic" }]}>{obj.whatToDo}</Text>
+            <Text style={[styles.body, { fontStyle: "italic" }]}>{(obj.whatToDo as string).replace(/ — /g, ': ').replace(/—/g, ': ')}</Text>
           )}
         </View>
       );
@@ -599,9 +614,27 @@ function deepRenderValue(value: unknown, label?: string, depth?: number): React.
 
 function renderSectionContent(data: Record<string, unknown>): React.ReactElement[] {
   const elements: React.ReactElement[] = [];
+  const hasNarrative = typeof data.narrative === "string" && data.narrative.length > 0;
 
+  // Narrative first — render as flowing paragraphs
+  if (hasNarrative) {
+    const paragraphs = (data.narrative as string).split('\n\n').filter(p => p.trim().length > 0);
+    for (let i = 0; i < paragraphs.length; i++) {
+      elements.push(
+        <Text key={`narrative-${i}`} style={[styles.body, { marginBottom: 6 }]}>
+          {paragraphs[i].replace(/ — /g, ': ').replace(/—/g, ': ')}
+        </Text>
+      );
+    }
+    if (paragraphs.length > 0) {
+      elements.push(<View key="narrative-divider" style={{ marginBottom: 6 }} />);
+    }
+  }
+
+  // Then structured content — skip narrative keys and SKIP_KEYS
   for (const [key, value] of Object.entries(data)) {
     if (SKIP_KEYS.has(key)) continue;
+    if (hasNarrative && NARRATIVE_KEYS.has(key)) continue;
 
     const rendered = deepRenderValue(value, formatLabel(key), 0);
     if (rendered) {
@@ -614,8 +647,20 @@ function renderSectionContent(data: Record<string, unknown>): React.ReactElement
 
 // ─── Section definitions ─────────────────────────────────────────────────────
 
-const SECTION_ORDER = [
-  { key: "cover", title: "Profile Summary" },
+// Complete mode: 9 focused narrative sections (matches web)
+const COMPLETE_SECTION_ORDER = [
+  { key: "executiveSummary", title: "Executive Summary" },
+  { key: "deepDive", title: "Your Personality" },
+  { key: "learning", title: "How You Learn" },
+  { key: "study", title: "Study Strategies & Exam Preparation" },
+  { key: "strengths", title: "Strengths & Growth Areas" },
+  { key: "barriers", title: "Barriers to Learning" },
+  { key: "actionPlan", title: "Your Action Plan" },
+  { key: "unifiedGuide", title: "Guide for Teachers, Parents & Tutors" },
+];
+
+// Personality-only / learning-only fallback
+const STANDALONE_SECTION_ORDER = [
   { key: "glance", title: "Personality at a Glance" },
   { key: "deepDive", title: "Deep Dive" },
   { key: "learning", title: "Learning Style" },
@@ -631,13 +676,6 @@ const SECTION_ORDER = [
   { key: "whatWorks", title: "What Works" },
   { key: "rootCause", title: "Root Cause Analysis" },
   { key: "academicGuide", title: "Academic Guide" },
-  { key: "executiveSummary", title: "Executive Summary" },
-  { key: "whoYouAre", title: "Who You Are" },
-  { key: "howYouLearn", title: "How You Learn" },
-  { key: "whatsWorking", title: "What's Working" },
-  { key: "barriers", title: "Barriers to Learning" },
-  { key: "actionPlan", title: "Action Plan" },
-  { key: "unifiedGuide", title: "Complete Guide" },
 ];
 
 // ─── Main Document ───────────────────────────────────────────────────────────
@@ -655,19 +693,9 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
     day: "numeric",
   });
 
-  // Complete mode: comprehensive but deduplicated
   const hasComplete = report.hasComplete;
-  const skipInComplete = new Set([
-    "whoYouAre", "glance",         // covered by deepDive
-    "whatWorks", "howYouLearn",     // covered by whatsWorking + executiveSummary
-    "rootCause",                    // covered by barriers
-    "guide", "academicGuide", // covered by unifiedGuide
-  ]);
-  const filteredOrder = hasComplete
-    ? SECTION_ORDER.filter((s) => !skipInComplete.has(s.key))
-    : SECTION_ORDER;
-
-  const activeSections = filteredOrder.filter(
+  const sectionOrder = hasComplete ? COMPLETE_SECTION_ORDER : STANDALONE_SECTION_ORDER;
+  const activeSections = sectionOrder.filter(
     (s) => report[s.key] && typeof report[s.key] === "object"
   );
 
@@ -700,34 +728,31 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
         </View>
       </Page>
 
-      {/* Content Pages */}
-      <Page size="A4" style={styles.page} wrap>
-        {activeSections.map((sectionDef, index) => {
-          const data = report[sectionDef.key] as Record<string, unknown>;
-          if (!data) return null;
+      {/* Content: each section gets its own page for clean breaks */}
+      {activeSections.map((sectionDef) => {
+        const data = report[sectionDef.key] as Record<string, unknown>;
+        if (!data) return null;
 
-          // Pre-check: skip sections that produce no renderable content
-          const contentElements = renderSectionContent(data);
-          if (contentElements.length === 0) return null;
+        const contentElements = renderSectionContent(data);
+        if (contentElements.length === 0) return null;
 
-          return (
-            <View key={sectionDef.key} style={{ marginBottom: 16 }} break={index > 0}>
-              {/* Section header */}
-              <View style={styles.sectionHeader} wrap={false} minPresenceAhead={80}>
-                <Text style={styles.sectionTitle}>{sectionDef.title}</Text>
-              </View>
-
-              {/* Section content */}
-              {contentElements}
+        return (
+          <Page key={sectionDef.key} size="A4" style={styles.page} wrap>
+            {/* Section header */}
+            <View style={styles.sectionHeader} wrap={false} minPresenceAhead={80}>
+              <Text style={styles.sectionTitle}>{sectionDef.title}</Text>
             </View>
-          );
-        })}
 
-        <View style={styles.footer} fixed>
-          <Text>{name} — Academic Profile</Text>
-          <Text render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} />
-        </View>
-      </Page>
+            {/* Section content */}
+            {contentElements}
+
+            <View style={styles.footer} fixed>
+              <Text>{name} — Academic Profile</Text>
+              <Text render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} />
+            </View>
+          </Page>
+        );
+      })}
     </Document>
   );
 }
