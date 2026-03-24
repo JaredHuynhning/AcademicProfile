@@ -140,9 +140,13 @@ function RichBulletList({ items }: { items: { title: string; detail?: string }[]
     <ul className="space-y-4">
       {items.map((item, i) => (
         <li key={i}>
-          <p className="font-medium text-espresso">{clean(item.title)}</p>
-          {item.detail && (
-            <p className="text-espresso/60 leading-relaxed mt-1">{clean(item.detail)}</p>
+          {item.detail ? (
+            <>
+              <p className="font-medium text-espresso">{clean(item.title)}</p>
+              <p className="text-espresso/70 leading-relaxed mt-1">{clean(item.detail)}</p>
+            </>
+          ) : (
+            <p className="text-espresso/80 leading-relaxed">{clean(item.title)}</p>
           )}
         </li>
       ))}
