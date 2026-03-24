@@ -498,7 +498,7 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
 
         {results.dimensions && typeof results.dimensions === "object" && (
           <View style={styles.coverScores}>
-            {Object.values(results.dimensions as Record<string, { name: string; score: number }>).map((dim) => (
+            {Object.values(results.dimensions as unknown as Record<string, { name: string; score: number }>).map((dim) => (
               <View key={dim.name} style={styles.coverScoreCard}>
                 <Text style={styles.coverScoreName}>
                   {dim.name.replace(" to Experience", "").split("-")[0]}
