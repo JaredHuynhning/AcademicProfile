@@ -24,6 +24,11 @@ const SKIP_KEYS = new Set([
   // Section-structural keys (lookup keys whose content is in companion objects)
   "dominantApproach", "motivationProfile", "regulationStrength",
   "approaches", "motivationScores", "scores", "quizMode",
+  // Cross-reference internal fields
+  "personalityRoot", "personalityScore", "academicSymptom", "academicScore",
+  "visibleBehaviour", "id", "looksLike", "actuallyIs", "urgency",
+  "alignment", "passion", "confidence", "weight", "evidence",
+  "dimKey", "facetKey",
 ]);
 
 // Keys whose values are titles/names to display prominently
@@ -79,6 +84,23 @@ function extractTitle(obj: Record<string, unknown> | null | undefined): string |
 /** Clean em dashes and tidy text for display */
 function clean(text: string): string {
   return text.replace(/ — /g, ": ").replace(/—/g, ": ").replace(/ – /g, ": ");
+}
+
+/** Check if a string is a real sentence vs a technical label */
+function isSentence(text: string): boolean {
+  return text.length > 25 && text.includes(" ");
+}
+
+/** Check if a string is a technical/internal label to skip */
+function isInternalLabel(text: string): boolean {
+  if (text.length > 40) return false;
+  // Skip camelCase identifiers, dimension codes, bare facet names
+  if (/^[a-z]+[A-Z]/.test(text)) return true; // camelCase
+  if (/^[A-Z]{1,2}$/.test(text)) return true; // single/double caps like "H", "XE"
+  if (/^\d+(\.\d+)?$/.test(text)) return true; // bare numbers
+  // Short strings without spaces that look like field names
+  if (text.length < 20 && !text.includes(" ")) return true;
+  return false;
 }
 
 // ─── Generic field renderers ──────────────────────────────────────────────────
@@ -263,13 +285,16 @@ function ObjectCard({ data }: { data: Record<string, unknown> }) {
     }
   }
 
-  // Gather non-skipped string/number fields that aren't title, text, or score
+  // Gather non-skipped string fields — only sentences, not technical labels
   const extraFields: { key: string; value: string }[] = [];
   for (const [k, v] of Object.entries(data)) {
     if (SKIP_KEYS.has(k) || TITLE_KEYS.has(k) || TEXT_KEYS.has(k)) continue;
     if (k === "score" || k === "level" || k === "color") continue;
     if (typeof v === "string" && v.length > 2) {
-      extraFields.push({ key: k, value: formatLevel(v) });
+      const cleaned = formatLevel(v);
+      if (!isInternalLabel(cleaned) && isSentence(cleaned)) {
+        extraFields.push({ key: k, value: cleaned });
+      }
     }
   }
 
@@ -357,7 +382,7 @@ function SectionField({ label, value }: { label: string; value: unknown }) {
   if (value === null || value === undefined) return null;
   if (typeof value === "boolean") return null;
   if (typeof value === "string") {
-    if (value.length === 0) return null;
+    if (value.length === 0 || isInternalLabel(value)) return null;
     return <p className="text-espresso/80 leading-relaxed mb-3">{clean(value)}</p>;
   }
   if (typeof value === "number") {
