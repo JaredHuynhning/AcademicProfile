@@ -202,11 +202,10 @@ function ArrayField({ value, label }: { value: unknown[]; label?: string }) {
     const objs = value as Record<string, unknown>[];
 
     // Check if objects have strengths/weaknesses (dimension cards) — render each as its own card
-    const hasRichStructure = objs.some(
-      (o) => (Array.isArray(o.strengths) && Array.isArray(o.weaknesses)) ||
-        (extractTitle(o) && extractDisplayText(o))
+    const hasDimensionStructure = objs.some(
+      (o) => Array.isArray(o.strengths) && Array.isArray(o.weaknesses)
     );
-    if (hasRichStructure) {
+    if (hasDimensionStructure) {
       return (
         <div className="space-y-3 mb-3">
           {objs.map((item, i) => (
@@ -216,10 +215,64 @@ function ArrayField({ value, label }: { value: unknown[]; label?: string }) {
       );
     }
 
-    // Simple text objects (like motivators: { text, dim, icon }) → bullet list
-    const texts = objs.map(extractDisplayText);
-    const allHaveText = texts.every((t) => t !== null);
-    if (allHaveText) {
+    // Rich titled objects (title + long description) — render individually
+    const hasRichTitledContent = objs.some(
+      (o) => {
+        const t = extractTitle(o);
+        const d = extractDisplayText(o);
+        return t && d && d.length > 50;
+      }
+    );
+    if (hasRichTitledContent) {
+      return (
+        <div className="space-y-3 mb-3">
+          {objs.map((item, i) => (
+            <ObjectCard key={i} data={item} />
+          ))}
+        </div>
+      );
+    }
+
+    // Objects with same sub-array keys (e.g. all have "recommendation") — merge into one card
+    const subArrayKeys = new Set<string>();
+    for (const obj of objs) {
+      for (const [k, v] of Object.entries(obj)) {
+        if (Array.isArray(v) && v.length > 0) subArrayKeys.add(k);
+      }
+    }
+    if (subArrayKeys.size > 0) {
+      const merged: Record<string, string[]> = {};
+      for (const key of subArrayKeys) {
+        merged[key] = [];
+        for (const obj of objs) {
+          const arr = obj[key];
+          if (Array.isArray(arr)) {
+            for (const item of arr) {
+              if (typeof item === "string" && isSentence(item)) merged[key].push(item);
+            }
+          }
+        }
+      }
+      const cards = Object.entries(merged).filter(([, items]) => items.length > 0);
+      if (cards.length > 0) {
+        return (
+          <div className="space-y-3 mb-3">
+            {cards.map(([key, items]) => (
+              <Card key={key} className="!p-4">
+                <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-2">
+                  {formatLabel(key)}
+                </p>
+                <BulletList items={items} />
+              </Card>
+            ))}
+          </div>
+        );
+      }
+    }
+
+    // Simple text objects — consolidate into one bullet list
+    const texts = objs.map(extractDisplayText).filter((t): t is string => t !== null && isSentence(t));
+    if (texts.length > 0) {
       return (
         <Card className="!p-4 mb-3">
           {label && (
@@ -227,19 +280,16 @@ function ArrayField({ value, label }: { value: unknown[]; label?: string }) {
               {label}
             </p>
           )}
-          <BulletList items={texts as string[]} />
+          <BulletList items={texts} />
         </Card>
       );
     }
 
-    // Fallback — render each object as a card
-    return (
-      <div className="space-y-3 mb-3">
-        {objs.map((item, i) => (
-          <ObjectCard key={i} data={item} />
-        ))}
-      </div>
-    );
+    // Fallback — render each object as a card (only if they produce content)
+    const rendered = objs.map((item, i) => <ObjectCard key={i} data={item} />).filter(Boolean);
+    if (rendered.length > 0) {
+      return <div className="space-y-3 mb-3">{rendered}</div>;
+    }
   }
 
   return null;
