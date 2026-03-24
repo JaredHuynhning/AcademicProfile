@@ -238,12 +238,15 @@ function ObjectCard({ data }: { data: Record<string, unknown> }) {
     }
   }
 
-  // Sub-objects
-  const subObjects: { key: string; value: Record<string, unknown> }[] = [];
+  // Sub-objects (only keep ones with extractable text)
+  const subObjects: { key: string; value: Record<string, unknown>; text: string }[] = [];
   for (const [k, v] of Object.entries(data)) {
     if (SKIP_KEYS.has(k)) continue;
     if (typeof v === "object" && v !== null && !Array.isArray(v)) {
-      subObjects.push({ key: k, value: v as Record<string, unknown> });
+      const subText = extractDisplayText(v as Record<string, unknown>);
+      if (subText) {
+        subObjects.push({ key: k, value: v as Record<string, unknown>, text: subText });
+      }
     }
   }
 
@@ -294,20 +297,14 @@ function ObjectCard({ data }: { data: Record<string, unknown> }) {
         }
         return null;
       })}
-      {subObjects.map(({ key, value }) => {
-        const subText = extractDisplayText(value);
-        if (subText) {
-          return (
-            <div key={key} className="mt-2">
-              <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-1">
-                {formatLabel(key)}
-              </p>
-              <p className="text-sm text-espresso/70 leading-relaxed">{subText}</p>
-            </div>
-          );
-        }
-        return null;
-      })}
+      {subObjects.map(({ key, text }) => (
+        <div key={key} className="mt-2">
+          <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-1">
+            {formatLabel(key)}
+          </p>
+          <p className="text-sm text-espresso/70 leading-relaxed">{text}</p>
+        </div>
+      ))}
     </Card>
   );
 }
@@ -474,10 +471,19 @@ export default function ReportPage() {
   const report = generateReport(results, name);
 
   // Build the ordered list of sections to render
+  // When complete mode is active, skip individual personality/learning sections
+  // to avoid redundancy — the complete sections cross-reference both
   const orderedSections: SectionDefinition[] = [];
-  if (report.hasPersonality) orderedSections.push(...PERSONALITY_SECTIONS);
-  if (report.hasLearning) orderedSections.push(...LEARNING_SECTIONS);
-  if (report.hasComplete) orderedSections.push(...COMPLETE_SECTIONS);
+  if (report.hasComplete) {
+    // Complete mode: show cover + complete sections only
+    orderedSections.push(
+      { key: "cover", title: "Profile Summary", isCover: true },
+      ...COMPLETE_SECTIONS
+    );
+  } else {
+    if (report.hasPersonality) orderedSections.push(...PERSONALITY_SECTIONS);
+    if (report.hasLearning) orderedSections.push(...LEARNING_SECTIONS);
+  }
 
   const activeSections = orderedSections.filter(
     (s) => report[s.key as keyof typeof report] !== null
@@ -528,7 +534,6 @@ export default function ReportPage() {
               <ReportSection
                 key={sectionDef.key}
                 id={`section-${sectionDef.key}`}
-                sectionNumber={index + 1}
                 title={sectionDef.title}
                 isFirst={index === 0}
               >

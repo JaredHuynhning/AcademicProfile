@@ -484,7 +484,16 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
     day: "numeric",
   });
 
-  const activeSections = SECTION_ORDER.filter(
+  // When complete mode is active, skip individual personality/learning sections
+  const hasComplete = report.hasComplete;
+  const filteredOrder = hasComplete
+    ? SECTION_ORDER.filter((s) =>
+        s.key === "cover" ||
+        ["executiveSummary", "whoYouAre", "howYouLearn", "whatsWorking", "barriers", "actionPlan", "unifiedGuide"].includes(s.key)
+      )
+    : SECTION_ORDER;
+
+  const activeSections = filteredOrder.filter(
     (s) => report[s.key] && typeof report[s.key] === "object"
   );
 
@@ -528,22 +537,14 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
           if (contentElements.length === 0) return null;
 
           return (
-            <View key={sectionDef.key} style={{ marginBottom: 16 }}>
-              {/* Section header — keep with first content */}
-              <View style={styles.sectionHeader} wrap={false}>
-                <Text style={styles.sectionEyebrow}>
-                  Section {index + 1}
-                </Text>
+            <View key={sectionDef.key} style={{ marginBottom: 16 }} break={index > 0}>
+              {/* Section header */}
+              <View style={styles.sectionHeader} wrap={false} minPresenceAhead={80}>
                 <Text style={styles.sectionTitle}>{sectionDef.title}</Text>
               </View>
 
               {/* Section content */}
               {contentElements}
-
-              {/* Divider between sections */}
-              {index < activeSections.length - 1 && (
-                <View style={styles.divider} />
-              )}
             </View>
           );
         })}
