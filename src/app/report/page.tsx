@@ -475,10 +475,22 @@ export default function ReportPage() {
   // to avoid redundancy — the complete sections cross-reference both
   const orderedSections: SectionDefinition[] = [];
   if (report.hasComplete) {
-    // Complete mode: show cover + complete sections only
+    // Complete mode: cover + executive summary + rich personality sections
+    // + learning/working/barriers/action/guide
+    // Replaces bare "Who You Are" (just scores) with detailed personality sections
     orderedSections.push(
       { key: "cover", title: "Profile Summary", isCover: true },
-      ...COMPLETE_SECTIONS
+      { key: "executiveSummary", title: "Executive Summary" },
+      // Rich personality detail (replaces "Who You Are")
+      { key: "deepDive", title: "Deep Dive — Your Personality" },
+      { key: "drives", title: "Drives & Motivation" },
+      { key: "strengths", title: "Strengths & Growth" },
+      // Cross-referenced learning + action
+      { key: "howYouLearn", title: "How You Learn" },
+      { key: "whatsWorking", title: "What's Working" },
+      { key: "barriers", title: "Barriers to Learning" },
+      { key: "actionPlan", title: "Action Plan" },
+      { key: "unifiedGuide", title: "Complete Guide" },
     );
   } else {
     if (report.hasPersonality) orderedSections.push(...PERSONALITY_SECTIONS);
