@@ -110,18 +110,19 @@ export function generateSubjectFit(results: Results) {
 		const actions: string[] = [];
 
 		if (passionClassification === 'strength') {
-			strengths.push(`Passion (${subject.passion}/5): You genuinely enjoy this subject.`);
+			strengths.push(`Passion (${subject.passion}/5): You genuinely enjoy this subject. ${passionTip}`);
 		} else {
-			weaknesses.push(`Interest (${subject.passion}/5): This subject doesn't engage you right now.`);
-			actions.push(passionTip);
+			weaknesses.push(`Interest (${subject.passion}/5): This subject doesn't engage you right now. ${passionTip}`);
 		}
 
 		if (confidenceClassification === 'strength') {
-			strengths.push(`Confidence (${subject.confidence}/5): You believe you can do well here.`);
+			strengths.push(`Confidence (${subject.confidence}/5): You believe you can do well here. ${confidenceTip}`);
 		} else {
-			weaknesses.push(`Confidence (${subject.confidence}/5): You doubt your ability in this subject.`);
-			actions.push(confidenceTip);
+			weaknesses.push(`Confidence (${subject.confidence}/5): You doubt your ability in this subject. ${confidenceTip}`);
 		}
+
+		// Always include the narrative and actions
+		if (narrative) actions.push(narrative);
 
 		return {
 			key,

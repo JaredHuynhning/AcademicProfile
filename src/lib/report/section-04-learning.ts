@@ -94,40 +94,53 @@ function buildAttentionProfile(dims: DimensionsMap) {
 	const oLevel = classifyLevel(dims.O.score);
 	const xLevel = classifyLevel(dims.X.score);
 
-	const profile = {
-		sustainedFocus: cLevel === 'high' ? 'Strong: can focus for extended periods' : cLevel === 'low' ? 'Variable: works best in short bursts' : 'Moderate: can focus well with occasional breaks',
-		bestTimeBlocks: cLevel === 'high' ? '45-60 minute blocks with short breaks' : cLevel === 'low' ? '20-25 minute sprints (Pomodoro style)' : '30-40 minute blocks with 10-minute breaks',
-		distractionRisk: xLevel === 'high' ? 'Social distractions: may chat or help others instead of focusing' : xLevel === 'low' ? 'Internal: may overthink or drift into thought' : 'Moderate, manageable with awareness',
-		engagementDriver: oLevel === 'high' ? 'Novelty and intellectual challenge' : oLevel === 'low' ? 'Clear purpose and practical relevance' : 'A mix of challenge and practical payoff'
-	};
+	const focus = cLevel === 'high'
+		? 'Your focus is strong. You can concentrate for extended periods (45-60 minute blocks with short breaks work best).'
+		: cLevel === 'low'
+			? 'Your focus works best in short bursts. Try 20-25 minute sprints (Pomodoro style) with breaks between sessions.'
+			: 'Your focus is moderate. 30-40 minute study blocks with 10-minute breaks will keep you productive without burnout.';
 
-	return profile;
+	const distraction = xLevel === 'high'
+		? 'Your main distraction risk is social: you may chat or help others instead of focusing. A quiet space or noise-cancelling headphones during deep work can help.'
+		: xLevel === 'low'
+			? 'Your main distraction risk is internal: you may overthink or drift into thought. Writing down stray thoughts to deal with later keeps you on track.'
+			: 'Your distraction risk is moderate and manageable with basic awareness. Remove your phone from your study space.';
+
+	const engagement = oLevel === 'high'
+		? 'You are driven by novelty and intellectual challenge. Varied, stimulating material keeps you engaged. Routine or repetitive tasks will bore you quickly.'
+		: oLevel === 'low'
+			? 'You are driven by clear purpose and practical relevance. You engage best when you understand exactly why something matters.'
+			: 'You are driven by a mix of intellectual challenge and practical payoff. Balance variety with clear goals.';
+
+	return {
+		description: `${focus} ${distraction} ${engagement}`
+	};
 }
 
 function buildPreferredFormats(dims: DimensionsMap) {
 	const formats: { format: string; fit: string; reason: string }[] = [];
 
 	if (isHigh(dims.O.score)) {
-		formats.push({ format: 'Creative Projects', fit: 'Excellent', reason: 'Channels your creativity and love of exploration' });
-		formats.push({ format: 'Discussion-Based Learning', fit: 'Excellent', reason: 'Stimulates your intellectual curiosity' });
+		formats.push({ format: 'Creative Projects', fit: 'Excellent', reason: 'Channels your creativity and love of exploration. You thrive when you can approach problems in original ways and make unexpected connections between ideas.' });
+		formats.push({ format: 'Discussion-Based Learning', fit: 'Excellent', reason: 'Stimulates your intellectual curiosity. You learn best when you can ask questions, debate ideas, and hear multiple perspectives.' });
 	}
 	if (isHigh(dims.C.score)) {
-		formats.push({ format: 'Structured Lectures', fit: 'Excellent', reason: 'Aligns with your preference for organised content' });
-		formats.push({ format: 'Practice Problems', fit: 'Excellent', reason: 'Satisfies your need for systematic skill-building' });
+		formats.push({ format: 'Structured Lectures', fit: 'Excellent', reason: 'Aligns with your preference for organised content. You absorb information efficiently when it is presented in a clear, logical sequence with defined learning outcomes.' });
+		formats.push({ format: 'Practice Problems', fit: 'Excellent', reason: 'Satisfies your need for systematic skill-building. Repetitive practice with increasing difficulty builds the mastery you value.' });
 	}
 	if (isHigh(dims.X.score)) {
-		formats.push({ format: 'Group Work', fit: 'Excellent', reason: 'Energises you through social interaction' });
-		formats.push({ format: 'Presentations', fit: 'Good', reason: 'Leverages your social confidence' });
+		formats.push({ format: 'Group Work', fit: 'Excellent', reason: 'Energises you through social interaction. You perform better when you can bounce ideas off others and explain concepts to peers.' });
+		formats.push({ format: 'Presentations', fit: 'Good', reason: 'Leverages your social confidence. You are comfortable speaking in front of others and this format lets you demonstrate understanding actively.' });
 	}
 	if (isLow(dims.X.score)) {
-		formats.push({ format: 'Independent Reading', fit: 'Excellent', reason: 'Matches your preference for quiet, solo work' });
-		formats.push({ format: 'Written Assessments', fit: 'Good', reason: 'Allows you to express ideas without social pressure' });
+		formats.push({ format: 'Independent Reading', fit: 'Excellent', reason: 'Matches your preference for quiet, solo work. You process information deeply when you have space to think without social interruption.' });
+		formats.push({ format: 'Written Assessments', fit: 'Good', reason: 'Allows you to express ideas without social pressure. You often think more clearly in writing than in verbal discussions.' });
 	}
 	if (isLow(dims.C.score)) {
-		formats.push({ format: 'Project-Based Learning', fit: 'Good', reason: 'More engaging than routine homework' });
+		formats.push({ format: 'Project-Based Learning', fit: 'Good', reason: 'More engaging than routine homework. Hands-on projects with real outcomes hold your attention better than abstract exercises.' });
 	}
 	if (isHigh(dims.E.score)) {
-		formats.push({ format: 'Supportive Tutorials', fit: 'Good', reason: 'Provides emotional safety to ask questions' });
+		formats.push({ format: 'Supportive Tutorials', fit: 'Good', reason: 'Provides emotional safety to ask questions. You learn best in low-pressure environments where mistakes are treated as learning opportunities.' });
 	}
 
 	// Ensure at least 4 formats

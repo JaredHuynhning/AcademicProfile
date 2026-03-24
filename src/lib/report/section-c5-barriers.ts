@@ -29,8 +29,7 @@ export function generateBarriers(results, crossRefResult) {
 		academicSymptom: insight.academic.metric,
 		academicScore: insight.academic.score,
 		visibleBehaviour: insight.visibleBehaviour || 'Observable impact on academic performance',
-		insight: insight.insight,
-		action: insight.action,
+		description: `${insight.insight}${insight.action ? ` What to do: ${insight.action}` : ''}`,
 		impact: insight.impact
 	}));
 
@@ -45,8 +44,9 @@ export function generateBarriers(results, crossRefResult) {
 	const misdiagnoses = rootCauses
 		.filter((i) => i.misdiagnosis)
 		.map((i) => ({
-			looksLike: i.misdiagnosis.split(', actually')[0].replace(/^Looks like /, ''),
-			actuallyIs: i.misdiagnosis.split(', actually')[1] || i.insight.split('.')[0]
+			misconception: i.misdiagnosis.split(', actually')[0].replace(/^Looks like /, ''),
+			realCause: i.misdiagnosis.split(', actually')[1] || i.insight.split('.')[0],
+			description: `What looks like "${i.misdiagnosis.split(', actually')[0].replace(/^Looks like /, '')}" is actually ${i.misdiagnosis.split(', actually')[1] || i.insight.split('.')[0]}. ${i.action || ''}`
 		}));
 
 	const priorityRanking = rootCauses.map((i, idx) => ({
@@ -56,9 +56,11 @@ export function generateBarriers(results, crossRefResult) {
 	}));
 
 	const fallbackMessage =
-		rootCauses.length < 2
-			? 'No major barriers detected — focus on optimising what you already do well.'
-			: null;
+		rootCauses.length === 0
+			? 'Your profile shows no significant barriers to learning. Your personality traits and study habits are well-aligned. Focus on optimising what you already do well and stretching into new challenges.'
+			: rootCauses.length === 1
+				? `You have one key barrier to address. Removing it could significantly improve your academic performance. Focus your energy here before tackling anything else.`
+				: null;
 
 	return {
 		rootCauseChains,

@@ -173,48 +173,42 @@ export function generateAcademicCharacter(results: Results) {
 	const gritWeaknesses: string[] = [];
 	const gritActions: string[] = [];
 	if (gritPerseverance.classification === 'strength') {
-		gritStrengths.push(`Perseverance (${gritPerseverance.score}/5): You push through challenges and keep going when things get tough.`);
+		gritStrengths.push(`Perseverance (${gritPerseverance.score}/5): ${GRIT_NARRATIVES[gritLevel].perseverance} ${gritPerseverance.tip}`);
 	} else {
-		gritWeaknesses.push(`Perseverance (${gritPerseverance.score}/5): You tend to give up when tasks get difficult or take too long.`);
-		gritActions.push(gritPerseverance.tip);
+		gritWeaknesses.push(`Perseverance (${gritPerseverance.score}/5): ${GRIT_NARRATIVES[gritLevel].perseverance} ${gritPerseverance.tip}`);
 	}
 	if (gritConsistency.classification === 'strength') {
-		gritStrengths.push(`Goal Consistency (${gritConsistency.score}/5): You stick with your commitments and see projects through.`);
+		gritStrengths.push(`Goal Consistency (${gritConsistency.score}/5): ${GRIT_NARRATIVES[gritLevel].consistency} ${gritConsistency.tip}`);
 	} else {
-		gritWeaknesses.push(`Goal Consistency (${gritConsistency.score}/5): You shift between interests and struggle to maintain long-term focus.`);
-		gritActions.push(gritConsistency.tip);
+		gritWeaknesses.push(`Goal Consistency (${gritConsistency.score}/5): ${GRIT_NARRATIVES[gritLevel].consistency} ${gritConsistency.tip}`);
 	}
 
 	const focusStrengths: string[] = [];
 	const focusWeaknesses: string[] = [];
 	const focusActions: string[] = [];
 	if (focusConcentration.classification === 'strength') {
-		focusStrengths.push(`Concentration (${focusConcentration.score}/5): You can sustain attention on your work for extended periods.`);
+		focusStrengths.push(`Concentration (${focusConcentration.score}/5): ${FOCUS_NARRATIVES.concentration[concLevel]} ${focusConcentration.tip}`);
 	} else {
-		focusWeaknesses.push(`Concentration (${focusConcentration.score}/5): You find it hard to focus, especially during study. Distractions pull you away easily.`);
-		focusActions.push(focusConcentration.tip);
+		focusWeaknesses.push(`Concentration (${focusConcentration.score}/5): ${FOCUS_NARRATIVES.concentration[concLevel]} ${focusConcentration.tip}`);
 	}
 	if (focusProcrastination.classification === 'strength') {
-		focusStrengths.push(`Starting tasks (${focusProcrastination.score}/5): You get going without needing to be pushed.`);
+		focusStrengths.push(`Starting Tasks (${focusProcrastination.score}/5): ${FOCUS_NARRATIVES.procrastination[procLevel]} ${focusProcrastination.tip}`);
 	} else {
-		focusWeaknesses.push(`Procrastination (${focusProcrastination.score}/5): You consistently put off starting work, even when you know it's important.`);
-		focusActions.push(focusProcrastination.tip);
+		focusWeaknesses.push(`Procrastination (${focusProcrastination.score}/5): ${FOCUS_NARRATIVES.procrastination[procLevel]} ${focusProcrastination.tip}`);
 	}
 
 	const energyStrengths: string[] = [];
 	const energyWeaknesses: string[] = [];
 	const energyActions: string[] = [];
 	if (energyVitality.classification === 'strength') {
-		energyStrengths.push(`Vitality (${energyVitality.score}/5): You generally feel energised and alert for learning.`);
+		energyStrengths.push(`Vitality (${energyVitality.score}/5): ${ENERGY_NARRATIVES[energyLevel]} ${energyVitality.tip}`);
 	} else {
-		energyWeaknesses.push(`Vitality (${energyVitality.score}/5): You often feel low energy, which limits how much you can absorb.`);
-		energyActions.push(energyVitality.tip);
+		energyWeaknesses.push(`Vitality (${energyVitality.score}/5): ${ENERGY_NARRATIVES[energyLevel]} ${energyVitality.tip}`);
 	}
 	if (energyNetEnergy.classification === 'strength') {
-		energyStrengths.push(`Overall energy (${energyNetEnergy.score}/5): Your energy levels support sustained learning.`);
+		energyStrengths.push(`Overall Energy (${energyNetEnergy.score}/5): Your energy levels support sustained learning and active engagement with challenging material. ${energyNetEnergy.tip}`);
 	} else {
-		energyWeaknesses.push(`Overall energy (${energyNetEnergy.score}/5): You feel drained, which affects your ability to study effectively.`);
-		energyActions.push(energyNetEnergy.tip);
+		energyWeaknesses.push(`Overall Energy (${energyNetEnergy.score}/5): You frequently feel tired or drained, which significantly impacts your ability to study and learn. ${energyNetEnergy.tip}`);
 	}
 
 	return {

@@ -19,17 +19,15 @@ export function generateActionPlan(results, crossRefResult) {
 
 	const topActions = rootCauses.slice(0, 3).map((insight, i) => ({
 		rank: i + 1,
-		action: insight.action,
-		context: insight.insight,
-		personalityRoot: insight.personality.facet
-			? `${insight.personality.facet} (${DIM_NAMES[insight.personality.dim]})`
-			: DIM_NAMES[insight.personality.dim],
-		academicTarget: insight.academic.metric
+		description: `Priority ${i + 1}: ${insight.action}. Why: ${insight.insight}. This connects your ${
+			insight.personality.facet
+				? `${insight.personality.facet} (${DIM_NAMES[insight.personality.dim]})`
+				: DIM_NAMES[insight.personality.dim]
+		} personality trait to your ${insight.academic.metric} study pattern. Addressing this first will have the biggest impact on your academic performance.`
 	}));
 
 	const quickWins = confirmations.slice(0, 4).map((insight) => ({
-		action: insight.action,
-		source: insight.personality.facet ?? insight.personality.dim
+		description: `${insight.action}. This builds on a confirmed strength: ${insight.insight}`
 	}));
 
 	// Study prescription
@@ -68,12 +66,10 @@ export function generateActionPlan(results, crossRefResult) {
 	// Stop doing — from contradictions and counterproductive root causes
 	const stopDoing = [
 		...contradictions.map((i) => ({
-			behaviour: i.insight.split('.')[0],
-			reason: i.action
+			description: `Stop: ${i.insight.split('.')[0]}. Instead: ${i.action}. This change addresses the root cause rather than just the symptom.`
 		})),
 		...rootCauses.slice(0, 2).map((i) => ({
-			behaviour: i.visibleBehaviour || i.insight.split('.')[0],
-			reason: 'This is a symptom of a deeper pattern — fixing the root cause matters more than stopping this directly.'
+			description: `Watch for: ${i.visibleBehaviour || i.insight.split('.')[0]}. Root cause: ${i.insight}. ${i.action || ''}`
 		}))
 	].slice(0, 4);
 
@@ -93,7 +89,9 @@ export function generateActionPlan(results, crossRefResult) {
 			? 'Saturday: deep-dive one topic — read beyond the notes, ask questions. Sunday: light review + plan the coming week.'
 			: 'Saturday: practice problems and revision. Sunday: light review + plan next week.';
 
-	const weeklyRhythm = { weekday, weekend };
+	const weeklyRhythm = {
+		description: `${weekday} ${weekend} Consistency matters more than duration. Three 30-minute sessions beat one 3-hour cramming session every time.`
+	};
 
 	return {
 		topActions,
