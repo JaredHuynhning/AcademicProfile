@@ -518,33 +518,26 @@ export default function ReportPage() {
   // to avoid redundancy — the complete sections cross-reference both
   const orderedSections: SectionDefinition[] = [];
   if (report.hasComplete) {
-    // Complete mode: show EVERYTHING for maximum depth and detail
+    // Complete mode: comprehensive but deduplicated
     orderedSections.push(
       { key: "cover", title: "Profile Summary", isCover: true },
       { key: "executiveSummary", title: "Executive Summary" },
-      // Full personality detail
-      { key: "glance", title: "Personality at a Glance" },
+      // Personality in depth
       { key: "deepDive", title: "Deep Dive: Your Personality" },
       { key: "learning", title: "Learning Style" },
       { key: "drives", title: "Drives & Motivation" },
       { key: "study", title: "Study Approach" },
       { key: "group", title: "Group Work & Collaboration" },
       { key: "strengths", title: "Strengths & Growth" },
-      // Study & academic detail
+      // Academic profile
       { key: "studyProfile", title: "Study Profile" },
       { key: "academicCharacter", title: "Academic Character" },
       { key: "subjectFit", title: "Subject Fit" },
       // Cross-referenced insights
-      { key: "howYouLearn", title: "How You Learn" },
       { key: "whatsWorking", title: "What's Working" },
-      { key: "whatWorks", title: "What Works for You" },
       { key: "barriers", title: "Barriers to Learning" },
-      { key: "rootCause", title: "Root Cause Analysis" },
       { key: "actionPlan", title: "Action Plan" },
-      // Guides
-      { key: "guide", title: "Tutor's Guide" },
-      { key: "tutor", title: "Parent & Tutor Tips" },
-      { key: "academicGuide", title: "Academic Guide" },
+      // Consolidated guide
       { key: "unifiedGuide", title: "Complete Guide" },
     );
   } else {

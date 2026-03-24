@@ -655,10 +655,16 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
     day: "numeric",
   });
 
-  // Complete mode: show all sections for maximum depth
+  // Complete mode: comprehensive but deduplicated
   const hasComplete = report.hasComplete;
+  const skipInComplete = new Set([
+    "whoYouAre", "glance",         // covered by deepDive
+    "whatWorks", "howYouLearn",     // covered by whatsWorking + executiveSummary
+    "rootCause",                    // covered by barriers
+    "guide", "tutor", "academicGuide", // covered by unifiedGuide
+  ]);
   const filteredOrder = hasComplete
-    ? SECTION_ORDER.filter((s) => s.key !== "whoYouAre") // Skip bare scores section
+    ? SECTION_ORDER.filter((s) => !skipInComplete.has(s.key))
     : SECTION_ORDER;
 
   const activeSections = filteredOrder.filter(
