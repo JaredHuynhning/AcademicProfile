@@ -495,6 +495,10 @@ const NARRATIVE_KEYS = new Set([
   "learningStyle", "attentionProfile", "studyApproach", "timeManagement",
   "selfReflection", "growthMindset", "oneMinuteBrief", "tutorMatch",
   "priorityRanking", "weeklyRhythm", "studyPrescription",
+  // Executive summary — narrative already covers these
+  "topStrength", "topBarrier", "topAction",
+  // Barriers — narrative already covers these
+  "cycles", "misdiagnoses",
 ]);
 
 function NarrativeParagraphs({ text }: { text: string }) {
