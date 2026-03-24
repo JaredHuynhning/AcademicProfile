@@ -71,7 +71,23 @@ export function generateStrengths(results: Results) {
 		};
 	});
 
+	// Build narrative from top strengths and weaknesses
+	const topS = allStrengths.sort((a, b) => b.rawScore - a.rawScore).slice(0, 3);
+	const topW = allWeaknesses.sort((a, b) => a.rawScore - b.rawScore).slice(0, 3);
+
+	const strengthNames = topS.map(s => s.name.toLowerCase()).join(', ');
+	const weaknessNames = topW.map(w => w.name.toLowerCase()).join(', ');
+
+	const narrative = [
+		`Your strongest academic traits are ${strengthNames}. ${topS.map(s => s.analysis).join(' ')}`,
+		topW.length > 0
+			? `The areas with the most room for growth are ${weaknessNames}. ${topW.map(w => w.challenge).join(' ')} These are not permanent limitations: with the right strategies, each one can become a manageable part of your profile.`
+			: 'Your profile shows remarkable balance across all facets, with no significant weaknesses holding you back.',
+		`${topS[0]?.leverageTip || ''} The key is to use your strengths deliberately and build small habits to address growth areas.`
+	].join('\n\n');
+
 	return {
+		narrative,
 		dimensions,
 		selfReflection: buildSelfReflection(),
 		growthMindset: buildGrowthMindset(allStrengths, allWeaknesses)

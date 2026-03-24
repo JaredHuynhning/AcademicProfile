@@ -62,7 +62,42 @@ export function generateBarriers(results, crossRefResult) {
 				? `You have one key barrier to address. Removing it could significantly improve your academic performance. Focus your energy here before tackling anything else.`
 				: null;
 
+	// Build narrative prose
+	let narrative: string;
+	if (rootCauses.length === 0) {
+		narrative = 'Your profile shows no significant barriers to learning. Your personality traits and study habits are well-aligned. Focus on optimising what you already do well and stretching into new challenges.';
+	} else {
+		const topBarrier = rootCauses[0];
+		const topPersonality = topBarrier.personality.facet
+			? `${topBarrier.personality.facet} (${DIM_NAMES[topBarrier.personality.dim]})`
+			: DIM_NAMES[topBarrier.personality.dim];
+
+		const parts = [
+			`The most significant barrier in your profile is rooted in your ${topPersonality.toLowerCase()} personality trait. ${topBarrier.insight} This is not a character flaw: it is a pattern that, once understood, can be addressed directly.`
+		];
+
+		if (topBarrier.action) {
+			parts.push(`The most impactful change you can make: ${topBarrier.action}`);
+		}
+
+		if (rootCauses.length > 1) {
+			const secondBarrier = rootCauses[1];
+			parts.push(`A secondary barrier is: ${secondBarrier.insight} Addressing the primary barrier first will often reduce the impact of secondary ones, since they tend to share underlying causes.`);
+		}
+
+		if (cycles.length > 0) {
+			parts.push(`One pattern to watch for is the ${cycles[0].title}: ${cycles[0].narrative} Recognising this cycle is the first step to breaking it.`);
+		}
+
+		if (misdiagnoses.length > 0) {
+			parts.push(`An important insight: ${misdiagnoses[0].description} This kind of misdiagnosis is common and leads to the wrong interventions.`);
+		}
+
+		narrative = parts.join('\n\n');
+	}
+
 	return {
+		narrative,
 		rootCauseChains,
 		cycles,
 		misdiagnoses,

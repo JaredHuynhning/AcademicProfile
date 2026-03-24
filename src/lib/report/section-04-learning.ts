@@ -17,17 +17,34 @@ export function generateLearning(results: Results) {
 	const oc = analyzeOC(dims.O.score, dims.C.score);
 	const ox = analyzeOX(dims.O.score, dims.X.score);
 
+	const attentionProfile = buildAttentionProfile(dims);
+	const keyInsight = buildKeyInsight(dims);
+	const env = buildEnvironment(dims);
+
+	// Build narrative prose
+	const socialDesc = env.find(e => e.category === 'Social Setting')?.recommendation?.[0] || '';
+	const structDesc = env.find(e => e.category === 'Structure Level')?.recommendation?.[0] || '';
+	const stimDesc = env.find(e => e.category === 'Stimulation')?.recommendation?.[0] || '';
+
+	const narrative = [
+		`You are best described as a "${cx.label}" learner with a "${oc.label}" study approach. ${cx.description.split('.')[0]}. Your curiosity style is "${ox.label}": ${ox.description.split('.')[0].toLowerCase()}.`,
+		`Your ideal learning environment combines ${socialDesc.toLowerCase().split('.')[0]} with ${structDesc.toLowerCase().split('.')[0]}. In terms of stimulation, ${stimDesc.toLowerCase().split('.')[0]}.`,
+		attentionProfile.description,
+		keyInsight
+	].join('\n\n');
+
 	return {
+		narrative,
 		learningStyle: {
 			primary: cx,
 			secondary: oc,
 			curiosity: ox,
 			summary: buildLearningSummary(cx, oc, ox)
 		},
-		idealEnvironment: buildEnvironment(dims),
-		attentionProfile: buildAttentionProfile(dims),
+		idealEnvironment: env,
+		attentionProfile,
 		preferredFormats: buildPreferredFormats(dims),
-		keyInsight: buildKeyInsight(dims)
+		keyInsight
 	};
 }
 

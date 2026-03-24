@@ -115,7 +115,16 @@ export function generateUnifiedGuide(results, crossRefResult) {
 
 	const tutorMatch = { traits: tutorTraits, rationale: tutorRationale };
 
+	// Build narrative prose
+	const narrative = [
+		`${archetype} profile. Strongest confirmed pattern: ${topStrength}. Key risk to watch: ${topWarning}`,
+		`For teachers: ${feedbackApproach}`,
+		`For parents: ${homeEnvironment} ${emotionalSupport}`,
+		`For tutors: ${tutorRationale}`
+	].join('\n\n');
+
 	return {
+		narrative,
 		oneMinuteBrief,
 		forTeachers,
 		forParents,
