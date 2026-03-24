@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { DownloadSimple, BookmarkSimple, CircleNotch } from "@phosphor-icons/react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, DownloadSimple, BookmarkSimple, CircleNotch } from "@phosphor-icons/react";
 
 interface StickyNavProps {
   studentName: string;
@@ -10,6 +11,7 @@ interface StickyNavProps {
 }
 
 export function StickyNav({ studentName, onSave, onDownloadPDF }: StickyNavProps) {
+  const router = useRouter();
   const [downloading, setDownloading] = useState(false);
 
   async function handleDownload() {
@@ -24,9 +26,18 @@ export function StickyNav({ studentName, onSave, onDownloadPDF }: StickyNavProps
   return (
     <header className="no-print fixed top-0 left-0 right-0 z-50 bg-cream backdrop-blur-xl border-b border-warm-gray/10">
       <div className="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between gap-4">
-        <p className="font-display text-espresso truncate text-sm font-semibold">
-          {studentName}
-        </p>
+        <div className="flex items-center gap-3 min-w-0">
+          <button
+            onClick={() => router.back()}
+            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-espresso/5 transition-colors shrink-0"
+            aria-label="Go back"
+          >
+            <ArrowLeft size={16} weight="bold" className="text-espresso" />
+          </button>
+          <p className="font-display text-espresso truncate text-sm font-semibold">
+            {studentName}
+          </p>
+        </div>
         <div className="flex items-center gap-3 shrink-0">
           <button
             onClick={handleDownload}

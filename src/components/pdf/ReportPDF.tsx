@@ -441,48 +441,170 @@ function renderObject(data: Record<string, unknown>, keyIndex?: number): React.R
   );
 }
 
+/** Recursively extract all displayable content from any value */
+function deepRenderValue(value: unknown, label?: string, depth?: number): React.ReactElement | null {
+  if (value === null || value === undefined || typeof value === "boolean") return null;
+  const d = depth || 0;
+
+  if (typeof value === "string") {
+    if (value.length < 3) return null;
+    return <Text style={styles.body}>{value}</Text>;
+  }
+
+  if (typeof value === "number") {
+    return null; // Skip raw numbers — they show in titles
+  }
+
+  if (Array.isArray(value)) {
+    if (value.length === 0) return null;
+
+    // String array → bullet list in card
+    if (value.every((v) => typeof v === "string")) {
+      return (
+        <PDFCard label={label}>
+          <PDFBulletList items={value.filter((s) => (s as string).length > 2) as string[]} />
+        </PDFCard>
+      );
+    }
+
+    // Object array
+    if (value.every((v) => typeof v === "object" && v !== null)) {
+      const objs = value as Record<string, unknown>[];
+
+      // Check for strengths/weaknesses pattern in items
+      const hasStrWeak = objs.some(
+        (o) => Array.isArray(o.strengths) && Array.isArray(o.weaknesses)
+      );
+      if (hasStrWeak) {
+        return (
+          <View>
+            {objs.map((obj, i) => {
+              const rendered = deepRenderValue(obj, undefined, d + 1);
+              return rendered ? <View key={i}>{rendered}</View> : null;
+            })}
+          </View>
+        );
+      }
+
+      // Try extracting text from each
+      const texts = objs.map(extractDisplayText);
+      if (texts.every((t) => t !== null)) {
+        return (
+          <PDFCard label={label}>
+            <PDFBulletList items={texts as string[]} />
+          </PDFCard>
+        );
+      }
+
+      // Extract titles + text for rich objects
+      const richItems: React.ReactElement[] = [];
+      for (let i = 0; i < objs.length; i++) {
+        const obj = objs[i];
+        const title = extractTitle(obj);
+        const text = extractDisplayText(obj);
+        const score = typeof obj.score === "number" ? obj.score : null;
+
+        if (title || text) {
+          richItems.push(
+            <PDFCard key={i} title={title ? `${title}${score != null ? ` — ${score}` : ""}` : null}>
+              {text && <Text style={styles.body}>{text}</Text>}
+              {/* Render nested arrays/objects */}
+              {Object.entries(obj).map(([k, v]) => {
+                if (SKIP_KEYS.has(k) || TITLE_KEYS.has(k) || TEXT_KEYS.has(k)) return null;
+                if (k === "score" || k === "level" || k === "color") return null;
+                const sub = deepRenderValue(v, formatLabel(k), d + 1);
+                return sub ? <View key={k} style={{ marginTop: 4 }}>{sub}</View> : null;
+              })}
+            </PDFCard>
+          );
+        } else {
+          // Fallback: recurse into the object
+          const sub = deepRenderValue(obj, undefined, d + 1);
+          if (sub) richItems.push(<View key={i}>{sub}</View>);
+        }
+      }
+      return richItems.length > 0 ? <View>{richItems}</View> : null;
+    }
+
+    return null;
+  }
+
+  if (typeof value === "object") {
+    const obj = value as Record<string, unknown>;
+    if (Object.keys(obj).length === 0) return null;
+
+    // Strengths/weaknesses
+    if (Array.isArray(obj.strengths) && Array.isArray(obj.weaknesses)) {
+      const title = extractTitle(obj);
+      return (
+        <View>
+          {title && <Text style={[styles.cardTitle, { marginBottom: 4 }]}>{title}</Text>}
+          <PDFStrengthsWeaknesses
+            strengths={obj.strengths as unknown[]}
+            weaknesses={obj.weaknesses as unknown[]}
+          />
+          {typeof obj.whatToDo === "string" && (
+            <Text style={[styles.body, { fontStyle: "italic" }]}>{obj.whatToDo}</Text>
+          )}
+        </View>
+      );
+    }
+
+    // General object: extract title, texts, then recurse into children
+    const title = extractTitle(obj);
+    const score = typeof obj.score === "number" || typeof obj.score === "string" ? obj.score : null;
+    const texts: string[] = [];
+    for (const [k, v] of Object.entries(obj)) {
+      if (TEXT_KEYS.has(k) && typeof v === "string" && v.length > 5) texts.push(v);
+    }
+
+    const children: React.ReactElement[] = [];
+    for (const [k, v] of Object.entries(obj)) {
+      if (SKIP_KEYS.has(k) || TITLE_KEYS.has(k) || TEXT_KEYS.has(k)) continue;
+      if (k === "score" || k === "level" || k === "color") continue;
+      const sub = deepRenderValue(v, formatLabel(k), d + 1);
+      if (sub) children.push(<View key={k} style={{ marginTop: 4 }}>{sub}</View>);
+    }
+
+    const hasContent = title || texts.length > 0 || children.length > 0;
+    if (!hasContent) return null;
+
+    // At top level (d=0), render as a card; deeper, render inline
+    if (d < 2 && (title || texts.length > 0)) {
+      return (
+        <PDFCard title={title ? `${title}${score != null ? ` — ${score}` : ""}` : null} label={!title ? label : null}>
+          {texts.map((t, i) => (
+            <Text key={i} style={styles.body}>{t}</Text>
+          ))}
+          {children}
+        </PDFCard>
+      );
+    }
+
+    return (
+      <View>
+        {label && <Text style={styles.cardLabel}>{label}</Text>}
+        {title && <Text style={[styles.cardTitle, { marginBottom: 2 }]}>{title}{score != null ? ` — ${score}` : ""}</Text>}
+        {texts.map((t, i) => (
+          <Text key={i} style={styles.body}>{t}</Text>
+        ))}
+        {children}
+      </View>
+    );
+  }
+
+  return null;
+}
+
 function renderSectionContent(data: Record<string, unknown>): React.ReactElement[] {
   const elements: React.ReactElement[] = [];
 
   for (const [key, value] of Object.entries(data)) {
     if (SKIP_KEYS.has(key)) continue;
 
-    const rendered = renderValue(value, formatLabel(key));
+    const rendered = deepRenderValue(value, formatLabel(key), 0);
     if (rendered) {
       elements.push(<View key={key}>{rendered}</View>);
-      continue;
-    }
-
-    // Fallback: if renderValue returned null for an object, try extracting all
-    // string values from it recursively and render them as text
-    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
-      const flatTexts: string[] = [];
-      const extractAllTexts = (obj: Record<string, unknown>) => {
-        for (const [k, v] of Object.entries(obj)) {
-          if (SKIP_KEYS.has(k)) continue;
-          if (typeof v === "string" && v.length > 10) {
-            flatTexts.push(v);
-          } else if (Array.isArray(v)) {
-            v.forEach((item) => {
-              if (typeof item === "string" && item.length > 5) flatTexts.push(item);
-              else if (typeof item === "object" && item !== null) {
-                const t = extractDisplayText(item as Record<string, unknown>);
-                if (t) flatTexts.push(t);
-              }
-            });
-          } else if (typeof v === "object" && v !== null) {
-            extractAllTexts(v as Record<string, unknown>);
-          }
-        }
-      };
-      extractAllTexts(value as Record<string, unknown>);
-      if (flatTexts.length > 0) {
-        elements.push(
-          <PDFCard key={key} label={formatLabel(key)}>
-            <PDFBulletList items={flatTexts} />
-          </PDFCard>
-        );
-      }
     }
   }
 
