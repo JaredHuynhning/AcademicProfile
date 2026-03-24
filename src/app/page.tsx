@@ -30,18 +30,20 @@ const shake = {
 
 export default function HomePage() {
   const router = useRouter();
-  const { setName, setEmail, setMode, name, email } = useQuizStore();
+  const { setName, setEmail, setDob, setMode, name, email, dob } = useQuizStore();
   const { reports, loadReport } = useReportsStore();
   const [inputName, setInputName] = useState(name);
   const [inputEmail, setInputEmail] = useState(email);
-  const [errors, setErrors] = useState<{ name?: boolean; email?: boolean }>({});
+  const [inputDob, setInputDob] = useState(dob);
+  const [errors, setErrors] = useState<{ name?: boolean; email?: boolean; dob?: boolean }>({});
   const [shakeKey, setShakeKey] = useState(0);
 
   const validate = () => {
     const nameEmpty = !inputName.trim();
     const emailInvalid = !inputEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inputEmail.trim());
-    setErrors({ name: nameEmpty, email: emailInvalid });
-    if (nameEmpty || emailInvalid) {
+    const dobEmpty = !inputDob;
+    setErrors({ name: nameEmpty, email: emailInvalid, dob: dobEmpty });
+    if (nameEmpty || emailInvalid || dobEmpty) {
       setShakeKey((k) => k + 1);
       return false;
     }
@@ -52,6 +54,7 @@ export default function HomePage() {
     if (!validate()) return;
     setName(inputName.trim());
     setEmail(inputEmail.trim());
+    setDob(inputDob);
     setMode(mode);
     router.push("/test");
   };
@@ -98,14 +101,15 @@ export default function HomePage() {
                 onChange={(e) => { setInputEmail(e.target.value); if (errors.email) setErrors((p) => ({ ...p, email: false })); }}
                 className={inputClass(errors.email)}
               />
-              {(errors.name || errors.email) && (
-                <p className="text-xs text-red-400 -mt-1">
-                  {errors.name && errors.email
-                    ? "Please enter your name and email to continue"
-                    : errors.name
-                    ? "Please enter your name"
-                    : "Please enter a valid email"}
-                </p>
+              <input
+                type="date"
+                placeholder="Date of birth"
+                value={inputDob}
+                onChange={(e) => { setInputDob(e.target.value); if (errors.dob) setErrors((p) => ({ ...p, dob: false })); }}
+                className={inputClass(errors.dob)}
+              />
+              {(errors.name || errors.email || errors.dob) && (
+                <p className="text-xs text-red-400 -mt-1">Please fill in all fields to continue</p>
               )}
               <Button onClick={() => handleStart()} icon className="justify-center">
                 Begin Assessment
