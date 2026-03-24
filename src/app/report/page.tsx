@@ -7,37 +7,150 @@ import { generateReport } from "@/lib/report";
 import { ReportSection } from "@/components/report/ReportSection";
 import { StickyNav } from "@/components/report/StickyNav";
 import { FloatingTOC } from "@/components/report/FloatingTOC";
+import { downloadReportPDF } from "@/components/pdf/ReportPDF";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 
-// ─── Generic field renderers ──────────────────────────────────────────────────
+// ─── Field classification helpers ────────────────────────────────────────────
 
-function StringField({ value }: { value: string }) {
-  return <p className="text-espresso/80 leading-relaxed mb-3">{value}</p>;
+// Keys that are internal metadata — never render
+const SKIP_KEYS = new Set([
+  "key", "icon", "color", "rawScore", "classification", "rank", "role",
+  "shortName", "radarData", "passionClassification", "confidenceClassification",
+  "matchPercent", "match_score", "dualFire", "type", "impact", "profile",
+  "percentile", "structureScore", "warmthScore", "carrotScore", "stickScore",
+  "barrier", "sdi", "item_count", "dim", "name", "date",
+  // Section-structural keys (lookup keys whose content is in companion objects)
+  "dominantApproach", "motivationProfile", "regulationStrength",
+  "approaches", "motivationScores", "scores", "quizMode",
+  // Cross-reference internal fields
+  "personalityRoot", "personalityScore", "academicSymptom", "academicScore",
+  "visibleBehaviour", "id", "looksLike", "actuallyIs", "urgency",
+  "alignment", "passion", "confidence", "weight", "evidence",
+  "dimKey", "facetKey",
+]);
+
+// Keys whose values are titles/names to display prominently
+const TITLE_KEYS = new Set(["name", "title", "label", "style", "preferred", "metric"]);
+
+// Keys whose values are short text to display as body content
+const TEXT_KEYS = new Set([
+  "text", "description", "desc", "narrative", "details", "summary", "explanation",
+  "message", "keyPrinciple", "actionStep", "approach", "idealFor", "bestWhen",
+  "notIdeal", "tip", "tutorTip", "strategy", "challenge", "analysis",
+  "leverageTip", "actionTip", "whatToDo", "understandingProfile",
+  "alignmentLabel", "passionTip", "confidenceTip", "fallbackMessage",
+  "oneMinuteBrief", "insight", "question", "misconception", "realCause",
+  "cycle", "fallbackMessage", "method", "rationale",
+]);
+
+function formatLabel(key: string): string {
+  return key
+    .replace(/([A-Z])/g, " $1")
+    .replace(/_/g, " ")
+    .replace(/^./, (s) => s.toUpperCase())
+    .trim();
 }
 
-function ArrayField({ value }: { value: unknown[] }) {
-  const allStrings = value.every((v) => typeof v === "string");
-  if (allStrings) {
-    return (
-      <ul className="space-y-1.5 mb-3">
-        {(value as string[]).map((item, i) => (
-          <li key={i} className="flex items-start gap-2 text-espresso/80 leading-relaxed">
-            <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-warm-gray/40 shrink-0" />
-            {item}
-          </li>
-        ))}
-      </ul>
-    );
+/** Title-case only short enum-like values (e.g. "very_high" → "Very High"). Leave sentences alone. */
+function formatLevel(val: string): string {
+  if (val.length > 30 || val.includes(".") || val.includes(",")) return val;
+  return val.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+/** Extract the best displayable text from an object */
+function extractDisplayText(obj: Record<string, unknown> | null | undefined): string | null {
+  if (!obj) return null;
+  for (const key of TEXT_KEYS) {
+    if (typeof obj[key] === "string" && (obj[key] as string).length > 0) {
+      return obj[key] as string;
+    }
   }
-  // Array of objects — render each as a card
+  return null;
+}
+
+/** Extract the title from an object — only short titles, not full sentences */
+function extractTitle(obj: Record<string, unknown> | null | undefined): string | null {
+  if (!obj) return null;
+  for (const key of TITLE_KEYS) {
+    if (typeof obj[key] === "string" && (obj[key] as string).length > 0) {
+      const val = obj[key] as string;
+      // Skip long sentences used as titles — they should be body text
+      if (val.length > 60) return null;
+      return val;
+    }
+  }
+  return null;
+}
+
+/** Clean em dashes and tidy text for display */
+function clean(text: string): string {
+  return text.replace(/ — /g, ": ").replace(/—/g, ": ").replace(/ – /g, ": ");
+}
+
+/** Check if a string is a real sentence vs a technical label */
+function isSentence(text: string): boolean {
+  return text.length > 25 && text.includes(" ");
+}
+
+/** Check if a string is a technical/internal label to skip */
+function isInternalLabel(text: string): boolean {
+  if (text.length > 40) return false;
+  // Skip camelCase identifiers, dimension codes, bare facet names
+  if (/^[a-z]+[A-Z]/.test(text)) return true; // camelCase
+  if (/^[A-Z]{1,2}$/.test(text)) return true; // single/double caps like "H", "XE"
+  if (/^\d+(\.\d+)?$/.test(text)) return true; // bare numbers
+  // Short strings without spaces that look like field names
+  if (text.length < 20 && !text.includes(" ")) return true;
+  return false;
+}
+
+// ─── Generic field renderers ──────────────────────────────────────────────────
+
+function BulletList({ items }: { items: string[] }) {
   return (
-    <div className="space-y-3 mb-3">
-      {value.map((item, i) => (
-        <ObjectCard key={i} data={item as Record<string, unknown>} />
+    <ul className="space-y-2 mb-3">
+      {items.map((item, i) => (
+        <li key={i} className="flex items-start gap-2 text-espresso/80 leading-relaxed">
+          <span className="mt-2 w-1.5 h-1.5 rounded-full bg-warm-gray/40 shrink-0" />
+          {clean(item)}
+        </li>
       ))}
-    </div>
+    </ul>
+  );
+}
+
+function getRichText(item: unknown): { title: string; detail?: string } {
+  if (typeof item === "string") return { title: item };
+  if (typeof item === "object" && item !== null) {
+    const obj = item as Record<string, unknown>;
+    const name = (obj.name as string) || (obj.text as string) || "";
+    // For strengths: use analysis or leverageTip
+    const detail = (obj.analysis as string) || (obj.leverageTip as string) ||
+      (obj.challenge as string) || (obj.actionTip as string) ||
+      (obj.description as string) || (obj.tip as string) || "";
+    return { title: name, detail: detail.length > 5 ? detail : undefined };
+  }
+  return { title: String(item) };
+}
+
+function RichBulletList({ items }: { items: { title: string; detail?: string }[] }) {
+  return (
+    <ul className="space-y-4">
+      {items.map((item, i) => (
+        <li key={i}>
+          {item.detail ? (
+            <>
+              <p className="font-medium text-espresso">{clean(item.title)}</p>
+              <p className="text-espresso/70 leading-relaxed mt-1">{clean(item.detail)}</p>
+            </>
+          ) : (
+            <p className="text-espresso/80 leading-relaxed">{clean(item.title)}</p>
+          )}
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -48,94 +161,292 @@ function StrengthsWeaknessesField({
   strengths: unknown[];
   weaknesses: unknown[];
 }) {
+  const bothSides = strengths.length > 0 && weaknesses.length > 0;
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+    <div className={`grid grid-cols-1 ${bothSides ? "sm:grid-cols-2" : ""} gap-4 mb-4`}>
       {strengths.length > 0 && (
         <Card className="!p-4">
-          <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-2">
+          <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-3">
             Strengths
           </p>
-          <ul className="space-y-1">
-            {(strengths as Record<string, unknown>[]).map((s, i) => (
-              <li key={i} className="text-sm text-espresso/80">
-                {typeof s === "string" ? s : (s.name as string) || JSON.stringify(s)}
-              </li>
-            ))}
-          </ul>
+          <RichBulletList items={strengths.map(getRichText)} />
         </Card>
       )}
       {weaknesses.length > 0 && (
         <Card className="!p-4">
-          <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-2">
+          <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-3">
             Growth Areas
           </p>
-          <ul className="space-y-1">
-            {(weaknesses as Record<string, unknown>[]).map((w, i) => (
-              <li key={i} className="text-sm text-espresso/80">
-                {typeof w === "string" ? w : (w.name as string) || JSON.stringify(w)}
-              </li>
-            ))}
-          </ul>
+          <RichBulletList items={weaknesses.map(getRichText)} />
         </Card>
       )}
     </div>
   );
 }
 
-function ObjectCard({ data }: { data: Record<string, unknown> }) {
-  const hasStrengthsWeaknesses =
-    Array.isArray(data.strengths) && Array.isArray(data.weaknesses);
+/** Render an array — string[] as bullet list in a card, object[] smartly */
+function ArrayField({ value, label }: { value: unknown[]; label?: string }) {
+  if (value.length === 0) return null;
 
-  if (hasStrengthsWeaknesses) {
-    const cardName = typeof data.name === "string" ? data.name : null;
+  // All strings → bullet list inside a card
+  const allStrings = value.every((v) => typeof v === "string");
+  if (allStrings) {
     return (
-      <div className="mb-2">
+      <Card className="!p-4 mb-3">
+        {label && (
+          <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-2">
+            {label}
+          </p>
+        )}
+        <BulletList items={value as string[]} />
+      </Card>
+    );
+  }
+
+  // Object array
+  const allObjects = value.every((v) => typeof v === "object" && v !== null && !Array.isArray(v));
+  if (allObjects) {
+    const objs = value as Record<string, unknown>[];
+
+    // Check if objects have strengths/weaknesses (dimension cards) — render each as its own card
+    const hasDimensionStructure = objs.some(
+      (o) => Array.isArray(o.strengths) && Array.isArray(o.weaknesses)
+    );
+    if (hasDimensionStructure) {
+      return (
+        <div className="space-y-3 mb-3">
+          {objs.map((item, i) => (
+            <ObjectCard key={i} data={item} />
+          ))}
+        </div>
+      );
+    }
+
+    // Rich titled objects (title + long description) — render individually
+    const hasRichTitledContent = objs.some(
+      (o) => {
+        const t = extractTitle(o);
+        const d = extractDisplayText(o);
+        return t && d && d.length > 50;
+      }
+    );
+    if (hasRichTitledContent) {
+      return (
+        <div className="space-y-3 mb-3">
+          {objs.map((item, i) => (
+            <ObjectCard key={i} data={item} />
+          ))}
+        </div>
+      );
+    }
+
+    // Objects with same sub-array keys (e.g. all have "recommendation") — merge into one card
+    const subArrayKeys = new Set<string>();
+    for (const obj of objs) {
+      for (const [k, v] of Object.entries(obj)) {
+        if (Array.isArray(v) && v.length > 0) subArrayKeys.add(k);
+      }
+    }
+    if (subArrayKeys.size > 0) {
+      const merged: Record<string, string[]> = {};
+      for (const key of subArrayKeys) {
+        merged[key] = [];
+        for (const obj of objs) {
+          const arr = obj[key];
+          if (Array.isArray(arr)) {
+            for (const item of arr) {
+              if (typeof item === "string" && isSentence(item)) merged[key].push(item);
+            }
+          }
+        }
+      }
+      const cards = Object.entries(merged).filter(([, items]) => items.length > 0);
+      if (cards.length > 0) {
+        return (
+          <div className="space-y-3 mb-3">
+            {cards.map(([key, items]) => (
+              <Card key={key} className="!p-4">
+                <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-2">
+                  {formatLabel(key)}
+                </p>
+                <BulletList items={items} />
+              </Card>
+            ))}
+          </div>
+        );
+      }
+    }
+
+    // Simple/small objects — consolidate all sentence-length strings into one bullet list
+    const allTexts: string[] = [];
+    for (const obj of objs) {
+      // Try TEXT_KEYS first
+      const displayText = extractDisplayText(obj);
+      if (displayText && isSentence(displayText)) {
+        allTexts.push(displayText);
+        continue;
+      }
+      // Fallback: grab any sentence-length string from the object
+      for (const [k, v] of Object.entries(obj)) {
+        if (SKIP_KEYS.has(k) || k === "score" || k === "level" || k === "color") continue;
+        if (typeof v === "string" && isSentence(v) && !isInternalLabel(v)) {
+          allTexts.push(v);
+          break; // one string per object
+        }
+      }
+    }
+    if (allTexts.length > 0) {
+      return (
+        <Card className="!p-4 mb-3">
+          {label && (
+            <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-2">
+              {label}
+            </p>
+          )}
+          <BulletList items={allTexts} />
+        </Card>
+      );
+    }
+
+    // Fallback — render each object as a card (only if they produce content)
+    const rendered = objs.map((item, i) => <ObjectCard key={i} data={item} />).filter(Boolean);
+    if (rendered.length > 0) {
+      return <div className="space-y-3 mb-3">{rendered}</div>;
+    }
+  }
+
+  return null;
+}
+
+function ObjectCard({ data }: { data: Record<string, unknown> }) {
+  if (!data) return null;
+
+  // Strengths/weaknesses pattern
+  if (Array.isArray(data.strengths) && Array.isArray(data.weaknesses)) {
+    const cardName = extractTitle(data);
+    const color = typeof data.color === "string" ? data.color : undefined;
+    const whatToDo = typeof data.whatToDo === "string" ? data.whatToDo : null;
+    return (
+      <div className="mb-4">
         {cardName && (
-          <p className="font-medium text-espresso mb-2">{cardName}</p>
+          <p className="font-semibold text-espresso mb-1" style={color ? { color } : undefined}>
+            {cardName}
+          </p>
         )}
         <StrengthsWeaknessesField
           strengths={data.strengths as unknown[]}
           weaknesses={data.weaknesses as unknown[]}
         />
+        {whatToDo && (
+          <p className="text-espresso/70 mt-2 italic">{whatToDo}</p>
+        )}
       </div>
     );
   }
 
-  const primitiveEntries = Object.entries(data).filter(
-    ([, v]) => typeof v === "string" || typeof v === "number"
-  );
-  const arrayEntries = Object.entries(data).filter(([, v]) => Array.isArray(v));
+  // Collect renderable content
+  const title = extractTitle(data);
+  const color = typeof data.color === "string" ? data.color : undefined;
+  const score = typeof data.score === "string" || typeof data.score === "number" ? data.score : null;
+  const level = typeof data.level === "string" ? formatLevel(data.level) : null;
+
+  // Gather text content (descriptions, tips, etc.) — skip if same as title
+  const texts: string[] = [];
+  for (const [k, v] of Object.entries(data)) {
+    if (TEXT_KEYS.has(k) && typeof v === "string" && v.length > 5) {
+      // Skip if this text duplicates or starts with the title
+      if (title && (v === title || v.startsWith(title) || title.startsWith(v.slice(0, 30)))) continue;
+      texts.push(v);
+    }
+  }
+
+  // Gather non-skipped string fields — only sentences, not technical labels
+  const extraFields: { key: string; value: string }[] = [];
+  for (const [k, v] of Object.entries(data)) {
+    if (SKIP_KEYS.has(k) || TITLE_KEYS.has(k) || TEXT_KEYS.has(k)) continue;
+    if (k === "score" || k === "level" || k === "color") continue;
+    if (typeof v === "string" && v.length > 2) {
+      const cleaned = formatLevel(v);
+      if (!isInternalLabel(cleaned) && isSentence(cleaned)) {
+        extraFields.push({ key: k, value: cleaned });
+      }
+    }
+  }
+
+  // Gather arrays
+  const arrays: { key: string; value: unknown[] }[] = [];
+  for (const [k, v] of Object.entries(data)) {
+    if (SKIP_KEYS.has(k)) continue;
+    if (Array.isArray(v) && v.length > 0) {
+      arrays.push({ key: k, value: v });
+    }
+  }
+
+  // Sub-objects (only keep ones with extractable text)
+  const subObjects: { key: string; value: Record<string, unknown>; text: string }[] = [];
+  for (const [k, v] of Object.entries(data)) {
+    if (SKIP_KEYS.has(k)) continue;
+    if (typeof v === "object" && v !== null && !Array.isArray(v)) {
+      const subText = extractDisplayText(v as Record<string, unknown>);
+      if (subText) {
+        subObjects.push({ key: k, value: v as Record<string, unknown>, text: subText });
+      }
+    }
+  }
+
+  // If nothing to show, return null
+  const hasContent = title || score || texts.length > 0 || extraFields.length > 0 || arrays.length > 0 || subObjects.length > 0;
+  if (!hasContent) return null;
 
   return (
     <Card className="!p-4">
-      {primitiveEntries.map(([key, value]) => {
-        if (key === "color") return null;
-        if (key === "name" || key === "title" || key === "label") {
+      {title && (
+        <p className="font-semibold text-espresso mb-1" style={color ? { color } : undefined}>
+          {title}
+          {score != null && <Badge className="ml-2">{String(score)}</Badge>}
+          {level && <span className="text-sm text-warm-gray ml-2">{level}</span>}
+        </p>
+      )}
+      {!title && score != null && (
+        <Badge className="mb-2" color={color}>{String(score)}</Badge>
+      )}
+      {texts.map((t, i) => (
+        <p key={i} className="text-espresso/70 leading-relaxed mb-2">{clean(t)}</p>
+      ))}
+      {extraFields.map(({ key, value }) => (
+        <p key={key} className="text-espresso/70 leading-relaxed mb-1">{value}</p>
+      ))}
+      {arrays.map(({ key, value }) => {
+        const allStr = value.every((v) => typeof v === "string");
+        if (allStr) {
           return (
-            <p key={key} className="font-medium text-espresso mb-1">
-              {String(value)}
-            </p>
+            <div key={key} className="mt-2">
+              <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-1">
+                {formatLabel(key)}
+              </p>
+              <BulletList items={value as string[]} />
+            </div>
           );
         }
-        if (key === "score" || key === "rawScore") {
+        const texts = (value as Record<string, unknown>[]).map(extractDisplayText).filter(Boolean);
+        if (texts.length === value.length) {
           return (
-            <Badge key={key} className="mb-2">
-              {String(value)}
-            </Badge>
+            <div key={key} className="mt-2">
+              <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-1">
+                {formatLabel(key)}
+              </p>
+              <BulletList items={texts as string[]} />
+            </div>
           );
         }
-        return (
-          <p key={key} className="text-sm text-espresso/70 leading-relaxed mb-1">
-            {String(value)}
-          </p>
-        );
+        return null;
       })}
-      {arrayEntries.map(([key, value]) => (
+      {subObjects.map(({ key, text }) => (
         <div key={key} className="mt-2">
           <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-1">
-            {key.replace(/([A-Z])/g, " $1").trim()}
+            {formatLabel(key)}
           </p>
-          <ArrayField value={value as unknown[]} />
+          <p className="text-espresso/70 leading-relaxed">{text}</p>
         </div>
       ))}
     </Card>
@@ -144,8 +455,13 @@ function ObjectCard({ data }: { data: Record<string, unknown> }) {
 
 function SectionField({ label, value }: { label: string; value: unknown }) {
   if (value === null || value === undefined) return null;
-  if (typeof value === "string") return <StringField value={value} />;
+  if (typeof value === "boolean") return null;
+  if (typeof value === "string") {
+    if (value.length === 0 || isInternalLabel(value)) return null;
+    return <p className="text-espresso/80 leading-relaxed mb-3">{clean(value)}</p>;
+  }
   if (typeof value === "number") {
+    if (value > 5 || value < 0) return null;
     return (
       <div className="mb-3">
         <Badge>{String(value)}</Badge>
@@ -154,13 +470,12 @@ function SectionField({ label, value }: { label: string; value: unknown }) {
   }
   if (Array.isArray(value)) {
     if (value.length === 0) return null;
-    return <ArrayField value={value} />;
+    return <ArrayField value={value} label={label} />;
   }
   if (typeof value === "object") {
     const obj = value as Record<string, unknown>;
-    const hasStrengthsWeaknesses =
-      Array.isArray(obj.strengths) && Array.isArray(obj.weaknesses);
-    if (hasStrengthsWeaknesses) {
+    if (!obj || Object.keys(obj).length === 0) return null;
+    if (Array.isArray(obj.strengths) && Array.isArray(obj.weaknesses)) {
       return (
         <StrengthsWeaknessesField
           strengths={obj.strengths as unknown[]}
@@ -174,17 +489,12 @@ function SectionField({ label, value }: { label: string; value: unknown }) {
 }
 
 function SectionContent({ data }: { data: Record<string, unknown> }) {
-  const SKIP_KEYS = new Set(["name", "date", "radarData"]);
-
   const entries = Object.entries(data).filter(([k]) => !SKIP_KEYS.has(k));
 
   return (
     <div className="space-y-4">
       {entries.map(([key, value]) => {
-        const label = key
-          .replace(/([A-Z])/g, " $1")
-          .replace(/^./, (s) => s.toUpperCase())
-          .trim();
+        const label = formatLabel(key);
         return <SectionField key={key} label={label} value={value} />;
       })}
     </div>
@@ -305,10 +615,40 @@ export default function ReportPage() {
   const report = generateReport(results, name);
 
   // Build the ordered list of sections to render
+  // When complete mode is active, skip individual personality/learning sections
+  // to avoid redundancy — the complete sections cross-reference both
   const orderedSections: SectionDefinition[] = [];
-  if (report.hasPersonality) orderedSections.push(...PERSONALITY_SECTIONS);
-  if (report.hasLearning) orderedSections.push(...LEARNING_SECTIONS);
-  if (report.hasComplete) orderedSections.push(...COMPLETE_SECTIONS);
+  if (report.hasComplete) {
+    // Complete mode: comprehensive but deduplicated
+    orderedSections.push(
+      { key: "cover", title: "Profile Summary", isCover: true },
+      { key: "executiveSummary", title: "Executive Summary" },
+      // Personality in depth
+      { key: "deepDive", title: "Deep Dive: Your Personality" },
+      { key: "learning", title: "Learning Style" },
+      { key: "drives", title: "Drives & Motivation" },
+      { key: "study", title: "Study Approach" },
+      { key: "group", title: "Group Work & Collaboration" },
+      { key: "strengths", title: "Strengths & Growth" },
+      // Academic profile
+      { key: "studyProfile", title: "Study Profile" },
+      { key: "academicCharacter", title: "Academic Character" },
+      { key: "subjectFit", title: "Subject Fit" },
+      // Cross-referenced insights
+      { key: "howYouLearn", title: "How You Learn" },
+      { key: "whatsWorking", title: "What's Working" },
+      { key: "whatWorks", title: "What Works for You" },
+      { key: "barriers", title: "Barriers to Learning" },
+      { key: "actionPlan", title: "Action Plan" },
+      // Tutor matching
+      { key: "tutor", title: "Your Ideal Tutor" },
+      // Consolidated guide
+      { key: "unifiedGuide", title: "Complete Guide" },
+    );
+  } else {
+    if (report.hasPersonality) orderedSections.push(...PERSONALITY_SECTIONS);
+    if (report.hasLearning) orderedSections.push(...LEARNING_SECTIONS);
+  }
 
   const activeSections = orderedSections.filter(
     (s) => report[s.key as keyof typeof report] !== null
@@ -323,14 +663,18 @@ export default function ReportPage() {
     saveReport(name || "Student", results!);
   }
 
+  async function handleDownloadPDF() {
+    await downloadReportPDF(name || "Student", results!, report as Record<string, unknown>);
+  }
+
   return (
     <>
-      <StickyNav studentName={name || "Student Report"} onSave={handleSave} />
+      <StickyNav studentName={name || "Student Report"} onSave={handleSave} onDownloadPDF={handleDownloadPDF} />
       <FloatingTOC items={tocItems} />
 
       <main className="bg-cream min-h-screen pt-20 pb-24">
         {/* Page header */}
-        <div className="max-w-4xl mx-auto px-6 pt-10 pb-4">
+        <div className="max-w-4xl mx-auto px-6 pt-4 pb-4">
           <Badge className="mb-4">Academic Profile Report</Badge>
           <h1 className="font-display text-4xl md:text-5xl font-bold text-espresso">
             {name || "Student"}
@@ -355,7 +699,6 @@ export default function ReportPage() {
               <ReportSection
                 key={sectionDef.key}
                 id={`section-${sectionDef.key}`}
-                sectionNumber={index + 1}
                 title={sectionDef.title}
                 isFirst={index === 0}
               >

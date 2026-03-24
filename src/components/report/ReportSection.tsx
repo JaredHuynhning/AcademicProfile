@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/Badge";
 
 interface ReportSectionProps {
   id: string;
-  sectionNumber: number;
   title: string;
   children: React.ReactNode;
   isFirst?: boolean;
@@ -13,7 +12,6 @@ interface ReportSectionProps {
 
 export function ReportSection({
   id,
-  sectionNumber,
   title,
   children,
   isFirst = false,
@@ -26,7 +24,6 @@ export function ReportSection({
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
-        <Badge className="mb-4">Section {sectionNumber}</Badge>
         <h2 className="font-display text-2xl font-bold text-espresso mb-8">{title}</h2>
         <div className="max-w-[65ch]">{children}</div>
       </motion.div>

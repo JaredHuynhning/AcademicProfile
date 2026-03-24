@@ -1,11 +1,16 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { List, X } from "@phosphor-icons/react";
 import { MobileMenu } from "./MobileMenu";
 
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Hide navbar on report page (it has its own StickyNav)
+  if (pathname === "/report") return null;
 
   return (
     <>
