@@ -36,7 +36,8 @@ const TEXT_KEYS = new Set([
   "notIdeal", "tip", "tutorTip", "strategy", "challenge", "analysis",
   "leverageTip", "actionTip", "whatToDo", "understandingProfile",
   "alignmentLabel", "passionTip", "confidenceTip", "fallbackMessage",
-  "oneMinuteBrief", "insight",
+  "oneMinuteBrief", "insight", "question", "misconception", "realCause",
+  "cycle", "fallbackMessage", "method", "rationale",
 ]);
 
 function formatLabel(key: string): string {
@@ -146,13 +147,29 @@ function ArrayField({ value, label }: { value: unknown[]; label?: string }) {
     );
   }
 
-  // Object array — check if they're simple text objects (like motivators: { text, dim, icon })
+  // Object array
   const allObjects = value.every((v) => typeof v === "object" && v !== null && !Array.isArray(v));
   if (allObjects) {
-    const texts = (value as Record<string, unknown>[]).map(extractDisplayText);
-    const allHaveText = texts.every((t) => t !== null);
+    const objs = value as Record<string, unknown>[];
 
-    // Simple text objects → render as bullet list
+    // Check if objects have strengths/weaknesses (dimension cards) — render each as its own card
+    const hasRichStructure = objs.some(
+      (o) => (Array.isArray(o.strengths) && Array.isArray(o.weaknesses)) ||
+        (extractTitle(o) && extractDisplayText(o))
+    );
+    if (hasRichStructure) {
+      return (
+        <div className="space-y-3 mb-3">
+          {objs.map((item, i) => (
+            <ObjectCard key={i} data={item} />
+          ))}
+        </div>
+      );
+    }
+
+    // Simple text objects (like motivators: { text, dim, icon }) → bullet list
+    const texts = objs.map(extractDisplayText);
+    const allHaveText = texts.every((t) => t !== null);
     if (allHaveText) {
       return (
         <Card className="!p-4 mb-3">
@@ -166,10 +183,10 @@ function ArrayField({ value, label }: { value: unknown[]; label?: string }) {
       );
     }
 
-    // Complex objects with strengths/weaknesses or rich content
+    // Fallback — render each object as a card
     return (
       <div className="space-y-3 mb-3">
-        {(value as Record<string, unknown>[]).map((item, i) => (
+        {objs.map((item, i) => (
           <ObjectCard key={i} data={item} />
         ))}
       </div>

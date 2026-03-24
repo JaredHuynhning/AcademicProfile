@@ -187,7 +187,8 @@ const TEXT_KEYS = new Set([
   "notIdeal", "tip", "tutorTip", "strategy", "challenge", "analysis",
   "leverageTip", "actionTip", "whatToDo", "understandingProfile",
   "alignmentLabel", "passionTip", "confidenceTip", "fallbackMessage",
-  "oneMinuteBrief", "insight",
+  "oneMinuteBrief", "insight", "question", "misconception", "realCause",
+  "cycle", "method", "rationale",
 ]);
 
 function formatLabel(key: string): string {
