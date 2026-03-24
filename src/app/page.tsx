@@ -23,18 +23,45 @@ const assessmentModes: { icon: typeof Brain; title: string; desc: string; color:
   { icon: ChartBar, title: "Complete Assessment", desc: "Full personality + learning profile", color: "#f43f5e", domain: "All 120 questions, cross-referenced", mode: "complete", time: "~20 min" },
 ];
 
+const shake = {
+  x: [0, -8, 8, -6, 6, -3, 3, 0],
+  transition: { duration: 0.5 },
+};
+
 export default function HomePage() {
   const router = useRouter();
-  const { setName, setMode, name } = useQuizStore();
+  const { setName, setEmail, setMode, name, email } = useQuizStore();
   const { reports, loadReport } = useReportsStore();
   const [inputName, setInputName] = useState(name);
+  const [inputEmail, setInputEmail] = useState(email);
+  const [errors, setErrors] = useState<{ name?: boolean; email?: boolean }>({});
+  const [shakeKey, setShakeKey] = useState(0);
+
+  const validate = () => {
+    const nameEmpty = !inputName.trim();
+    const emailInvalid = !inputEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inputEmail.trim());
+    setErrors({ name: nameEmpty, email: emailInvalid });
+    if (nameEmpty || emailInvalid) {
+      setShakeKey((k) => k + 1);
+      return false;
+    }
+    return true;
+  };
 
   const handleStart = (mode: QuizMode = "complete") => {
-    if (!inputName.trim()) return;
+    if (!validate()) return;
     setName(inputName.trim());
+    setEmail(inputEmail.trim());
     setMode(mode);
     router.push("/test");
   };
+
+  const inputClass = (hasError?: boolean) =>
+    `w-full bg-parchment rounded-2xl px-4 py-3 text-sm text-espresso placeholder:text-warm-gray/50 outline-none transition-all duration-200 ${
+      hasError
+        ? "ring-2 ring-red-400/60 placeholder:text-red-400/70"
+        : "focus:ring-2 focus:ring-espresso/10"
+    }`;
 
   return (
     <main className="min-h-[100dvh] pt-28 pb-20 px-4 max-w-5xl mx-auto">
@@ -43,27 +70,47 @@ export default function HomePage() {
         <Card outerClassName="mb-8" className="p-8 md:p-12">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div>
-              <Badge>20-Minute Assessment</Badge>
+              <Badge>Student Assessment</Badge>
               <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight mt-3 leading-[1.1]">
                 Your Learning Profile
               </h1>
               <p className="text-warm-gray mt-3 max-w-md leading-relaxed">
-                120 questions. Personalised report covering your personality,
+                Personalised report covering your personality,
                 learning style, and academic strengths.
               </p>
             </div>
-            <div className="flex flex-col gap-3 min-w-[260px]">
+            <motion.div
+              key={shakeKey}
+              animate={shakeKey > 0 ? shake : {}}
+              className="flex flex-col gap-3 min-w-[280px]"
+            >
               <input
                 type="text"
-                placeholder="Enter your first name..."
+                placeholder="Full name..."
                 value={inputName}
-                onChange={(e) => setInputName(e.target.value)}
-                className="w-full bg-parchment rounded-2xl px-4 py-3 text-sm text-espresso placeholder:text-warm-gray/50 outline-none focus:ring-2 focus:ring-espresso/10 transition-shadow"
+                onChange={(e) => { setInputName(e.target.value); if (errors.name) setErrors((p) => ({ ...p, name: false })); }}
+                className={inputClass(errors.name)}
               />
-              <Button onClick={handleStart} icon className="justify-center">
+              <input
+                type="email"
+                placeholder="Email address..."
+                value={inputEmail}
+                onChange={(e) => { setInputEmail(e.target.value); if (errors.email) setErrors((p) => ({ ...p, email: false })); }}
+                className={inputClass(errors.email)}
+              />
+              {(errors.name || errors.email) && (
+                <p className="text-xs text-red-400 -mt-1">
+                  {errors.name && errors.email
+                    ? "Please enter your name and email to continue"
+                    : errors.name
+                    ? "Please enter your name"
+                    : "Please enter a valid email"}
+                </p>
+              )}
+              <Button onClick={() => handleStart()} icon className="justify-center">
                 Begin Assessment
               </Button>
-            </div>
+            </motion.div>
           </div>
         </Card>
       </motion.div>

@@ -4,6 +4,7 @@ import type { Answers, QuizItem, QuizMode, TestResults, LikertScore } from "../t
 
 interface QuizState {
   name: string;
+  email: string;
   quizMode: QuizMode;
   items: QuizItem[];
   answers: Answers;
@@ -11,6 +12,7 @@ interface QuizState {
   results: TestResults | null;
   progress: { answered: number; total: number; percent: number };
   setName: (name: string) => void;
+  setEmail: (email: string) => void;
   setMode: (mode: QuizMode) => void;
   setItems: (items: QuizItem[]) => void;
   setAnswer: (itemId: number, value: LikertScore) => void;
@@ -21,6 +23,7 @@ interface QuizState {
 
 const initialState = {
   name: "",
+  email: "",
   quizMode: "complete" as QuizMode,
   items: [] as QuizItem[],
   answers: {} as Answers,
@@ -34,6 +37,7 @@ export const useQuizStore = create<QuizState>()(
     (set, get) => ({
       ...initialState,
       setName: (name) => set({ name }),
+      setEmail: (email) => set({ email }),
       setMode: (mode) => set({ quizMode: mode }),
       setItems: (items) => set({ items }),
       setAnswer: (itemId, value) => {
@@ -51,6 +55,7 @@ export const useQuizStore = create<QuizState>()(
       partialize: (state) => ({
         answers: state.answers,
         name: state.name,
+        email: state.email,
         quizMode: state.quizMode,
         results: state.results,
       }),
