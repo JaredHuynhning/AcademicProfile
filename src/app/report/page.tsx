@@ -70,12 +70,15 @@ function extractDisplayText(obj: Record<string, unknown> | null | undefined): st
   return null;
 }
 
-/** Extract the title from an object */
+/** Extract the title from an object — only short titles, not full sentences */
 function extractTitle(obj: Record<string, unknown> | null | undefined): string | null {
   if (!obj) return null;
   for (const key of TITLE_KEYS) {
     if (typeof obj[key] === "string" && (obj[key] as string).length > 0) {
-      return obj[key] as string;
+      const val = obj[key] as string;
+      // Skip long sentences used as titles — they should be body text
+      if (val.length > 60) return null;
+      return val;
     }
   }
   return null;
