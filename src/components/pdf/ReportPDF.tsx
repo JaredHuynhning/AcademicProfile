@@ -371,12 +371,17 @@ function renderObject(data: Record<string, unknown>, keyIndex?: number): React.R
     }
   }
 
-  // Sub-objects
+  // Sub-objects (keep all — we'll try rendering each)
   const subObjects: { key: string; value: Record<string, unknown> }[] = [];
   for (const [k, v] of Object.entries(data)) {
     if (SKIP_KEYS.has(k)) continue;
     if (typeof v === "object" && v !== null && !Array.isArray(v)) {
-      subObjects.push({ key: k, value: v as Record<string, unknown> });
+      // Only include if it has some non-skip content
+      const hasSubContent = Object.entries(v as Record<string, unknown>).some(
+        ([sk, sv]) => !SKIP_KEYS.has(sk) && sv !== null && sv !== undefined &&
+          (typeof sv === "string" ? sv.length > 2 : true)
+      );
+      if (hasSubContent) subObjects.push({ key: k, value: v as Record<string, unknown> });
     }
   }
 
@@ -420,6 +425,16 @@ function renderObject(data: Record<string, unknown>, keyIndex?: number): React.R
             </View>
           );
         }
+        // Try rendering the sub-object recursively
+        const subRendered = renderObject(value);
+        if (subRendered) {
+          return (
+            <View key={key} style={{ marginTop: 4 }}>
+              <Text style={styles.cardLabel}>{formatLabel(key)}</Text>
+              {subRendered}
+            </View>
+          );
+        }
         return null;
       })}
     </PDFCard>
@@ -435,6 +450,39 @@ function renderSectionContent(data: Record<string, unknown>): React.ReactElement
     const rendered = renderValue(value, formatLabel(key));
     if (rendered) {
       elements.push(<View key={key}>{rendered}</View>);
+      continue;
+    }
+
+    // Fallback: if renderValue returned null for an object, try extracting all
+    // string values from it recursively and render them as text
+    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+      const flatTexts: string[] = [];
+      const extractAllTexts = (obj: Record<string, unknown>) => {
+        for (const [k, v] of Object.entries(obj)) {
+          if (SKIP_KEYS.has(k)) continue;
+          if (typeof v === "string" && v.length > 10) {
+            flatTexts.push(v);
+          } else if (Array.isArray(v)) {
+            v.forEach((item) => {
+              if (typeof item === "string" && item.length > 5) flatTexts.push(item);
+              else if (typeof item === "object" && item !== null) {
+                const t = extractDisplayText(item as Record<string, unknown>);
+                if (t) flatTexts.push(t);
+              }
+            });
+          } else if (typeof v === "object" && v !== null) {
+            extractAllTexts(v as Record<string, unknown>);
+          }
+        }
+      };
+      extractAllTexts(value as Record<string, unknown>);
+      if (flatTexts.length > 0) {
+        elements.push(
+          <PDFCard key={key} label={formatLabel(key)}>
+            <PDFBulletList items={flatTexts} />
+          </PDFCard>
+        );
+      }
     }
   }
 
