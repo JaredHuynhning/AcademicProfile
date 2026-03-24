@@ -132,8 +132,9 @@ function StrengthsWeaknessesField({
   strengths: unknown[];
   weaknesses: unknown[];
 }) {
+  const bothSides = strengths.length > 0 && weaknesses.length > 0;
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+    <div className={`grid grid-cols-1 ${bothSides ? "sm:grid-cols-2" : ""} gap-4 mb-4`}>
       {strengths.length > 0 && (
         <Card className="!p-4">
           <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-warm-gray mb-3">

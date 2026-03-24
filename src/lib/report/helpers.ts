@@ -287,6 +287,13 @@ export function classifyDimensionFacets(dimKey: string, dimension: DimData): Cla
 				: 1;
 	});
 
+	// Ensure every dimension has at least one growth area
+	// If no weaknesses, promote lowest-scoring neutral facet
+	if (weaknesses.length === 0 && neutral.length > 0) {
+		neutral.sort((a, b) => a.score - b.score);
+		weaknesses.push(neutral.shift()!);
+	}
+
 	return { strengths, weaknesses, neutral, preferences };
 }
 
