@@ -270,9 +270,25 @@ function ArrayField({ value, label }: { value: unknown[]; label?: string }) {
       }
     }
 
-    // Simple text objects — consolidate into one bullet list
-    const texts = objs.map(extractDisplayText).filter((t): t is string => t !== null && isSentence(t));
-    if (texts.length > 0) {
+    // Simple/small objects — consolidate all sentence-length strings into one bullet list
+    const allTexts: string[] = [];
+    for (const obj of objs) {
+      // Try TEXT_KEYS first
+      const displayText = extractDisplayText(obj);
+      if (displayText && isSentence(displayText)) {
+        allTexts.push(displayText);
+        continue;
+      }
+      // Fallback: grab any sentence-length string from the object
+      for (const [k, v] of Object.entries(obj)) {
+        if (SKIP_KEYS.has(k) || k === "score" || k === "level" || k === "color") continue;
+        if (typeof v === "string" && isSentence(v) && !isInternalLabel(v)) {
+          allTexts.push(v);
+          break; // one string per object
+        }
+      }
+    }
+    if (allTexts.length > 0) {
       return (
         <Card className="!p-4 mb-3">
           {label && (
@@ -280,7 +296,7 @@ function ArrayField({ value, label }: { value: unknown[]; label?: string }) {
               {label}
             </p>
           )}
-          <BulletList items={texts} />
+          <BulletList items={allTexts} />
         </Card>
       );
     }
