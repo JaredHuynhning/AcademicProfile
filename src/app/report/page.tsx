@@ -11,13 +11,14 @@ import { downloadReportPDF } from "@/components/pdf/ReportPDF";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { HexacoRadarChart } from "@/components/report/HexacoRadarChart";
 
 // ─── Field classification helpers ────────────────────────────────────────────
 
 // Keys that are internal metadata — never render
 const SKIP_KEYS = new Set([
   "key", "icon", "color", "rawScore", "classification", "rank", "role",
-  "shortName", "radarData", "passionClassification", "confidenceClassification",
+  "shortName", "radarData", "personalityArchetype", "passionClassification", "confidenceClassification",
   "matchPercent", "match_score", "dualFire", "type", "impact", "profile",
   "percentile", "structureScore", "warmthScore", "carrotScore", "stickScore",
   "barrier", "sdi", "item_count", "dim", "name", "date",
@@ -555,11 +556,23 @@ function CoverSection({ data }: { data: Record<string, unknown> }) {
     color: string;
   }[];
 
+  const radarData = data.radarData as { label: string; value: number; color: string }[] | undefined;
+  const personalityArchetype = typeof data.personalityArchetype === "string" ? data.personalityArchetype : null;
   const narrativeSummary = typeof data.narrativeSummary === "string" ? data.narrativeSummary : null;
   const summary = typeof data.summary === "string" ? data.summary : null;
 
   return (
     <div className="space-y-8">
+      {personalityArchetype && (
+        <p className="font-display text-xl text-center text-espresso/60 tracking-wide italic">
+          {personalityArchetype}
+        </p>
+      )}
+      {radarData && radarData.length > 0 && (
+        <div className="flex justify-center">
+          <HexacoRadarChart data={radarData} />
+        </div>
+      )}
       {narrativeSummary && (
         <p className="text-espresso/80 leading-relaxed text-lg">{narrativeSummary}</p>
       )}

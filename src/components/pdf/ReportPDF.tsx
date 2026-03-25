@@ -1,6 +1,7 @@
 "use client";
 import { Document, Page, Text, View, StyleSheet, pdf } from "@react-pdf/renderer";
 import type { TestResults } from "@/lib/types";
+import { PDFRadarChart } from "./PDFRadarChart";
 
 const CREAM = "#fdfbf7";
 const ESPRESSO = "#2c2417";
@@ -693,6 +694,7 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
     day: "numeric",
   });
 
+  const coverData = report.cover as Record<string, unknown> | null;
   const hasComplete = report.hasComplete;
   const sectionOrder = hasComplete ? COMPLETE_SECTION_ORDER : STANDALONE_SECTION_ORDER;
   const activeSections = sectionOrder.filter(
@@ -706,6 +708,18 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
         <Text style={styles.coverEyebrow}>Academic Profile Report</Text>
         <Text style={styles.coverTitle}>{name || "Student"}</Text>
         <Text style={styles.coverDate}>{date}</Text>
+
+        {typeof coverData?.personalityArchetype === 'string' ? (
+          <Text style={{ fontSize: 13, color: WARM_GRAY, fontStyle: 'italic', letterSpacing: 0.8, textAlign: 'center' as const, marginBottom: 12 }}>
+            {coverData.personalityArchetype}
+          </Text>
+        ) : null}
+
+        {Array.isArray(coverData?.radarData) ? (
+          <View style={{ alignItems: 'center' as const, marginBottom: 16 }}>
+            <PDFRadarChart data={coverData.radarData as { label: string; value: number; color: string }[]} size={200} />
+          </View>
+        ) : null}
 
         {results.dimensions && typeof results.dimensions === "object" && (
           <View style={styles.coverScores}>

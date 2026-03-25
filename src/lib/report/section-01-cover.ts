@@ -3,6 +3,7 @@
  * Section 1: Cover & Profile Summary
  */
 import { rankDimensions, DIM_ORDER, DIM_COLORS, DIM_SHORT, formatScore, levelLabel, DimensionsMap } from './helpers';
+import { getPersonalityArchetype } from './personality-archetype';
 
 interface Results {
 	dimensions: DimensionsMap;
@@ -18,8 +19,12 @@ export function generateCover(results: Results, name: string) {
 	const top3 = ranked.slice(0, 3);
 	const bottom1 = ranked[ranked.length - 1];
 
+	const RADAR_LABELS: Record<string, string> = {
+		H: 'Honesty', E: 'Emotion', X: 'Extraversion',
+		A: 'Agreeableness', C: 'Conscience', O: 'Openness',
+	};
 	const radarData = DIM_ORDER.map((d) => ({
-		label: results.dimensions[d].name,
+		label: RADAR_LABELS[d] || DIM_SHORT[d],
 		value: results.dimensions[d].score,
 		color: DIM_COLORS[d]
 	}));
@@ -31,9 +36,12 @@ export function generateCover(results: Results, name: string) {
 	}
 	summaryLines.push(`The area with most room for development is ${bottom1.name} (${formatScore(bottom1.score)}/5).`);
 
+	const personalityArchetype = getPersonalityArchetype(results.dimensions);
+
 	return {
 		name: name || 'Student',
 		date: new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' }),
+		personalityArchetype,
 		radarData,
 		topTraits: top3.map((t) => ({
 			key: t.key,
