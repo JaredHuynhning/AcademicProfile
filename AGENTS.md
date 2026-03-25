@@ -8,8 +8,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Current State
 
-- **Last session**: 2026-03-25 — Fixed quiz navigation (stuck questions), report crashes (array→map conversion, nullable narrative). Visual tested all 3 assessment modes end-to-end.
-- **Next action**: Start ticket #1 — Radar chart + personality archetype
+- **Last session**: 2026-03-26 — Shipped tickets #1-#3: radar chart + archetype, score percentiles, visual rhythm components. Product now has the "mirror moment" cover with spider chart, archetype label, percentile context, and callout/scorebar/pullquote components throughout report.
+- **Next action**: Start ticket #4 — Action sheet tear-out page
 
 ## Active Tickets
 
@@ -17,7 +17,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 |----|-------|--------|-----------|
 | 1 | Radar chart + personality archetype | done | Shipped 7f2d68b |
 | 2 | Score percentiles ("higher than 78%") | done | Shipped a9ec8e0 |
-| 3 | Report visual rhythm (callouts, bars, pull quotes) | active | Build ScoreBar, Callout, PullQuote components |
+| 3 | Report visual rhythm (callouts, bars, pull quotes) | done | Shipped c99aa68 |
 | 4 | Action sheet tear-out page | ready | - |
 | 5 | PDF redesign (cover, TOC, charts, page breaks) | ready | - |
 | 6 | Landing page with value proposition | ready | - |
@@ -108,11 +108,20 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Recently Completed
 
-- [2026-03-25] Quiz navigation fix — faster animation, clear answers on restart, persist currentIndex
+- [2026-03-26] #3 Visual rhythm — ScoreBar, Callout, PullQuote components
+- [2026-03-26] #2 Score percentiles — "Higher than X% of students" on trait cards
+- [2026-03-26] #1 Radar chart + archetype — spider chart + "The Compassionate Idealist"
 - [2026-03-25] Report crash fix — toDimensionsMap conversion, nullable narrative guard
-- [2026-03-25] Branch cleanup — deleted stale worktree branches
+- [2026-03-25] Quiz navigation fix — faster animation, clear answers on restart
 
 ## Session Log
+
+### 2026-03-26
+- Brainstormed "$49 product" roadmap — identified 7 tickets to transform from free quiz to sellable product
+- Shipped #1: HEXACO radar chart (custom SVG, zero deps) + 22 personality archetypes
+- Shipped #2: Score percentiles using normal CDF approximation (mean=3.0, SD=0.7)
+- Shipped #3: ScoreBar, Callout, PullQuote components for visual variety in report
+- Visual tested all features with Playwright across Personality/Learning/Complete modes
 
 ### 2026-03-25
 - Fixed quiz getting stuck (animation 600ms→200ms, answers persist cleared on restart)
