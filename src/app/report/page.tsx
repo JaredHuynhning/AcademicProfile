@@ -12,6 +12,9 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { HexacoRadarChart } from "@/components/report/HexacoRadarChart";
+import { ScoreBar } from "@/components/ui/ScoreBar";
+import { Callout } from "@/components/ui/Callout";
+import { PullQuote } from "@/components/ui/PullQuote";
 
 // ─── Field classification helpers ────────────────────────────────────────────
 
@@ -327,6 +330,7 @@ function ObjectCard({ data }: { data: Record<string, unknown> }) {
   if (Array.isArray(data.strengths) && Array.isArray(data.weaknesses)) {
     const cardName = extractTitle(data);
     const color = typeof data.color === "string" ? data.color : undefined;
+    const rawScore = typeof data.rawScore === "number" ? data.rawScore : null;
     const whatToDo = typeof data.whatToDo === "string" ? data.whatToDo : null;
     return (
       <div className="mb-4">
@@ -335,20 +339,49 @@ function ObjectCard({ data }: { data: Record<string, unknown> }) {
             {cardName}
           </p>
         )}
+        {rawScore != null && color && (
+          <div className="mb-3 max-w-xs">
+            <ScoreBar score={rawScore} color={color} />
+          </div>
+        )}
         <StrengthsWeaknessesField
           strengths={data.strengths as unknown[]}
           weaknesses={data.weaknesses as unknown[]}
         />
         {whatToDo && (
-          <p className="text-espresso/70 mt-2 italic">{clean(whatToDo)}</p>
+          <Callout icon="💡" color={color} title="What to focus on">
+            {clean(whatToDo)}
+          </Callout>
         )}
       </div>
     );
   }
 
+  // Callout pattern: learningCallout or growthMindset
+  if (data.learningCallout && typeof data.learningCallout === "object") {
+    const lc = data.learningCallout as Record<string, unknown>;
+    const lcTitle = typeof lc.title === "string" ? lc.title : undefined;
+    const lcText = typeof lc.text === "string" ? lc.text : undefined;
+    const lcIcon = typeof lc.icon === "string" ? lc.icon : undefined;
+    if (lcText) {
+      return <Callout icon={lcIcon} title={lcTitle}>{clean(lcText)}</Callout>;
+    }
+  }
+  if (data.growthMindset && typeof data.growthMindset === "object") {
+    const gm = data.growthMindset as Record<string, unknown>;
+    const msg = typeof gm.message === "string" ? gm.message : "";
+    const principle = typeof gm.keyPrinciple === "string" ? gm.keyPrinciple : "";
+    const step = typeof gm.actionStep === "string" ? gm.actionStep : "";
+    const combined = [msg, principle, step].filter(Boolean).join(" ");
+    if (combined) {
+      return <Callout icon="🌱" title="Growth Mindset">{clean(combined)}</Callout>;
+    }
+  }
+
   // Collect renderable content
   const title = extractTitle(data);
   const color = typeof data.color === "string" ? data.color : undefined;
+  const rawScore = typeof data.rawScore === "number" ? data.rawScore : null;
   const score = typeof data.score === "string" || typeof data.score === "number" ? data.score : null;
   const level = typeof data.level === "string" ? formatLevel(data.level) : null;
 
@@ -409,6 +442,11 @@ function ObjectCard({ data }: { data: Record<string, unknown> }) {
           {level && <span className="text-sm text-warm-gray ml-2">{level}</span>}
         </p>
       )}
+      {rawScore != null && color && (
+        <div className="mb-2 max-w-xs">
+          <ScoreBar score={rawScore} color={color} />
+        </div>
+      )}
       {!title && score != null && (
         <Badge className="mb-2" color={color}>{String(score)}</Badge>
       )}
@@ -455,11 +493,16 @@ function ObjectCard({ data }: { data: Record<string, unknown> }) {
   );
 }
 
-function SectionField({ label, value }: { label: string; value: unknown }) {
+const PULLQUOTE_KEYS = new Set(["insight", "keyInsight", "oneMinuteBrief"]);
+
+function SectionField({ label, value, fieldKey }: { label: string; value: unknown; fieldKey?: string }) {
   if (value === null || value === undefined) return null;
   if (typeof value === "boolean") return null;
   if (typeof value === "string") {
     if (value.length === 0 || isInternalLabel(value)) return null;
+    if (fieldKey && PULLQUOTE_KEYS.has(fieldKey) && value.length > 40) {
+      return <PullQuote>{clean(value)}</PullQuote>;
+    }
     return <p className="text-espresso/80 leading-relaxed mb-3">{clean(value)}</p>;
   }
   if (typeof value === "number") {
@@ -527,7 +570,7 @@ function SectionContent({ data }: { data: Record<string, unknown> }) {
         <NarrativeParagraphs text={narrative} />
         {structuredEntries.map(([key, value]) => {
           const label = formatLabel(key);
-          return <SectionField key={key} label={label} value={value} />;
+          return <SectionField key={key} label={label} value={value} fieldKey={key} />;
         })}
       </div>
     );
@@ -539,7 +582,7 @@ function SectionContent({ data }: { data: Record<string, unknown> }) {
     <div className="space-y-4">
       {entries.map(([key, value]) => {
         const label = formatLabel(key);
-        return <SectionField key={key} label={label} value={value} />;
+        return <SectionField key={key} label={label} value={value} fieldKey={key} />;
       })}
     </div>
   );

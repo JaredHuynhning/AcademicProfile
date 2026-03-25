@@ -16,8 +16,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | ID | Title | Status | Next Step |
 |----|-------|--------|-----------|
 | 1 | Radar chart + personality archetype | done | Shipped 7f2d68b |
-| 2 | Score percentiles ("higher than 78%") | active | Add percentile function + display in cover/glance |
-| 3 | Report visual rhythm (callouts, bars, pull quotes) | ready | - |
+| 2 | Score percentiles ("higher than 78%") | done | Shipped a9ec8e0 |
+| 3 | Report visual rhythm (callouts, bars, pull quotes) | active | Build ScoreBar, Callout, PullQuote components |
 | 4 | Action sheet tear-out page | ready | - |
 | 5 | PDF redesign (cover, TOC, charts, page breaks) | ready | - |
 | 6 | Landing page with value proposition | ready | - |
@@ -55,11 +55,18 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ### #3 — Report visual rhythm
 **Goal**: Break up wall-of-text sections with visual variety.
-**Tasks**:
-- Add "Key Insight" callout boxes (colored left border, icon)
-- Add score bar visualizations (horizontal bars with color-coded levels)
-- Add pull quote component for standout findings
-- Apply to at least sections 01 (cover), 02 (glance), 03 (deep dive), 08 (strengths)
+
+### Ticket #3 AC
+- [ ] ScoreBar component renders horizontal bar with fill color, score label, and level text
+- [ ] Callout component renders with colored left border, optional icon, and body text
+- [ ] PullQuote component renders emphasized quote text distinct from body paragraphs
+- [ ] Glance section uses ScoreBar for each dimension instead of plain text scores
+- [ ] Deep Dive section uses Callout for learningCallout data
+- [ ] Strengths section uses Callout for growthMindset/whatToDo
+- [ ] No new npm dependencies
+- [ ] Features documented in feature-registry.md
+- [ ] No dead code in modified files
+- [ ] Code follows existing project patterns
 
 ### #4 — Action sheet tear-out page
 **Goal**: Single "What to do Monday" page with top 5 actionable items extracted from all sections.
