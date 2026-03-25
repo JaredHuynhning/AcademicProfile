@@ -26,6 +26,7 @@ import { generateBarriers } from './section-c5-barriers';
 import { generateActionPlan } from './section-c6-action-plan';
 import { generateUnifiedGuide } from './section-c7-guide';
 import { runCrossReferenceEngine } from './cross-reference-engine';
+import { toDimensionsMap } from './helpers';
 
 /**
  * Generate the full report.
@@ -39,45 +40,50 @@ import { runCrossReferenceEngine } from './cross-reference-engine';
  * @returns {object} All section data for rendering
  */
 export function generateReport(results: any, name: string) {
-	const hasPersonality = !!results.dimensions;
+	const hasPersonality = !!results.dimensions && Array.isArray(results.dimensions) && results.dimensions.length > 0;
 	const hasStudy = !!results.studyProfile;
 	const hasLearner = !!results.learnerProfile;
 	const hasComplete = hasPersonality && hasStudy && hasLearner;
 
+	// Convert scorer's dimension array to the map format expected by report templates
+	const enriched = hasPersonality
+		? { ...results, dimensions: toDimensionsMap(results.dimensions) }
+		: results;
+
 	let crossRefResult = null;
 	if (hasComplete) {
-		crossRefResult = runCrossReferenceEngine(results.dimensions, results.studyProfile, results.learnerProfile);
+		crossRefResult = runCrossReferenceEngine(enriched.dimensions, enriched.studyProfile, enriched.learnerProfile);
 	}
 
 	return {
 		// Personality sections (require HEXACO)
-		cover: hasPersonality ? generateCover(results, name) : null,
-		glance: hasPersonality ? generateGlance(results) : null,
-		deepDive: hasPersonality ? generateDeepDive(results) : null,
-		learning: hasPersonality ? generateLearning(results) : null,
-		drives: hasPersonality ? generateDrives(results) : null,
-		study: hasPersonality ? generateStudy(results) : null,
-		group: hasPersonality ? generateGroup(results) : null,
-		strengths: hasPersonality ? generateStrengths(results) : null,
-		guide: hasPersonality ? generateGuide(results) : null,
-		tutor: hasPersonality ? generateTutor(results) : null,
+		cover: hasPersonality ? generateCover(enriched, name) : null,
+		glance: hasPersonality ? generateGlance(enriched) : null,
+		deepDive: hasPersonality ? generateDeepDive(enriched) : null,
+		learning: hasPersonality ? generateLearning(enriched) : null,
+		drives: hasPersonality ? generateDrives(enriched) : null,
+		study: hasPersonality ? generateStudy(enriched) : null,
+		group: hasPersonality ? generateGroup(enriched) : null,
+		strengths: hasPersonality ? generateStrengths(enriched) : null,
+		guide: hasPersonality ? generateGuide(enriched) : null,
+		tutor: hasPersonality ? generateTutor(enriched) : null,
 
 		// Learning sections (require studyProfile / learnerProfile)
-		studyProfile: hasStudy ? generateStudyProfile(results) : null,
-		academicCharacter: hasLearner ? generateAcademicCharacter(results) : null,
-		subjectFit: hasLearner ? generateSubjectFit(results) : null,
-		whatWorks: hasLearner ? generateWhatWorks(results) : null,
-		rootCause: hasLearner ? generateRootCause(results) : null,
-		academicGuide: (hasStudy || hasLearner) ? generateAcademicGuide(results) : null,
+		studyProfile: hasStudy ? generateStudyProfile(enriched) : null,
+		academicCharacter: hasLearner ? generateAcademicCharacter(enriched) : null,
+		subjectFit: hasLearner ? generateSubjectFit(enriched) : null,
+		whatWorks: hasLearner ? generateWhatWorks(enriched) : null,
+		rootCause: hasLearner ? generateRootCause(enriched) : null,
+		academicGuide: (hasStudy || hasLearner) ? generateAcademicGuide(enriched) : null,
 
 		// Complete Profile sections (require all three datasets)
-		executiveSummary: hasComplete ? generateExecutiveSummary(results, crossRefResult) : null,
-		whoYouAre: hasComplete ? generateWhoYouAre(results, crossRefResult) : null,
-		howYouLearn: hasComplete ? generateHowYouLearn(results, crossRefResult) : null,
-		whatsWorking: hasComplete ? generateWhatsWorking(results, crossRefResult) : null,
-		barriers: hasComplete ? generateBarriers(results, crossRefResult) : null,
-		actionPlan: hasComplete ? generateActionPlan(results, crossRefResult) : null,
-		unifiedGuide: hasComplete ? generateUnifiedGuide(results, crossRefResult) : null,
+		executiveSummary: hasComplete ? generateExecutiveSummary(enriched, crossRefResult) : null,
+		whoYouAre: hasComplete ? generateWhoYouAre(enriched, crossRefResult) : null,
+		howYouLearn: hasComplete ? generateHowYouLearn(enriched, crossRefResult) : null,
+		whatsWorking: hasComplete ? generateWhatsWorking(enriched, crossRefResult) : null,
+		barriers: hasComplete ? generateBarriers(enriched, crossRefResult) : null,
+		actionPlan: hasComplete ? generateActionPlan(enriched, crossRefResult) : null,
+		unifiedGuide: hasComplete ? generateUnifiedGuide(enriched, crossRefResult) : null,
 
 		// Metadata
 		quizMode: results.quizMode || 'complete',

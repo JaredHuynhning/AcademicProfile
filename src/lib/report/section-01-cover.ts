@@ -43,7 +43,7 @@ export function generateCover(results: Results, name: string) {
 			color: DIM_COLORS[t.key]
 		})),
 		summary: summaryLines.join(' '),
-		narrativeSummary: results.narrative.summary
+		narrativeSummary: results.narrative?.summary ?? null
 	};
 }
 

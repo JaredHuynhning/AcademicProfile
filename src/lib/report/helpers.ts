@@ -127,6 +127,27 @@ export interface DimData {
 export type DimensionsMap = Record<string, DimData>;
 
 /**
+ * Convert scorer's DimensionScore[] array into the DimensionsMap expected by report templates.
+ */
+export function toDimensionsMap(dims: { name: string; score: number; facets: { name: string; score: number }[] }[]): DimensionsMap {
+	const map: DimensionsMap = {} as DimensionsMap;
+	for (const dim of dims) {
+		const key = dim.name as DimKey;
+		const facets: Record<string, FacetItem> = {};
+		for (const f of dim.facets) {
+			facets[f.name] = { name: f.name, score: f.score };
+		}
+		map[key] = {
+			name: DIM_NAMES[key] || dim.name,
+			score: dim.score,
+			level: classifyLevel(dim.score),
+			facets,
+		};
+	}
+	return map;
+}
+
+/**
  * Rank dimensions by score descending.
  * Returns [{ key, name, score, level }]
  */

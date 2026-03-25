@@ -23,7 +23,7 @@ export function generateDeepDive(results: Results) {
 	return {
 		dimensions: DIM_ORDER.map((key) => {
 			const dim = results.dimensions[key];
-			const insight = results.narrative.dimension_insights[key]?.insight || '';
+			const insight = results.narrative?.dimension_insights?.[key]?.insight || '';
 			return {
 				key,
 				name: dim.name,
