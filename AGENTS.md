@@ -15,8 +15,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 | ID | Title | Status | Next Step |
 |----|-------|--------|-----------|
-| 1 | Radar chart + personality archetype | active | Building radar geometry + archetype engine |
-| 2 | Score percentiles ("higher than 78%") | ready | - |
+| 1 | Radar chart + personality archetype | done | Shipped 7f2d68b |
+| 2 | Score percentiles ("higher than 78%") | active | Add percentile function + display in cover/glance |
 | 3 | Report visual rhythm (callouts, bars, pull quotes) | ready | - |
 | 4 | Action sheet tear-out page | ready | - |
 | 5 | PDF redesign (cover, TOC, charts, page breaks) | ready | - |
@@ -42,11 +42,16 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ### #2 — Score percentiles
 **Goal**: Make scores meaningful with "higher than X% of students" context.
-**Tasks**:
-- Define normative distribution for each HEXACO dimension (from published research or simulated)
-- Add percentile computation to helpers.ts
-- Display percentile in dimension cards ("3.6 — higher than 78% of students")
-- Add percentile to PDF output
+
+### Ticket #2 AC
+- [ ] Each HEXACO dimension shows "higher than X% of students" on the cover trait cards
+- [ ] Percentile computation uses a normal distribution approximation (mean ~3.0, SD ~0.7)
+- [ ] Percentile values are between 1 and 99 (clamped, never 0% or 100%)
+- [ ] Percentile appears in the PDF cover score cards
+- [ ] Glance section dimension cards include percentile
+- [ ] Features documented in feature-registry.md
+- [ ] No dead code in modified files
+- [ ] Code follows existing project patterns
 
 ### #3 — Report visual rhythm
 **Goal**: Break up wall-of-text sections with visual variety.

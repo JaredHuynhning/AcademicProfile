@@ -2,7 +2,7 @@
 /**
  * Section 1: Cover & Profile Summary
  */
-import { rankDimensions, DIM_ORDER, DIM_COLORS, DIM_SHORT, formatScore, levelLabel, DimensionsMap } from './helpers';
+import { rankDimensions, DIM_ORDER, DIM_COLORS, DIM_SHORT, formatScore, levelLabel, scorePercentile, DimensionsMap } from './helpers';
 import { getPersonalityArchetype } from './personality-archetype';
 
 interface Results {
@@ -48,6 +48,7 @@ export function generateCover(results: Results, name: string) {
 			name: DIM_SHORT[t.key],
 			score: formatScore(t.score),
 			level: levelLabel(t.level),
+			percentile: scorePercentile(t.score),
 			color: DIM_COLORS[t.key]
 		})),
 		summary: summaryLines.join(' '),

@@ -2,6 +2,7 @@
 import { Document, Page, Text, View, StyleSheet, pdf } from "@react-pdf/renderer";
 import type { TestResults } from "@/lib/types";
 import { PDFRadarChart } from "./PDFRadarChart";
+import { scorePercentile } from "@/lib/report/helpers";
 
 const CREAM = "#fdfbf7";
 const ESPRESSO = "#2c2417";
@@ -730,6 +731,9 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
                 </Text>
                 <Text style={[styles.coverScoreValue, { color: DIM_COLORS[dim.name] || ESPRESSO }]}>
                   {dim.score.toFixed(1)}
+                </Text>
+                <Text style={{ fontSize: 7, color: WARM_GRAY, marginTop: 2 }}>
+                  Top {100 - scorePercentile(dim.score)}%
                 </Text>
               </View>
             ))}

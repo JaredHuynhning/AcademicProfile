@@ -553,6 +553,7 @@ function CoverSection({ data }: { data: Record<string, unknown> }) {
     name: string;
     score: string;
     level: string;
+    percentile?: number;
     color: string;
   }[];
 
@@ -593,6 +594,11 @@ function CoverSection({ data }: { data: Record<string, unknown> }) {
                 {trait.score}
               </p>
               <p className="text-xs text-warm-gray mt-0.5">{trait.level}</p>
+              {trait.percentile != null && (
+                <p className="text-[10px] text-warm-gray/60 mt-1">
+                  Higher than {trait.percentile}% of students
+                </p>
+              )}
             </Card>
           ))}
         </div>

@@ -2,7 +2,7 @@
 /**
  * Section 2: Personality at a Glance
  */
-import { DIM_ORDER, DIM_COLORS, DIM_SHORT, DIM_ICONS, formatScore, levelLabel, scorePercent, DimensionsMap } from './helpers';
+import { DIM_ORDER, DIM_COLORS, DIM_SHORT, DIM_ICONS, formatScore, levelLabel, scorePercent, scorePercentile, DimensionsMap } from './helpers';
 
 interface Results {
 	dimensions: DimensionsMap;
@@ -21,6 +21,7 @@ export function generateGlance(results: Results) {
 				score: formatScore(dim.score),
 				rawScore: dim.score,
 				percent: scorePercent(dim.score),
+				percentile: scorePercentile(dim.score),
 				level: levelLabel(dim.level),
 				color: DIM_COLORS[key],
 				oneLiner: getOneLiner(key, dim.level)

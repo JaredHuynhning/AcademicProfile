@@ -75,6 +75,21 @@ export function scorePercent(score: number): number {
 }
 
 /**
+ * Approximate percentile rank using a normal distribution.
+ * Based on HEXACO-PI-R population norms (mean ~3.0, SD ~0.7 on 1-5 scale).
+ * Returns 1-99 (clamped — never 0% or 100%).
+ */
+export function scorePercentile(score: number, mean = 3.0, sd = 0.7): number {
+	const z = (score - mean) / sd;
+	// Rational approximation of the standard normal CDF
+	const t = 1 / (1 + 0.2316419 * Math.abs(z));
+	const d = 0.3989422804014327; // 1/sqrt(2*PI)
+	const p = d * Math.exp(-z * z / 2) * (t * (0.319381530 + t * (-0.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429)))));
+	const cdf = z > 0 ? 1 - p : p;
+	return Math.min(99, Math.max(1, Math.round(cdf * 100)));
+}
+
+/**
  * Format score to one decimal place.
  */
 export function formatScore(score: number): string {
