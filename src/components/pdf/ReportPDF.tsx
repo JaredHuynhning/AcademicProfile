@@ -3,6 +3,7 @@ import { Document, Page, Text, View, StyleSheet, pdf } from "@react-pdf/renderer
 import type { TestResults } from "@/lib/types";
 import { PDFRadarChart } from "./PDFRadarChart";
 import { PDFActionSheet } from "./PDFActionSheet";
+import { PDFTableOfContents } from "./PDFTableOfContents";
 import { scorePercentile } from "@/lib/report/helpers";
 
 const CREAM = "#fdfbf7";
@@ -22,28 +23,28 @@ const styles = StyleSheet.create({
   // Cover
   coverPage: {
     padding: 40,
+    paddingTop: 80,
     fontFamily: "Helvetica",
     backgroundColor: CREAM,
-    justifyContent: "center",
     alignItems: "center",
   },
   coverEyebrow: {
-    fontSize: 9,
+    fontSize: 8,
     color: WARM_GRAY,
     textTransform: "uppercase",
-    letterSpacing: 3,
-    marginBottom: 12,
+    letterSpacing: 4,
+    marginBottom: 14,
   },
   coverTitle: {
-    fontSize: 32,
+    fontSize: 26,
     fontWeight: "bold",
     color: ESPRESSO,
-    marginBottom: 8,
+    marginBottom: 6,
   },
   coverDate: {
-    fontSize: 12,
+    fontSize: 9,
     color: WARM_GRAY,
-    marginBottom: 40,
+    marginBottom: 6,
   },
   coverScores: {
     flexDirection: "row",
@@ -73,8 +74,7 @@ const styles = StyleSheet.create({
   },
   // Section headers
   sectionHeader: {
-    marginTop: 16,
-    marginBottom: 10,
+    marginBottom: 24,
   },
   sectionEyebrow: {
     fontSize: 8,
@@ -84,9 +84,15 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
     color: ESPRESSO,
+    marginBottom: 8,
+  },
+  sectionRule: {
+    width: 40,
+    height: 3,
+    backgroundColor: ESPRESSO,
   },
   // Content
   body: {
@@ -154,10 +160,23 @@ const styles = StyleSheet.create({
     bottom: 20,
     left: 40,
     right: 40,
+  },
+  footerRule: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#e8e0d4",
+    marginBottom: 6,
+  },
+  footerRow: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
     fontSize: 8,
-    color: WARM_GRAY,
+    color: "#8b7355",
+  },
+  footerCenter: {
+    fontSize: 8,
+    color: "#8b7355",
+    fontStyle: "italic",
   },
 });
 
@@ -707,9 +726,10 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
     <Document>
       {/* Cover Page */}
       <Page size="A4" style={styles.coverPage}>
-        <Text style={styles.coverEyebrow}>Academic Profile Report</Text>
+        <Text style={styles.coverEyebrow}>Your Learning Profile</Text>
         <Text style={styles.coverTitle}>{name || "Student"}</Text>
         <Text style={styles.coverDate}>{date}</Text>
+        <View style={{ width: 60, height: 2, backgroundColor: ESPRESSO, marginBottom: 20, marginTop: 4 }} />
 
         {typeof coverData?.personalityArchetype === 'string' ? (
           <Text style={{ fontSize: 13, color: WARM_GRAY, fontStyle: 'italic', letterSpacing: 0.8, textAlign: 'center' as const, marginBottom: 12 }}>
@@ -719,7 +739,7 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
 
         {Array.isArray(coverData?.radarData) ? (
           <View style={{ alignItems: 'center' as const, marginBottom: 16 }}>
-            <PDFRadarChart data={coverData.radarData as { label: string; value: number; color: string }[]} size={200} />
+            <PDFRadarChart data={coverData.radarData as { label: string; value: number; color: string }[]} size={160} />
           </View>
         ) : null}
 
@@ -742,13 +762,35 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
         )}
 
         <View style={styles.footer}>
-          <Text>AcademicProfile — HEXACO-PI-R Assessment</Text>
-          <Text>{date}</Text>
+          <View style={styles.footerRule} />
+          <View style={styles.footerRow}>
+            <Text>AcademicProfile</Text>
+            <Text style={styles.footerCenter}>HEXACO-PI-R Assessment</Text>
+            <Text>{date}</Text>
+          </View>
+        </View>
+      </Page>
+
+      {/* Table of Contents */}
+      <Page size="A4" style={styles.page}>
+        <PDFTableOfContents
+          sections={activeSections.map((s, i) => ({
+            number: String(i + 1).padStart(2, "0"),
+            title: s.title,
+          }))}
+        />
+        <View style={styles.footer} fixed>
+          <View style={styles.footerRule} />
+          <View style={styles.footerRow}>
+            <Text>{name}</Text>
+            <Text style={styles.footerCenter}>Contents</Text>
+            <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
+          </View>
         </View>
       </Page>
 
       {/* Content: each section gets its own page for clean breaks */}
-      {activeSections.map((sectionDef) => {
+      {activeSections.map((sectionDef, sectionIndex) => {
         const data = report[sectionDef.key] as Record<string, unknown>;
         if (!data) return null;
 
@@ -771,15 +813,21 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
           <Page key={sectionDef.key} size="A4" style={styles.page} wrap>
             {/* Section header */}
             <View style={styles.sectionHeader} wrap={false} minPresenceAhead={80}>
+              <Text style={styles.sectionEyebrow}>Section {String(sectionIndex + 1).padStart(2, "0")}</Text>
               <Text style={styles.sectionTitle}>{sectionDef.title}</Text>
+              <View style={styles.sectionRule} />
             </View>
 
             {/* Section content */}
             {contentElements}
 
             <View style={styles.footer} fixed>
-              <Text>{name} — Academic Profile</Text>
-              <Text render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} />
+              <View style={styles.footerRule} />
+              <View style={styles.footerRow}>
+                <Text>{name}</Text>
+                <Text style={styles.footerCenter}>{sectionDef.title}</Text>
+                <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
+              </View>
             </View>
           </Page>
         );
