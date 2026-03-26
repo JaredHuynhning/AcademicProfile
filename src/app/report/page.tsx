@@ -15,6 +15,8 @@ import { HexacoRadarChart } from "@/components/report/HexacoRadarChart";
 import { ScoreBar } from "@/components/ui/ScoreBar";
 import { Callout } from "@/components/ui/Callout";
 import { PullQuote } from "@/components/ui/PullQuote";
+import { ActionSheet } from "@/components/report/ActionSheet";
+import type { ActionSheetProps } from "@/components/report/ActionSheet";
 
 // ─── Field classification helpers ────────────────────────────────────────────
 
@@ -795,6 +797,11 @@ export default function ReportPage() {
               >
                 {sectionDef.isCover ? (
                   <CoverSection data={data} />
+                ) : sectionDef.key === "actionPlan" ? (
+                  <ActionSheet
+                    data={data as ActionSheetProps["data"]}
+                    studentName={name || "Student"}
+                  />
                 ) : (
                   <SectionContent data={data} />
                 )}
