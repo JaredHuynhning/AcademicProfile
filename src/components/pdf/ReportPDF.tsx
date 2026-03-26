@@ -3,6 +3,7 @@ import { Document, Page, Text, View, StyleSheet, pdf } from "@react-pdf/renderer
 import type { TestResults } from "@/lib/types";
 import { PDFRadarChart } from "./PDFRadarChart";
 import { PDFActionSheet } from "./PDFActionSheet";
+import { PDFTableOfContents } from "./PDFTableOfContents";
 import { scorePercentile } from "@/lib/report/helpers";
 
 const CREAM = "#fdfbf7";
@@ -766,6 +767,24 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
             <Text>AcademicProfile</Text>
             <Text style={styles.footerCenter}>HEXACO-PI-R Assessment</Text>
             <Text>{date}</Text>
+          </View>
+        </View>
+      </Page>
+
+      {/* Table of Contents */}
+      <Page size="A4" style={styles.page}>
+        <PDFTableOfContents
+          sections={activeSections.map((s, i) => ({
+            number: String(i + 1).padStart(2, "0"),
+            title: s.title,
+          }))}
+        />
+        <View style={styles.footer} fixed>
+          <View style={styles.footerRule} />
+          <View style={styles.footerRow}>
+            <Text>{name}</Text>
+            <Text style={styles.footerCenter}>Contents</Text>
+            <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
           </View>
         </View>
       </Page>
