@@ -2,6 +2,7 @@
 import { Document, Page, Text, View, StyleSheet, pdf } from "@react-pdf/renderer";
 import type { TestResults } from "@/lib/types";
 import { PDFRadarChart } from "./PDFRadarChart";
+import { PDFActionSheet } from "./PDFActionSheet";
 import { scorePercentile } from "@/lib/report/helpers";
 
 const CREAM = "#fdfbf7";
@@ -750,6 +751,18 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
       {activeSections.map((sectionDef) => {
         const data = report[sectionDef.key] as Record<string, unknown>;
         if (!data) return null;
+
+        if (sectionDef.key === "actionPlan") {
+          return (
+            <Page key={sectionDef.key} size="A4" style={styles.page} wrap={false}>
+              <PDFActionSheet data={data as any} studentName={name || "Student"} />
+              <View style={styles.footer} fixed>
+                <Text>{name} — Academic Profile</Text>
+                <Text render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} />
+              </View>
+            </Page>
+          );
+        }
 
         const contentElements = renderSectionContent(data);
         if (contentElements.length === 0) return null;
