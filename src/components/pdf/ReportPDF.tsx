@@ -22,28 +22,28 @@ const styles = StyleSheet.create({
   // Cover
   coverPage: {
     padding: 40,
+    paddingTop: 80,
     fontFamily: "Helvetica",
     backgroundColor: CREAM,
-    justifyContent: "center",
     alignItems: "center",
   },
   coverEyebrow: {
-    fontSize: 9,
+    fontSize: 8,
     color: WARM_GRAY,
     textTransform: "uppercase",
-    letterSpacing: 3,
-    marginBottom: 12,
+    letterSpacing: 4,
+    marginBottom: 14,
   },
   coverTitle: {
-    fontSize: 32,
+    fontSize: 26,
     fontWeight: "bold",
     color: ESPRESSO,
-    marginBottom: 8,
+    marginBottom: 6,
   },
   coverDate: {
-    fontSize: 12,
+    fontSize: 9,
     color: WARM_GRAY,
-    marginBottom: 40,
+    marginBottom: 6,
   },
   coverScores: {
     flexDirection: "row",
@@ -707,9 +707,10 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
     <Document>
       {/* Cover Page */}
       <Page size="A4" style={styles.coverPage}>
-        <Text style={styles.coverEyebrow}>Academic Profile Report</Text>
+        <Text style={styles.coverEyebrow}>Your Learning Profile</Text>
         <Text style={styles.coverTitle}>{name || "Student"}</Text>
         <Text style={styles.coverDate}>{date}</Text>
+        <View style={{ width: 60, height: 2, backgroundColor: ESPRESSO, marginBottom: 20, marginTop: 4 }} />
 
         {typeof coverData?.personalityArchetype === 'string' ? (
           <Text style={{ fontSize: 13, color: WARM_GRAY, fontStyle: 'italic', letterSpacing: 0.8, textAlign: 'center' as const, marginBottom: 12 }}>
@@ -719,7 +720,7 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
 
         {Array.isArray(coverData?.radarData) ? (
           <View style={{ alignItems: 'center' as const, marginBottom: 16 }}>
-            <PDFRadarChart data={coverData.radarData as { label: string; value: number; color: string }[]} size={200} />
+            <PDFRadarChart data={coverData.radarData as { label: string; value: number; color: string }[]} size={160} />
           </View>
         ) : null}
 
