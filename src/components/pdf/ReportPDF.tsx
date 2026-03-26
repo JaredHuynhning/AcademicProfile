@@ -159,10 +159,23 @@ const styles = StyleSheet.create({
     bottom: 20,
     left: 40,
     right: 40,
+  },
+  footerRule: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#e8e0d4",
+    marginBottom: 6,
+  },
+  footerRow: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
     fontSize: 8,
-    color: WARM_GRAY,
+    color: "#8b7355",
+  },
+  footerCenter: {
+    fontSize: 8,
+    color: "#8b7355",
+    fontStyle: "italic",
   },
 });
 
@@ -748,8 +761,12 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
         )}
 
         <View style={styles.footer}>
-          <Text>AcademicProfile — HEXACO-PI-R Assessment</Text>
-          <Text>{date}</Text>
+          <View style={styles.footerRule} />
+          <View style={styles.footerRow}>
+            <Text>AcademicProfile</Text>
+            <Text style={styles.footerCenter}>HEXACO-PI-R Assessment</Text>
+            <Text>{date}</Text>
+          </View>
         </View>
       </Page>
 
@@ -786,8 +803,12 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
             {contentElements}
 
             <View style={styles.footer} fixed>
-              <Text>{name} — Academic Profile</Text>
-              <Text render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} />
+              <View style={styles.footerRule} />
+              <View style={styles.footerRow}>
+                <Text>{name}</Text>
+                <Text style={styles.footerCenter}>{sectionDef.title}</Text>
+                <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
+              </View>
             </View>
           </Page>
         );
