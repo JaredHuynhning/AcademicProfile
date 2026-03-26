@@ -8,8 +8,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Current State
 
-- **Last session**: 2026-03-26 — Shipped tickets #1-#3: radar chart + archetype, score percentiles, visual rhythm components. Product now has the "mirror moment" cover with spider chart, archetype label, percentile context, and callout/scorebar/pullquote components throughout report.
-- **Next action**: Start ticket #4 — Action sheet tear-out page
+- **Last session**: 2026-03-26 — Shipped tickets #4-#6: action sheet tear-out, PDF editorial redesign, PAS landing page. Product now has dedicated action plan page, magazine-quality PDF with TOC/eyebrows/footer, and marketing landing page at /landing.
+- **Next action**: Start ticket #7 — Free summary → paywall → full report flow (Stripe integration)
 
 ## Active Tickets
 
@@ -18,9 +18,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | 1 | Radar chart + personality archetype | done | Shipped 7f2d68b |
 | 2 | Score percentiles ("higher than 78%") | done | Shipped a9ec8e0 |
 | 3 | Report visual rhythm (callouts, bars, pull quotes) | done | Shipped c99aa68 |
-| 4 | Action sheet tear-out page | ready | - |
-| 5 | PDF redesign (cover, TOC, charts, page breaks) | ready | - |
-| 6 | Landing page with value proposition | ready | - |
+| 4 | Action sheet tear-out page | done | Shipped via merge to main |
+| 5 | PDF redesign (cover, TOC, charts, page breaks) | done | Shipped via merge to main |
+| 6 | Landing page with value proposition | done | Shipped via merge to main |
 | 7 | Free summary → paywall → full report flow | backlog | Needs Stripe integration decision |
 
 ## Ticket Details
@@ -108,6 +108,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Recently Completed
 
+- [2026-03-26] #6 Landing page — PAS storytelling, pricing, FAQ, 9 sections at /landing
+- [2026-03-26] #5 PDF redesign — editorial clean: cover, TOC, section eyebrows, three-column footer
+- [2026-03-26] #4 Action sheet tear-out — numbered priorities, study Rx, quick wins, stop-doing, weekly rhythm
 - [2026-03-26] #3 Visual rhythm — ScoreBar, Callout, PullQuote components
 - [2026-03-26] #2 Score percentiles — "Higher than X% of students" on trait cards
 - [2026-03-26] #1 Radar chart + archetype — spider chart + "The Compassionate Idealist"
@@ -116,7 +119,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Session Log
 
-### 2026-03-26
+### 2026-03-26 (session 2)
+- Shipped #4: Action sheet tear-out — "What To Do Monday" with numbered priorities, study Rx, quick wins, stop-doing, weekly rhythm (web + PDF)
+- Shipped #5: PDF editorial clean redesign — refined cover, TOC with dot leaders, numbered section eyebrows, three-column contextual footer
+- Shipped #6: PAS landing page at /landing — hero, problem cards, root cause patterns, HEXACO feature grid, report preview tabs, credibility, pricing ($0/$49), trust FAQ, final CTA
+- Visual tested all new features with Playwright screenshots — all pass
+
+### 2026-03-26 (session 1)
 - Brainstormed "$49 product" roadmap — identified 7 tickets to transform from free quiz to sellable product
 - Shipped #1: HEXACO radar chart (custom SVG, zero deps) + 22 personality archetypes
 - Shipped #2: Score percentiles using normal CDF approximation (mean=3.0, SD=0.7)
@@ -128,3 +137,23 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Fixed report TypeError crashes (scorer array→map conversion, optional chaining on narrative)
 - Visual tested all 3 assessment modes end-to-end (Personality 60q, Learning 60q, Complete 120q)
 - Cleaned up stale worktree branches
+
+
+
+
+<!-- compaction-checkpoint-start -->
+## Pre-Compaction Checkpoint
+**When**: 2026-03-26 16:34:52 | **Branch**: main | **Activity**: 1 msgs, 0
+0 tools, 0
+0 files
+
+**Recent work**:
+- - - - - - - - ### [16:11:46] 💬 User Message
+
+**Modified files**:
+- 
+
+**Dirty files** (3): .claude-project.json,AGENTS.md,AGENTS.md.backup
+
+> Resume context: Read this section + git diff + recent session log to reconstruct state.
+<!-- compaction-checkpoint-end -->
