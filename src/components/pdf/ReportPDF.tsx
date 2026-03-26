@@ -73,8 +73,7 @@ const styles = StyleSheet.create({
   },
   // Section headers
   sectionHeader: {
-    marginTop: 16,
-    marginBottom: 10,
+    marginBottom: 24,
   },
   sectionEyebrow: {
     fontSize: 8,
@@ -84,9 +83,15 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
     color: ESPRESSO,
+    marginBottom: 8,
+  },
+  sectionRule: {
+    width: 40,
+    height: 3,
+    backgroundColor: ESPRESSO,
   },
   // Content
   body: {
@@ -749,7 +754,7 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
       </Page>
 
       {/* Content: each section gets its own page for clean breaks */}
-      {activeSections.map((sectionDef) => {
+      {activeSections.map((sectionDef, sectionIndex) => {
         const data = report[sectionDef.key] as Record<string, unknown>;
         if (!data) return null;
 
@@ -772,7 +777,9 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
           <Page key={sectionDef.key} size="A4" style={styles.page} wrap>
             {/* Section header */}
             <View style={styles.sectionHeader} wrap={false} minPresenceAhead={80}>
+              <Text style={styles.sectionEyebrow}>Section {String(sectionIndex + 1).padStart(2, "0")}</Text>
               <Text style={styles.sectionTitle}>{sectionDef.title}</Text>
+              <View style={styles.sectionRule} />
             </View>
 
             {/* Section content */}
