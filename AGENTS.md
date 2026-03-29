@@ -41,8 +41,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | 10 | Landing page real screenshots | done | P0 | Shipped a81f343 |
 | 7 | Free summary → paywall → full report flow | ready | P0 | No Stripe = no revenue — ship simple Checkout |
 | 11 | Visual benchmarks in report sections | done | P1 | Shipped 43bc117 |
-| 9 | Student name personalization in narratives | active | P1 | Replacing "this student" with actual name across all section generators |
-| 8 | PDF polish phase A — ExecSummary, Learning, Study, Guide | ready | P2 | Presentation must match content quality |
+| 9 | Student name personalization in narratives | done | P1 | Shipped cb2416d |
+| 8 | PDF polish phase A — ExecSummary, Learning, Study, Guide | done | P2 | Shipped — 4 section-specific PDF renderers |
 | 8b | PDF polish phase B — DeepDive, Strengths, Barriers | ready | P2 | Depends on #8 patterns |
 | 12 | Trust signals + social proof | backlog | P1 | About section, guarantee, HEXACO explainer, testimonial slot |
 
@@ -146,6 +146,15 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Cover page already uses name; extend to section narratives, action plan, guide sections
 - Keep it natural — not every sentence, just key moments ("Sophie's high extraversion...")
 
+### Ticket #8 AC
+- [x] PDFCallout, PDFTwoColumn, PDFSubheading helper components exist in ReportPDF.tsx
+- [x] renderExecSummary renders archetype + narrative + two-column strength/barrier + action callout
+- [x] renderLearning renders narrative + learningStyle card + environment grid + format table + insight callout
+- [x] renderStudy renders narrative + methods table + subject strategy cards + exam timeline + weekly plan
+- [x] renderGuide renders Teacher/Parent sections with feedback card, classroom tips, callout warnings, dos/donts
+- [x] All 4 sections (+ unifiedGuide) wired via CUSTOM_SECTION_RENDERERS map
+- [x] `npm run build` exits 0
+
 ### Ticket #9 AC
 - [x] Zero occurrences of "this student" in generated report text (grep returns 0)
 - [x] Student name appears in Cover, Guide, Tutor, Academic Guide, Unified Guide, Executive Summary sections
@@ -186,6 +195,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Recently Completed
 
+- [2026-03-29] #8 PDF polish A — 4 section-specific renderers (ExecSummary, Learning, Study, Guide) with callouts, two-column layouts, score bars
+- [2026-03-29] #9 Name personalization — "Sophie" replaces "this student" in 7 section generators (62 occurrences)
 - [2026-03-29] #11 Visual benchmarks — interpretiveLabel(), ScoreBar benchmark line, PDFScoreBar, updated screenshots
 - [2026-03-29] #10 Landing page real screenshots — 4 Playwright-captured report section images replacing placeholder text
 - [2026-03-26] #6 Landing page — PAS storytelling, pricing, FAQ, 9 sections at /landing
@@ -241,16 +252,18 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 
 
+
 <!-- compaction-checkpoint-start -->
 ## Pre-Compaction Checkpoint
-**When**: 2026-03-29 21:23:37 | **Branch**: main | **Activity**: 3 msgs, 0
+**When**: 2026-03-29 22:26:14 | **Branch**: main | **Activity**: 4 msgs, 0
 0 tools, 0
 0 files
 
 **Recent work**:
-- ### [12:25:56] 💬 User Message
-- ### [13:15:52] 💬 User Message
-- ### [13:19:40] 💬 User Message
+- - ### [12:25:56] 💬 User Message
+- - ### [13:15:52] 💬 User Message
+- - ### [13:19:40] 💬 User Message
+- ### [21:28:29] 💬 User Message
 
 **Modified files**:
 - 

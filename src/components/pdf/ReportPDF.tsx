@@ -249,6 +249,403 @@ function PDFScoreBar({ score, maxScore = 5, color = ESPRESSO, showBenchmark = fa
   );
 }
 
+// ─── PDF Polish Helpers ───────────────────────────────────────────────────────
+
+function PDFCallout({ text, color = WARM_GRAY, title }: { text: string; color?: string; title?: string }) {
+  return (
+    <View style={{ flexDirection: "row" as const, marginBottom: 8 }} wrap={false}>
+      <View style={{ width: 3, backgroundColor: color, borderRadius: 1, marginRight: 8 }} />
+      <View style={{ flex: 1 }}>
+        {title && <Text style={{ fontSize: 9, fontWeight: "bold", color: ESPRESSO, marginBottom: 2 }}>{title}</Text>}
+        <Text style={{ fontSize: 9, lineHeight: 1.5, color: "#4a3f2f" }}>{text}</Text>
+      </View>
+    </View>
+  );
+}
+
+function PDFTwoColumn({ left, right }: { left: React.ReactNode; right: React.ReactNode }) {
+  return (
+    <View style={{ flexDirection: "row" as const, gap: 10, marginBottom: 8 }}>
+      <View style={{ flex: 1 }}>{left}</View>
+      <View style={{ flex: 1 }}>{right}</View>
+    </View>
+  );
+}
+
+function PDFSubheading({ text }: { text: string }) {
+  return (
+    <View style={{ marginTop: 14, marginBottom: 6 }}>
+      <Text style={{ fontSize: 12, fontWeight: "bold", color: ESPRESSO }}>{text}</Text>
+      <View style={{ width: 24, height: 2, backgroundColor: ESPRESSO, marginTop: 3 }} />
+    </View>
+  );
+}
+
+// ─── Section-Specific Renderers ──────────────────────────────────────────────
+
+function renderExecSummary(data: Record<string, unknown>): React.ReactElement[] {
+  const archetype = typeof data.archetype === "string" ? data.archetype : null;
+  const narrative = typeof data.narrative === "string" ? data.narrative : null;
+  const topStrength = data.topStrength as { insight?: string; personality?: string; academic?: string } | null;
+  const topBarrier = data.topBarrier as { insight?: string; personality?: string; academic?: string; action?: string } | null;
+  const topAction = typeof data.topAction === "string" ? data.topAction : null;
+
+  const elements: React.ReactElement[] = [];
+
+  if (archetype) {
+    elements.push(
+      <Text key="arch" style={{ fontSize: 12, color: WARM_GRAY, fontStyle: "italic", textAlign: "center" as const, marginBottom: 12 }}>
+        {archetype}
+      </Text>
+    );
+  }
+
+  if (narrative) {
+    narrative.split(/\n\n|\.\s+(?=[A-Z])/).filter(Boolean).forEach((para, i) => {
+      const text = para.trim().endsWith(".") ? para.trim() : para.trim() + ".";
+      elements.push(<Text key={`n${i}`} style={styles.body}>{text}</Text>);
+    });
+  }
+
+  if (topStrength || topBarrier) {
+    elements.push(
+      <PDFTwoColumn
+        key="cols"
+        left={topStrength ? (
+          <View style={[styles.card, { borderLeftWidth: 3, borderLeftColor: "#22c55e" }]}>
+            <Text style={{ fontSize: 8, color: "#22c55e", textTransform: "uppercase" as const, letterSpacing: 1, marginBottom: 4 }}>Top Strength</Text>
+            <Text style={{ fontSize: 9, color: ESPRESSO, marginBottom: 3 }}>{topStrength.insight}</Text>
+            {topStrength.personality && <Text style={{ fontSize: 7, color: WARM_GRAY }}>{topStrength.personality} + {topStrength.academic}</Text>}
+          </View>
+        ) : <View />}
+        right={topBarrier ? (
+          <View style={[styles.card, { borderLeftWidth: 3, borderLeftColor: "#f59e0b" }]}>
+            <Text style={{ fontSize: 8, color: "#f59e0b", textTransform: "uppercase" as const, letterSpacing: 1, marginBottom: 4 }}>Top Barrier</Text>
+            <Text style={{ fontSize: 9, color: ESPRESSO, marginBottom: 3 }}>{topBarrier.insight}</Text>
+            {topBarrier.action && <Text style={{ fontSize: 8, color: "#4a3f2f", fontStyle: "italic" }}>{topBarrier.action}</Text>}
+          </View>
+        ) : <View />}
+      />
+    );
+  }
+
+  if (topAction) {
+    elements.push(<PDFCallout key="action" text={topAction} color="#3b82f6" title="Priority Action" />);
+  }
+
+  return elements;
+}
+
+function renderLearning(data: Record<string, unknown>): React.ReactElement[] {
+  const narrative = typeof data.narrative === "string" ? data.narrative : null;
+  const learningStyle = data.learningStyle as { primary?: { label?: string; description?: string }; secondary?: { label?: string; description?: string }; curiosity?: { label?: string; description?: string }; summary?: string } | null;
+  const idealEnvironment = data.idealEnvironment as { category?: string; recommendation?: string[] }[] | null;
+  const preferredFormats = data.preferredFormats as { format?: string; fit?: string; reason?: string }[] | null;
+  const keyInsight = typeof data.keyInsight === "string" ? data.keyInsight : null;
+
+  const elements: React.ReactElement[] = [];
+
+  if (narrative) {
+    narrative.split(/\n\n/).filter(Boolean).forEach((para, i) => {
+      elements.push(<Text key={`n${i}`} style={styles.body}>{para.trim()}</Text>);
+    });
+  }
+
+  if (learningStyle) {
+    elements.push(
+      <View key="ls" style={[styles.card, { marginTop: 4 }]}>
+        <Text style={styles.cardTitle}>Learning Style</Text>
+        {learningStyle.primary && (
+          <View style={{ marginBottom: 4 }}>
+            <Text style={{ fontSize: 8, color: WARM_GRAY, textTransform: "uppercase" as const, letterSpacing: 1 }}>Primary</Text>
+            <Text style={{ fontSize: 9, fontWeight: "bold", color: ESPRESSO }}>{learningStyle.primary.label}</Text>
+            {learningStyle.primary.description && <Text style={{ fontSize: 8, color: "#4a3f2f", lineHeight: 1.4 }}>{learningStyle.primary.description}</Text>}
+          </View>
+        )}
+        {learningStyle.secondary && (
+          <View style={{ marginBottom: 4 }}>
+            <Text style={{ fontSize: 8, color: WARM_GRAY, textTransform: "uppercase" as const, letterSpacing: 1 }}>Secondary</Text>
+            <Text style={{ fontSize: 9, fontWeight: "bold", color: ESPRESSO }}>{learningStyle.secondary.label}</Text>
+          </View>
+        )}
+        {learningStyle.summary && <Text style={{ fontSize: 8, color: "#4a3f2f", fontStyle: "italic", marginTop: 2 }}>{learningStyle.summary}</Text>}
+      </View>
+    );
+  }
+
+  if (Array.isArray(idealEnvironment) && idealEnvironment.length > 0) {
+    elements.push(
+      <View key="env">
+        <PDFSubheading text="Ideal Environment" />
+        <View style={{ flexDirection: "row" as const, flexWrap: "wrap" as const, gap: 8 }}>
+          {idealEnvironment.map((env, i) => (
+            <View key={i} style={[styles.card, { width: "48%" }]}>
+              <Text style={{ fontSize: 8, fontWeight: "bold", color: ESPRESSO, marginBottom: 2 }}>{env.category}</Text>
+              {Array.isArray(env.recommendation) && env.recommendation.map((r, j) => (
+                <Text key={j} style={{ fontSize: 8, color: "#4a3f2f", lineHeight: 1.4 }}>{r}</Text>
+              ))}
+            </View>
+          ))}
+        </View>
+      </View>
+    );
+  }
+
+  if (Array.isArray(preferredFormats) && preferredFormats.length > 0) {
+    elements.push(
+      <View key="formats" style={{ marginTop: 8 }}>
+        <PDFSubheading text="Preferred Formats" />
+        {preferredFormats.map((f, i) => (
+          <View key={i} style={{ flexDirection: "row" as const, alignItems: "center" as const, marginBottom: 4, paddingBottom: 4, borderBottomWidth: i < preferredFormats.length - 1 ? 0.5 : 0, borderBottomColor: BORDER }}>
+            <Text style={{ fontSize: 9, fontWeight: "bold", color: ESPRESSO, width: 80 }}>{f.format}</Text>
+            <Text style={{ fontSize: 8, color: f.fit === "Excellent" ? "#22c55e" : "#3b82f6", width: 55 }}>{f.fit}</Text>
+            <Text style={{ fontSize: 8, color: "#4a3f2f", flex: 1 }}>{f.reason}</Text>
+          </View>
+        ))}
+      </View>
+    );
+  }
+
+  if (keyInsight) {
+    elements.push(<PDFCallout key="insight" text={keyInsight} color="#8b5cf6" title="Key Insight" />);
+  }
+
+  return elements;
+}
+
+function renderStudy(data: Record<string, unknown>): React.ReactElement[] {
+  const narrative = typeof data.narrative === "string" ? data.narrative : null;
+  const studyApproach = data.studyApproach as { label?: string; description?: string } | null;
+  const methods = data.methods as { name?: string; description?: string; fit?: string }[] | null;
+  const subjectStrategies = data.subjectStrategies as Record<string, { label?: string; strategies?: string[] }> | null;
+  const examPrep = data.examPrep as { timeline?: { week?: string; action?: string }[]; dayBefore?: string[]; dayOf?: string[] } | null;
+  const timeManagement = data.timeManagement as { style?: string; description?: string; tools?: string[]; warning?: string } | null;
+  const weeklyPlan = data.weeklyPlan as { weekdays?: { afterSchool?: string; evening?: string }; weekend?: { saturday?: string; sunday?: string } } | null;
+
+  const elements: React.ReactElement[] = [];
+
+  if (narrative) {
+    narrative.split(/\n\n/).filter(Boolean).forEach((para, i) => {
+      elements.push(<Text key={`n${i}`} style={styles.body}>{para.trim()}</Text>);
+    });
+  }
+
+  if (studyApproach) {
+    elements.push(
+      <View key="approach" style={[styles.card, { marginTop: 4 }]}>
+        <Text style={styles.cardTitle}>{studyApproach.label || "Study Approach"}</Text>
+        {studyApproach.description && <Text style={{ fontSize: 9, color: "#4a3f2f", lineHeight: 1.5 }}>{studyApproach.description}</Text>}
+      </View>
+    );
+  }
+
+  if (Array.isArray(methods) && methods.length > 0) {
+    elements.push(
+      <View key="methods">
+        <PDFSubheading text="Recommended Methods" />
+        {methods.map((m, i) => (
+          <View key={i} style={{ flexDirection: "row" as const, marginBottom: 4, paddingBottom: 4, borderBottomWidth: i < methods.length - 1 ? 0.5 : 0, borderBottomColor: BORDER }}>
+            <Text style={{ fontSize: 9, fontWeight: "bold", color: ESPRESSO, width: 100 }}>{m.name}</Text>
+            <Text style={{ fontSize: 8, color: m.fit === "Excellent" ? "#22c55e" : "#3b82f6", width: 50 }}>{m.fit}</Text>
+            <Text style={{ fontSize: 8, color: "#4a3f2f", flex: 1 }}>{m.description}</Text>
+          </View>
+        ))}
+      </View>
+    );
+  }
+
+  if (subjectStrategies && typeof subjectStrategies === "object") {
+    const cats = Object.values(subjectStrategies).filter((v): v is { label?: string; strategies?: string[] } => !!v && typeof v === "object");
+    if (cats.length > 0) {
+      elements.push(
+        <View key="subjects">
+          <PDFSubheading text="Subject Strategies" />
+          <View style={{ flexDirection: "row" as const, gap: 8 }}>
+            {cats.map((cat, i) => (
+              <View key={i} style={[styles.card, { flex: 1 }]}>
+                <Text style={{ fontSize: 8, fontWeight: "bold", color: ESPRESSO, marginBottom: 3 }}>{cat.label}</Text>
+                {Array.isArray(cat.strategies) && cat.strategies.map((s, j) => (
+                  <Text key={j} style={{ fontSize: 7, color: "#4a3f2f", lineHeight: 1.4, marginBottom: 1 }}>{s}</Text>
+                ))}
+              </View>
+            ))}
+          </View>
+        </View>
+      );
+    }
+  }
+
+  if (examPrep?.timeline && Array.isArray(examPrep.timeline)) {
+    elements.push(
+      <View key="timeline">
+        <PDFSubheading text="Exam Preparation Timeline" />
+        {examPrep.timeline.map((t, i) => (
+          <View key={i} style={{ flexDirection: "row" as const, marginBottom: 3 }}>
+            <Text style={{ fontSize: 8, fontWeight: "bold", color: ESPRESSO, width: 55 }}>{t.week}</Text>
+            <Text style={{ fontSize: 8, color: "#4a3f2f", flex: 1 }}>{t.action}</Text>
+          </View>
+        ))}
+      </View>
+    );
+  }
+
+  if (timeManagement) {
+    elements.push(
+      <View key="tm" style={[styles.card, { marginTop: 8 }]}>
+        <Text style={styles.cardTitle}>{timeManagement.style || "Time Management"}</Text>
+        {timeManagement.description && <Text style={{ fontSize: 9, color: "#4a3f2f", lineHeight: 1.5, marginBottom: 4 }}>{timeManagement.description}</Text>}
+        {timeManagement.warning && <PDFCallout text={timeManagement.warning} color="#f59e0b" title="Watch Out" />}
+      </View>
+    );
+  }
+
+  if (weeklyPlan) {
+    elements.push(
+      <View key="weekly" style={{ marginTop: 8 }}>
+        <PDFSubheading text="Weekly Plan" />
+        <PDFTwoColumn
+          left={
+            <View style={styles.card}>
+              <Text style={{ fontSize: 8, fontWeight: "bold", color: ESPRESSO, marginBottom: 3 }}>Weekdays</Text>
+              {weeklyPlan.weekdays?.afterSchool && <Text style={{ fontSize: 8, color: "#4a3f2f", marginBottom: 2 }}>After school: {weeklyPlan.weekdays.afterSchool}</Text>}
+              {weeklyPlan.weekdays?.evening && <Text style={{ fontSize: 8, color: "#4a3f2f" }}>Evening: {weeklyPlan.weekdays.evening}</Text>}
+            </View>
+          }
+          right={
+            <View style={styles.card}>
+              <Text style={{ fontSize: 8, fontWeight: "bold", color: ESPRESSO, marginBottom: 3 }}>Weekend</Text>
+              {weeklyPlan.weekend?.saturday && <Text style={{ fontSize: 8, color: "#4a3f2f", marginBottom: 2 }}>Saturday: {weeklyPlan.weekend.saturday}</Text>}
+              {weeklyPlan.weekend?.sunday && <Text style={{ fontSize: 8, color: "#4a3f2f" }}>Sunday: {weeklyPlan.weekend.sunday}</Text>}
+            </View>
+          }
+        />
+      </View>
+    );
+  }
+
+  return elements;
+}
+
+function renderGuide(data: Record<string, unknown>): React.ReactElement[] {
+  const teacher = data.teacher as Record<string, unknown> | null;
+  const parent = data.parent as Record<string, unknown> | null;
+  const sharedInsights = data.sharedInsights as { keyMessage?: string; alignmentTip?: string; reminderNote?: string } | null;
+
+  const elements: React.ReactElement[] = [];
+
+  if (teacher) {
+    elements.push(<PDFSubheading key="th" text="For Teachers" />);
+
+    const quickProfile = teacher.quickProfile as string[] | null;
+    if (Array.isArray(quickProfile)) {
+      elements.push(<PDFBulletList key="tp" items={quickProfile} />);
+    }
+
+    const feedbackStyle = teacher.feedbackStyle as { preferred?: string; description?: string; avoid?: string } | null;
+    if (feedbackStyle) {
+      elements.push(
+        <View key="fb" style={[styles.card, { marginTop: 4 }]}>
+          <Text style={styles.cardTitle}>Feedback Style</Text>
+          {feedbackStyle.preferred && <Text style={{ fontSize: 9, color: "#22c55e", marginBottom: 2 }}>Preferred: {feedbackStyle.preferred}</Text>}
+          {feedbackStyle.description && <Text style={{ fontSize: 8, color: "#4a3f2f", lineHeight: 1.4, marginBottom: 3 }}>{feedbackStyle.description}</Text>}
+          {feedbackStyle.avoid && <Text style={{ fontSize: 8, color: "#ef4444" }}>Avoid: {feedbackStyle.avoid}</Text>}
+        </View>
+      );
+    }
+
+    const classroomTips = teacher.classroomTips as string[] | null;
+    if (Array.isArray(classroomTips)) {
+      elements.push(
+        <View key="ct" style={{ marginTop: 4 }}>
+          <Text style={{ fontSize: 9, fontWeight: "bold", color: ESPRESSO, marginBottom: 3 }}>Classroom Tips</Text>
+          <PDFBulletList items={classroomTips} />
+        </View>
+      );
+    }
+
+    const warningSignals = teacher.warningSignals as { signal?: string; meaning?: string; action?: string }[] | null;
+    if (Array.isArray(warningSignals)) {
+      warningSignals.forEach((w, i) => {
+        elements.push(
+          <PDFCallout key={`tw${i}`} text={`${w.meaning || ""} ${w.action || ""}`} color="#f59e0b" title={w.signal} />
+        );
+      });
+    }
+  }
+
+  if (parent) {
+    elements.push(<PDFSubheading key="ph" text="For Parents" />);
+
+    const understandingProfile = typeof parent.understandingProfile === "string" ? parent.understandingProfile : null;
+    if (understandingProfile) {
+      elements.push(<Text key="up" style={styles.body}>{understandingProfile}</Text>);
+    }
+
+    const homeEnvironment = parent.homeEnvironment as { area?: string; tip?: string }[] | null;
+    if (Array.isArray(homeEnvironment)) {
+      elements.push(
+        <View key="he" style={{ marginTop: 4 }}>
+          <Text style={{ fontSize: 9, fontWeight: "bold", color: ESPRESSO, marginBottom: 3 }}>Home Environment</Text>
+          <PDFBulletList items={homeEnvironment.map(h => `${h.area}: ${h.tip}`)} />
+        </View>
+      );
+    }
+
+    const supportStrategies = parent.supportStrategies as { area?: string; dos?: string[]; donts?: string[] }[] | null;
+    if (Array.isArray(supportStrategies)) {
+      supportStrategies.forEach((s, i) => {
+        elements.push(
+          <View key={`ss${i}`} style={[styles.card, { marginTop: 4 }]} wrap={false}>
+            <Text style={styles.cardTitle}>{s.area}</Text>
+            <PDFTwoColumn
+              left={
+                <View>
+                  <Text style={{ fontSize: 8, color: "#22c55e", fontWeight: "bold", marginBottom: 2 }}>Do</Text>
+                  {Array.isArray(s.dos) && s.dos.map((d, j) => <Text key={j} style={{ fontSize: 8, color: "#4a3f2f", lineHeight: 1.4, marginBottom: 1 }}>{d}</Text>)}
+                </View>
+              }
+              right={
+                <View>
+                  <Text style={{ fontSize: 8, color: "#ef4444", fontWeight: "bold", marginBottom: 2 }}>Don&apos;t</Text>
+                  {Array.isArray(s.donts) && s.donts.map((d, j) => <Text key={j} style={{ fontSize: 8, color: "#4a3f2f", lineHeight: 1.4, marginBottom: 1 }}>{d}</Text>)}
+                </View>
+              }
+            />
+          </View>
+        );
+      });
+    }
+
+    const warningSignals = parent.warningSignals as { signal?: string; action?: string }[] | null;
+    if (Array.isArray(warningSignals)) {
+      warningSignals.forEach((w, i) => {
+        elements.push(
+          <PDFCallout key={`pw${i}`} text={w.action || ""} color="#f59e0b" title={w.signal} />
+        );
+      });
+    }
+  }
+
+  if (sharedInsights) {
+    elements.push(<PDFSubheading key="sh" text="Shared Insights" />);
+    if (sharedInsights.keyMessage) elements.push(<PDFCallout key="km" text={sharedInsights.keyMessage} color="#3b82f6" title="Key Message" />);
+    if (sharedInsights.alignmentTip) elements.push(<PDFCallout key="at" text={sharedInsights.alignmentTip} color={WARM_GRAY} title="Alignment" />);
+    if (sharedInsights.reminderNote) elements.push(<Text key="rn" style={[styles.body, { fontStyle: "italic" }]}>{sharedInsights.reminderNote}</Text>);
+  }
+
+  return elements;
+}
+
+// ─── End Section-Specific Renderers ──────────────────────────────────────────
+
+const CUSTOM_SECTION_RENDERERS: Record<string, (data: Record<string, unknown>) => React.ReactElement[]> = {
+  executiveSummary: renderExecSummary,
+  learning: renderLearning,
+  study: renderStudy,
+  guide: renderGuide,
+  unifiedGuide: renderGuide,
+};
+
 function formatLabel(key: string): string {
   return key
     .replace(/([A-Z])/g, " $1")
@@ -834,7 +1231,9 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
           );
         }
 
-        const contentElements = renderSectionContent(data);
+        // Use section-specific renderer if available
+        const customRenderer = CUSTOM_SECTION_RENDERERS[sectionDef.key];
+        const contentElements = customRenderer ? customRenderer(data) : renderSectionContent(data);
         if (contentElements.length === 0) return null;
 
         return (
