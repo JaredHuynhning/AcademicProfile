@@ -5,6 +5,7 @@ import { PDFRadarChart } from "./PDFRadarChart";
 import { PDFActionSheet } from "./PDFActionSheet";
 import { PDFTableOfContents } from "./PDFTableOfContents";
 import { scorePercentile, interpretiveLabel, POPULATION_MEAN } from "@/lib/report/helpers";
+import { generateMegaReport, type MegaReport, type MegaSection } from "@/lib/report";
 
 const CREAM = "#fdfbf7";
 const ESPRESSO = "#2c2417";
@@ -1331,19 +1332,58 @@ interface ReportPDFProps {
   report: Record<string, unknown>;
 }
 
-function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
-  const date = new Date().toLocaleDateString("en-AU", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+function MegaSectionContent({ section }: { section: MegaSection }) {
+  const elements: React.ReactElement[] = [];
+
+  // Try custom renderers for rawData keys
+  if (section.rawData) {
+    for (const [key, data] of Object.entries(section.rawData)) {
+      if (data && typeof data === 'object' && CUSTOM_SECTION_RENDERERS[key]) {
+        elements.push(...CUSTOM_SECTION_RENDERERS[key](data as Record<string, unknown>));
+      }
+    }
+  }
+
+  // If custom renderers produced content, use that
+  if (elements.length > 0) return <>{elements}</>;
+
+  // Fallback: render mega-section structured content + rawData via generic renderer
+  const fallback: React.ReactElement[] = [];
+
+  // Narratives
+  section.content.narrative.forEach((para, i) => {
+    fallback.push(<Text key={`n${i}`} style={[styles.body, { marginBottom: 6 }]}>{para}</Text>);
   });
 
+  // Findings as callouts
+  section.content.keyFindings.forEach((f, i) => {
+    fallback.push(<PDFCallout key={`f${i}`} text={f.text} title={f.title} color={f.color || WARM_GRAY} />);
+  });
+
+  // Actions as callouts
+  section.content.actions.forEach((a, i) => {
+    fallback.push(<PDFCallout key={`a${i}`} text={a.description} title={a.title} color="#3b82f6" />);
+  });
+
+  // Generic rawData rendering for sections without custom renderers
+  if (section.rawData) {
+    for (const [key, data] of Object.entries(section.rawData)) {
+      if (!data || typeof data !== 'object' || CUSTOM_SECTION_RENDERERS[key]) continue;
+      const rendered = renderSectionContent(data as Record<string, unknown>);
+      fallback.push(...rendered.map((el, i) => <View key={`${key}-${i}`}>{el}</View>));
+    }
+  }
+
+  return <>{fallback}</>;
+}
+
+function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
+  const mega = generateMegaReport(results, name);
+  const date = mega.date;
   const coverData = report.cover as Record<string, unknown> | null;
-  const hasComplete = report.hasComplete;
-  const sectionOrder = hasComplete ? COMPLETE_SECTION_ORDER : STANDALONE_SECTION_ORDER;
-  const activeSections = sectionOrder.filter(
-    (s) => report[s.key] && typeof report[s.key] === "object"
-  );
+
+  // Filter to sections with content (skip appendix if empty)
+  const contentSections = mega.sections.filter(s => s.id !== 'cover-summary');
 
   return (
     <Document>
@@ -1354,9 +1394,9 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
         <Text style={styles.coverDate}>{date}</Text>
         <View style={{ width: 60, height: 2, backgroundColor: ESPRESSO, marginBottom: 20, marginTop: 4 }} />
 
-        {typeof coverData?.personalityArchetype === 'string' ? (
+        {mega.archetype ? (
           <Text style={{ fontSize: 13, color: WARM_GRAY, fontStyle: 'italic', letterSpacing: 0.8, textAlign: 'center' as const, marginBottom: 12 }}>
-            {coverData.personalityArchetype}
+            {mega.archetype}
           </Text>
         ) : null}
 
@@ -1366,19 +1406,19 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
           </View>
         ) : null}
 
-        {results.dimensions && typeof results.dimensions === "object" && (
+        {mega.scoreSummary.length > 0 && (
           <View style={styles.coverScores}>
-            {Object.values(results.dimensions as unknown as Record<string, { name: string; score: number }>).map((dim) => (
-              <View key={dim.name} style={[styles.coverScoreCard, { minWidth: 90 }]}>
+            {mega.scoreSummary.map((s) => (
+              <View key={s.dim} style={[styles.coverScoreCard, { minWidth: 90 }]}>
                 <Text style={styles.coverScoreName}>
-                  {dim.name.replace(" to Experience", "").split("-")[0]}
+                  {s.dim.replace(" to Experience", "").split("-")[0]}
                 </Text>
-                <Text style={[styles.coverScoreValue, { color: DIM_COLORS[dim.name] || ESPRESSO }]}>
-                  {dim.score.toFixed(1)}
+                <Text style={[styles.coverScoreValue, { color: s.color }]}>
+                  {s.score.toFixed(1)}
                 </Text>
-                <PDFScoreBar score={dim.score} color={DIM_COLORS[dim.name] || ESPRESSO} showBenchmark label={interpretiveLabel(dim.score)} />
+                <PDFScoreBar score={s.score} color={s.color} showBenchmark label={s.label} />
                 <Text style={{ fontSize: 6, color: WARM_GRAY, marginTop: 2 }}>
-                  Top {100 - scorePercentile(dim.score)}%
+                  Top {100 - s.percentile}%
                 </Text>
               </View>
             ))}
@@ -1398,9 +1438,9 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
       {/* Table of Contents */}
       <Page size="A4" style={styles.page}>
         <PDFTableOfContents
-          sections={activeSections.map((s, i) => ({
+          sections={contentSections.map((s, i) => ({
             number: String(i + 1).padStart(2, "0"),
-            title: s.title,
+            title: s.subtitle ? `${s.title}: ${s.subtitle}` : s.title,
           }))}
         />
         <View style={styles.footer} fixed>
@@ -1413,15 +1453,13 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
         </View>
       </Page>
 
-      {/* Content: each section gets its own page for clean breaks */}
-      {activeSections.map((sectionDef, sectionIndex) => {
-        const data = report[sectionDef.key] as Record<string, unknown>;
-        if (!data) return null;
-
-        if (sectionDef.key === "actionPlan") {
+      {/* Content: each mega-section gets its own page */}
+      {contentSections.map((section, sectionIndex) => {
+        // Action plan gets special treatment
+        if (section.id === 'action-plan' && section.rawData?.actionPlan) {
           return (
-            <Page key={sectionDef.key} size="A4" style={styles.page} wrap={false}>
-              <PDFActionSheet data={data as any} studentName={name || "Student"} />
+            <Page key={section.id} size="A4" style={styles.page} wrap={false}>
+              <PDFActionSheet data={section.rawData.actionPlan as any} studentName={name || "Student"} />
               <View style={styles.footer} fixed>
                 <Text>{name} — Academic Profile</Text>
                 <Text render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} />
@@ -1430,28 +1468,22 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
           );
         }
 
-        // Use section-specific renderer if available
-        const customRenderer = CUSTOM_SECTION_RENDERERS[sectionDef.key];
-        const contentElements = customRenderer ? customRenderer(data) : renderSectionContent(data);
-        if (contentElements.length === 0) return null;
-
         return (
-          <Page key={sectionDef.key} size="A4" style={styles.page} wrap>
-            {/* Section header */}
+          <Page key={section.id} size="A4" style={styles.page} wrap>
             <View style={styles.sectionHeader} wrap={false} minPresenceAhead={80}>
               <Text style={styles.sectionEyebrow}>Section {String(sectionIndex + 1).padStart(2, "0")}</Text>
-              <Text style={styles.sectionTitle}>{sectionDef.title}</Text>
+              <Text style={styles.sectionTitle}>{section.title}</Text>
+              {section.subtitle && <Text style={{ fontSize: 11, color: WARM_GRAY, marginBottom: 8 }}>{section.subtitle}</Text>}
               <View style={styles.sectionRule} />
             </View>
 
-            {/* Section content */}
-            {contentElements}
+            <MegaSectionContent section={section} />
 
             <View style={styles.footer} fixed>
               <View style={styles.footerRule} />
               <View style={styles.footerRow}>
                 <Text>{name}</Text>
-                <Text style={styles.footerCenter}>{sectionDef.title}</Text>
+                <Text style={styles.footerCenter}>{section.title}</Text>
                 <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
               </View>
             </View>

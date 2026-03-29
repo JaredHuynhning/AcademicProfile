@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useQuizStore } from "@/lib/stores/quiz-store";
 import { useReportsStore } from "@/lib/stores/reports-store";
-import { generateReport } from "@/lib/report";
+import { generateReport, generateMegaReport } from "@/lib/report";
+import type { MegaSection } from "@/lib/report";
 import { ReportSection } from "@/components/report/ReportSection";
 import { StickyNav } from "@/components/report/StickyNav";
 import { FloatingTOC } from "@/components/report/FloatingTOC";
@@ -669,45 +670,67 @@ function CoverSection({ data }: { data: Record<string, unknown> }) {
   );
 }
 
-// ─── Section registry ─────────────────────────────────────────────────────────
+// ─── Mega-section renderer ───────────────────────────────────────────────────
 
-interface SectionDefinition {
-  key: string;
-  title: string;
-  isCover?: boolean;
+function MegaSectionBody({ section, studentName }: { section: MegaSection; studentName: string }) {
+  // Special renderers for specific mega-section types
+  if (section.id === 'cover-summary' && section.rawData?.cover) {
+    return (
+      <div className="space-y-8">
+        <CoverSection data={section.rawData.cover as Record<string, unknown>} />
+        {section.content.narrative.map((para, i) => (
+          <p key={`n${i}`} className="text-espresso/80 leading-relaxed text-[15px]">{clean(para)}</p>
+        ))}
+        {section.content.keyFindings.map((f, i) => (
+          <Callout key={`f${i}`} icon={f.type === 'strength' ? '💪' : '⚠️'} title={f.title}>
+            {f.text}
+          </Callout>
+        ))}
+        {section.content.actions.map((a, i) => (
+          <Callout key={`a${i}`} icon="🎯" title={a.title}>
+            {a.description}
+          </Callout>
+        ))}
+      </div>
+    );
+  }
+
+  if (section.id === 'action-plan' && section.rawData?.actionPlan) {
+    return (
+      <ActionSheet
+        data={section.rawData.actionPlan as ActionSheetProps["data"]}
+        studentName={studentName}
+      />
+    );
+  }
+
+  // Generic: render narratives + findings + rawData via SectionContent
+  return (
+    <div className="space-y-4">
+      {section.content.narrative.length > 0 && (
+        <div className="space-y-4 mb-6">
+          {section.content.narrative.map((para, i) => (
+            <p key={`n${i}`} className="text-espresso/80 leading-relaxed text-[15px]">{clean(para)}</p>
+          ))}
+        </div>
+      )}
+      {section.content.keyFindings.map((f, i) => (
+        <Callout key={`f${i}`} icon={f.type === 'strength' ? '💪' : f.type === 'barrier' ? '⚠️' : '💡'} title={f.title}>
+          {f.text}
+        </Callout>
+      ))}
+      {section.content.actions.map((a, i) => (
+        <Callout key={`a${i}`} icon="🎯" title={a.title}>
+          {a.description}
+        </Callout>
+      ))}
+      {section.rawData && Object.entries(section.rawData).map(([key, data]) => {
+        if (!data || typeof data !== 'object') return null;
+        return <SectionContent key={key} data={data as Record<string, unknown>} />;
+      })}
+    </div>
+  );
 }
-
-const PERSONALITY_SECTIONS: SectionDefinition[] = [
-  { key: "cover", title: "Profile Summary", isCover: true },
-  { key: "glance", title: "Personality at a Glance" },
-  { key: "deepDive", title: "Deep Dive" },
-  { key: "learning", title: "Learning Style" },
-  { key: "drives", title: "Drives & Motivation" },
-  { key: "study", title: "Study Approach" },
-  { key: "group", title: "Group Work & Collaboration" },
-  { key: "strengths", title: "Strengths & Growth" },
-  { key: "guide", title: "Tutor's Guide" },
-  { key: "tutor", title: "Parent & Tutor Tips" },
-];
-
-const LEARNING_SECTIONS: SectionDefinition[] = [
-  { key: "studyProfile", title: "Study Profile" },
-  { key: "academicCharacter", title: "Academic Character" },
-  { key: "subjectFit", title: "Subject Fit" },
-  { key: "whatWorks", title: "What Works" },
-  { key: "rootCause", title: "Root Cause Analysis" },
-  { key: "academicGuide", title: "Academic Guide" },
-];
-
-const COMPLETE_SECTIONS: SectionDefinition[] = [
-  { key: "executiveSummary", title: "Executive Summary" },
-  { key: "whoYouAre", title: "Who You Are" },
-  { key: "howYouLearn", title: "How You Learn" },
-  { key: "whatsWorking", title: "What's Working" },
-  { key: "barriers", title: "Barriers to Learning" },
-  { key: "actionPlan", title: "Action Plan" },
-  { key: "unifiedGuide", title: "Complete Guide" },
-];
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
@@ -733,36 +756,10 @@ export default function ReportPage() {
     );
   }
 
-  const report = generateReport(results, name);
+  const megaReport = generateMegaReport(results, name);
 
-  // Build the ordered list of sections to render
-  // When complete mode is active, skip individual personality/learning sections
-  // to avoid redundancy — the complete sections cross-reference both
-  const orderedSections: SectionDefinition[] = [];
-  if (report.hasComplete) {
-    // Complete mode: 9 focused narrative sections (no redundancy)
-    orderedSections.push(
-      { key: "cover", title: "Profile Summary", isCover: true },
-      { key: "executiveSummary", title: "Executive Summary" },
-      { key: "deepDive", title: "Your Personality" },
-      { key: "learning", title: "How You Learn" },
-      { key: "study", title: "Study Strategies & Exam Preparation" },
-      { key: "strengths", title: "Strengths & Growth Areas" },
-      { key: "barriers", title: "Barriers to Learning" },
-      { key: "actionPlan", title: "Your Action Plan" },
-      { key: "unifiedGuide", title: "Guide for Teachers, Parents & Tutors" },
-    );
-  } else {
-    if (report.hasPersonality) orderedSections.push(...PERSONALITY_SECTIONS);
-    if (report.hasLearning) orderedSections.push(...LEARNING_SECTIONS);
-  }
-
-  const activeSections = orderedSections.filter(
-    (s) => report[s.key as keyof typeof report] !== null
-  );
-
-  const tocItems = activeSections.map((s) => ({
-    id: `section-${s.key}`,
+  const tocItems = megaReport.sections.map((s) => ({
+    id: `section-${s.id}`,
     title: s.title,
   }));
 
@@ -771,7 +768,7 @@ export default function ReportPage() {
   }
 
   async function handleDownloadPDF() {
-    await downloadReportPDF(name || "Student", results!, report as Record<string, unknown>);
+    await downloadReportPDF(name || "Student", results!, megaReport.raw as Record<string, unknown>);
   }
 
   return (
@@ -786,42 +783,21 @@ export default function ReportPage() {
           <h1 className="font-display text-4xl md:text-5xl font-bold text-espresso">
             {name || "Student"}
           </h1>
-          {report.cover && (
-            <p className="text-warm-gray mt-2">
-              {(report.cover as Record<string, unknown>).date as string}
-            </p>
-          )}
+          <p className="text-warm-gray mt-2">{megaReport.date}</p>
         </div>
 
         {/* Sections */}
         <div className="max-w-4xl mx-auto px-6">
-          {activeSections.map((sectionDef, index) => {
-            const data = report[sectionDef.key as keyof typeof report] as Record<
-              string,
-              unknown
-            > | null;
-            if (!data) return null;
-
-            return (
-              <ReportSection
-                key={sectionDef.key}
-                id={`section-${sectionDef.key}`}
-                title={sectionDef.title}
-                isFirst={index === 0}
-              >
-                {sectionDef.isCover ? (
-                  <CoverSection data={data} />
-                ) : sectionDef.key === "actionPlan" ? (
-                  <ActionSheet
-                    data={data as ActionSheetProps["data"]}
-                    studentName={name || "Student"}
-                  />
-                ) : (
-                  <SectionContent data={data} />
-                )}
-              </ReportSection>
-            );
-          })}
+          {megaReport.sections.map((section, index) => (
+            <ReportSection
+              key={section.id}
+              id={`section-${section.id}`}
+              title={section.subtitle ? `${section.title}: ${section.subtitle}` : section.title}
+              isFirst={index === 0}
+            >
+              <MegaSectionBody section={section} studentName={name || "Student"} />
+            </ReportSection>
+          ))}
         </div>
       </main>
     </>

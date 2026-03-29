@@ -39,6 +39,14 @@ import { toDimensionsMap } from './helpers';
  * @param {string} name - Student name
  * @returns {object} All section data for rendering
  */
+export type { MegaReport, MegaSection, MegaSectionContent } from './mega-sections';
+import { consolidateToMegaReport } from './mega-sections';
+
+export function generateMegaReport(results: any, name: string) {
+	const rawReport = generateReport(results, name);
+	return consolidateToMegaReport(rawReport, results, name);
+}
+
 export function generateReport(results: any, name: string) {
 	const hasPersonality = !!results.dimensions && Array.isArray(results.dimensions) && results.dimensions.length > 0;
 	const hasStudy = !!results.studyProfile;

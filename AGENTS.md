@@ -9,7 +9,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ## Current State
 
 - **Last session**: 2026-03-29 — Shipped #14 (PDF rendering fixes: removed wrap={false}, added minWidth constraints, converted root-cause to vertical layout)
-- **Next action**: Ship #15 (Report content depth) or #7 (Payment flow). Both are P0/ready.
+- **Next action**: Working on #15 — Phase 1a: new consolidated generator architecture for 50-page report.
 
 ## Launch Readiness
 
@@ -47,7 +47,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | 12 | Trust signals + social proof | done | P1 | Shipped — Guarantee, Testimonials, enhanced Credibility |
 | 13 | Simplify to Complete Assessment only | done | P0 | Shipped — navbar + mode selection fixed |
 | 14 | PDF rendering bugs — overlapping text, broken wrapping | done | P0 | Shipped 75b673b |
-| 15 | Report content depth — web AND PDF need more substance | ready | P0 | Both web and PDF are thin — generators need deeper narratives, more analysis, more specific advice. Web and PDF must have parity. |
+| 15 | 50-page report — consolidate 23 sections → 12 mega-sections | active | P0 | Phase 1a: new architecture + PDF fixes. See spec: docs/superpowers/specs/2026-03-30-50-page-report-design.md |
 
 ## Ticket Details
 
@@ -191,6 +191,15 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - [x] PDF cover + generic content show benchmark markers via PDFScoreBar
 - [x] `npm run build` exits 0
 - [x] Landing page screenshots updated with new benchmark visuals
+
+### Ticket #15 AC
+- [ ] MegaSection, MegaSectionContent, MegaReport types exported from src/lib/report/mega-sections.ts
+- [ ] consolidateToMegaReport() produces exactly 12 sections
+- [ ] generateMegaReport() exported from src/lib/report/index.ts
+- [ ] Web report page (src/app/report/page.tsx) renders 12 mega-sections via generateMegaReport
+- [ ] PDF renderer (src/components/pdf/ReportPDF.tsx) uses MegaSectionPage for 12 sections
+- [ ] All existing content renders via rawData fallback (no content loss)
+- [ ] `npm run build` exits 0
 
 ### #10 — Landing page real screenshots
 **Goal**: Replace placeholder preview boxes with actual report screenshots.
