@@ -8,25 +8,43 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Current State
 
-- **Last session**: 2026-03-27 — Shipped tickets #4-#6, added "$49 polish" tickets #8-#11, began brainstorming #8 Phase A (ExecSummary, Learning, Study, Guide PDF components). Design approved, spec not yet written.
-- **Next action**: Write spec for ticket #8 Phase A, then plan and implement. Design is already approved — just needs the spec doc written and committed.
+- **Last session**: 2026-03-29 — CEO value audit. Reprioritized tickets for $49 launch readiness. Revenue-blocking items moved to top of queue.
+- **Next action**: Start ticket #10 (landing page screenshots) — the #1 conversion blocker identified in value audit.
+
+## Launch Readiness
+
+**Audit verdict (2026-03-29):** Product content is $49+ quality (cross-reference engine, root-cause analysis, branching action plans). Presentation and sales infrastructure are not ready yet. Must ship #10, #7, #11, #9 before charging $49.
+
+**Revenue blockers (must ship before launch):**
+1. No product screenshots on landing page (#10)
+2. No payment flow (#7)
+3. No visual benchmarks — numbers lack context (#11)
+4. Generic "this student" prose (#9)
+
+**Trust signals needed (no ticket yet):**
+- Social proof / testimonials (even one beta-test quote)
+- Credentials / about section
+- Money-back guarantee copy
+- HEXACO explainer for parents (not researchers)
+- "120 questions — takes 15-20 min" reassurance
 
 ## Active Tickets
 
-| ID | Title | Status | Next Step |
-|----|-------|--------|-----------|
-| 1 | Radar chart + personality archetype | done | Shipped 7f2d68b |
-| 2 | Score percentiles ("higher than 78%") | done | Shipped a9ec8e0 |
-| 3 | Report visual rhythm (callouts, bars, pull quotes) | done | Shipped c99aa68 |
-| 4 | Action sheet tear-out page | done | Shipped via merge to main |
-| 5 | PDF redesign (cover, TOC, charts, page breaks) | done | Shipped via merge to main |
-| 6 | Landing page with value proposition | done | Shipped via merge to main |
-| 7 | Free summary → paywall → full report flow | backlog | Needs Stripe integration decision |
-| 8 | PDF polish phase A — ExecSummary, Learning, Study, Guide | active | Write spec (design approved) |
-| 8b | PDF polish phase B — DeepDive, Strengths, Barriers | ready | Depends on 8 patterns |
-| 9 | Student name personalization in narratives | ready | Weave student name into generated prose across all sections |
-| 10 | Landing page real screenshots | ready | Capture actual report screenshots for the preview carousel |
-| 11 | Visual benchmarks in report sections | ready | Add score scales/comparisons so numbers have context |
+| ID | Title | Status | Priority | Next Step |
+|----|-------|--------|----------|-----------|
+| 1 | Radar chart + personality archetype | done | — | Shipped 7f2d68b |
+| 2 | Score percentiles ("higher than 78%") | done | — | Shipped a9ec8e0 |
+| 3 | Report visual rhythm (callouts, bars, pull quotes) | done | — | Shipped c99aa68 |
+| 4 | Action sheet tear-out page | done | — | Shipped via merge to main |
+| 5 | PDF redesign (cover, TOC, charts, page breaks) | done | — | Shipped via merge to main |
+| 6 | Landing page with value proposition | done | — | Shipped via merge to main |
+| 10 | Landing page real screenshots | active | P0 | Capturing screenshots with Playwright, updating ReportPreview |
+| 7 | Free summary → paywall → full report flow | ready | P0 | No Stripe = no revenue — ship simple Checkout |
+| 11 | Visual benchmarks in report sections | ready | P1 | Makes numbers meaningful — table stakes for paid assessment |
+| 9 | Student name personalization in narratives | ready | P1 | "Sophie" vs "this student" = $10 perceived value for 2hrs work |
+| 8 | PDF polish phase A — ExecSummary, Learning, Study, Guide | ready | P2 | Presentation must match content quality |
+| 8b | PDF polish phase B — DeepDive, Strengths, Barriers | ready | P2 | Depends on #8 patterns |
+| 12 | Trust signals + social proof | backlog | P1 | About section, guarantee, HEXACO explainer, testimonial slot |
 
 ## Ticket Details
 
@@ -135,6 +153,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Capture screenshots of: cover, action plan, personality deep dive, parent guide
 - Add images to ReportPreview component replacing placeholder divs
 - Optimize images for web (compress, correct dimensions)
+
+### Ticket #10 AC
+- [x] 4 PNG screenshot files exist in public/screenshots/ (cover, action-plan, deep-dive, guide)
+- [x] Each screenshot is >10KB (non-empty, real content captured — 183KB-500KB each)
+- [x] ReportPreview component renders <img> tags instead of placeholder text
+- [x] Landing page at /landing loads without errors (HTTP 200)
+- [x] Build passes (npm run build exits 0)
 
 ### #11 — Visual benchmarks in report
 **Goal**: Give scores context so parents understand what the numbers mean.

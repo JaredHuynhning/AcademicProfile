@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 const fadeUp = {
   initial: { opacity: 0, y: 24, filter: "blur(8px)" },
@@ -11,10 +12,10 @@ const fadeUp = {
 };
 
 const tabs = [
-  { id: "cover", label: "Profile Cover", desc: "Personality archetype, radar chart, and dimension scores at a glance" },
-  { id: "action", label: "Action Plan", desc: "\"What To Do Monday\" — numbered priorities, study prescription, and weekly rhythm" },
-  { id: "personality", label: "Personality Deep Dive", desc: "Strengths, growth areas, and practical insights for each dimension" },
-  { id: "guide", label: "Guide for Parents", desc: "Conversation starters, home study tips, and warning signs to watch for" },
+  { id: "cover", label: "Profile Cover", desc: "Personality archetype, radar chart, and dimension scores at a glance", src: "/screenshots/report-cover.png" },
+  { id: "action", label: "Action Plan", desc: "\"What To Do Monday\" — numbered priorities, study prescription, and weekly rhythm", src: "/screenshots/report-action-plan.png" },
+  { id: "personality", label: "Personality Deep Dive", desc: "Strengths, growth areas, and practical insights for each dimension", src: "/screenshots/report-deep-dive.png" },
+  { id: "guide", label: "Guide for Parents", desc: "Conversation starters, home study tips, and warning signs to watch for", src: "/screenshots/report-guide.png" },
 ];
 
 export function ReportPreview() {
@@ -36,11 +37,15 @@ export function ReportPreview() {
         </div>
         <motion.div key={active} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="max-w-2xl mx-auto">
           <div className="bg-warm-gray/5 rounded-2xl border border-warm-gray/10 overflow-hidden">
-            <div className="h-[240px] md:h-[320px] flex items-center justify-center bg-warm-gray/[0.03]">
-              <div className="text-center px-6">
-                <p className="text-warm-gray/40 text-sm">Preview</p>
-                <p className="text-warm-gray/60 text-lg font-semibold mt-1">{current.label}</p>
-              </div>
+            <div className="relative w-full">
+              <Image
+                src={current.src}
+                alt={`${current.label} — sample report section`}
+                width={1280}
+                height={900}
+                className="w-full h-auto"
+                priority={active === "cover"}
+              />
             </div>
             <div className="p-5">
               <p className="text-sm text-warm-gray leading-relaxed">{current.desc}</p>
