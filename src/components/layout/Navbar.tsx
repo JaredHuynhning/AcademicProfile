@@ -20,7 +20,7 @@ export function Navbar() {
             AcademicProfile
           </Link>
           <div className="hidden md:flex items-center gap-4 text-sm text-warm-gray">
-            <Link href="/test" className="hover:text-espresso transition-colors">Assessment</Link>
+            <Link href="/" className="hover:text-espresso transition-colors">Start</Link>
             <Link href="/reports" className="hover:text-espresso transition-colors">Reports</Link>
           </div>
           <button

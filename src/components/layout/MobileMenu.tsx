@@ -9,7 +9,7 @@ interface MobileMenuProps {
 
 const links = [
   { href: "/", label: "Home" },
-  { href: "/test", label: "Assessment" },
+  { href: "/", label: "Start Assessment" },
   { href: "/reports", label: "Reports" },
 ];
 

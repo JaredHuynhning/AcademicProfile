@@ -45,7 +45,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | 8 | PDF polish phase A — ExecSummary, Learning, Study, Guide | done | P2 | Shipped — 4 section-specific PDF renderers |
 | 8b | PDF polish phase B — DeepDive, Strengths, Barriers | done | P2 | Shipped — 3 section-specific PDF renderers |
 | 12 | Trust signals + social proof | done | P1 | Shipped — Guarantee, Testimonials, enhanced Credibility |
-| 13 | Simplify to Complete Assessment only | done | P0 | Shipped — direct to 120-question quiz |
+| 13 | Simplify to Complete Assessment only | done | P0 | Shipped — navbar + mode selection fixed |
 
 ## Ticket Details
 
