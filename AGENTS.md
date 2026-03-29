@@ -47,7 +47,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | 12 | Trust signals + social proof | done | P1 | Shipped — Guarantee, Testimonials, enhanced Credibility |
 | 13 | Simplify to Complete Assessment only | done | P0 | Shipped — navbar + mode selection fixed |
 | 14 | PDF rendering bugs — overlapping text, broken wrapping | ready | P0 | Guide section has overlapping callouts, text running off page |
-| 15 | Report content depth — all sections need more substance | ready | P0 | Every section needs more paragraphs, analysis, specific advice |
+| 15 | Report content depth — web AND PDF need more substance | ready | P0 | Both web and PDF are thin — generators need deeper narratives, more analysis, more specific advice. Web and PDF must have parity. |
 
 ## Ticket Details
 
