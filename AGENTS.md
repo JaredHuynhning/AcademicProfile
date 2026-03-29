@@ -8,8 +8,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Current State
 
-- **Last session**: 2026-03-29 — CEO value audit + shipped 7 tickets (#8, #8b, #9, #10, #11, #12, #13). PDF has rendering bugs and all sections need more content depth.
-- **Next action**: Working on #14 — fix PDF rendering bugs (overlapping text, broken wrapping in Guide and other sections).
+- **Last session**: 2026-03-29 — Shipped #14 (PDF rendering fixes: removed wrap={false}, added minWidth constraints, converted root-cause to vertical layout)
+- **Next action**: Ship #15 (Report content depth) or #7 (Payment flow). Both are P0/ready.
 
 ## Launch Readiness
 
@@ -46,7 +46,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | 8b | PDF polish phase B — DeepDive, Strengths, Barriers | done | P2 | Shipped — 3 section-specific PDF renderers |
 | 12 | Trust signals + social proof | done | P1 | Shipped — Guarantee, Testimonials, enhanced Credibility |
 | 13 | Simplify to Complete Assessment only | done | P0 | Shipped — navbar + mode selection fixed |
-| 14 | PDF rendering bugs — overlapping text, broken wrapping | active | P0 | Guide section has overlapping callouts, text running off page |
+| 14 | PDF rendering bugs — overlapping text, broken wrapping | done | P0 | Shipped 75b673b |
 | 15 | Report content depth — web AND PDF need more substance | ready | P0 | Both web and PDF are thin — generators need deeper narratives, more analysis, more specific advice. Web and PDF must have parity. |
 
 ## Ticket Details
@@ -309,3 +309,15 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 > Resume context: Read this section + git diff + recent session log to reconstruct state.
 <!-- compaction-checkpoint-end -->
+
+### 2026-03-29 (session 3 — PDF rendering fixes)
+- Shipped #14: Applied 9 rendering fixes to src/components/pdf/ReportPDF.tsx
+  - PDFCallout: Removed wrap={false}, standardized lineHeight to 1.4
+  - PDFTwoColumn: Added minWidth: 0 to flex children for proper text wrapping
+  - PDFSubheading: Increased marginBottom from 6 to 10
+  - renderGuide: Removed wrap={false} from support strategy cards
+  - renderDeepDive: Removed wrap={false} from dimension cards
+  - renderStrengths: Removed wrap={false} from strength/weakness blocks
+  - renderBarriers: Removed wrap={false} from root-cause cards, converted horizontal layout to vertical (→ to ↓ arrow)
+  - All fixes tested against design spec; npm run build passes
+  - Commit: 75b673b
