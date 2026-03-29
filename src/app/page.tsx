@@ -2,13 +2,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { GraduationCap, Brain, ChartBar } from "@phosphor-icons/react";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { useQuizStore } from "@/lib/stores/quiz-store";
 import { useReportsStore } from "@/lib/stores/reports-store";
-import type { QuizMode } from "@/lib/types";
 
 const fadeUp = {
   initial: { opacity: 0, y: 24, filter: "blur(8px)" },
@@ -16,12 +14,6 @@ const fadeUp = {
   transition: { duration: 0.8, ease: [0.32, 0.72, 0, 1] as [number, number, number, number] },
   viewport: { once: true, margin: "-50px" },
 };
-
-const assessmentModes: { icon: typeof Brain; title: string; desc: string; color: string; domain: string; mode: QuizMode; time: string }[] = [
-  { icon: Brain, title: "Personality Profile", desc: "6 dimensions of who you are", color: "#8b5cf6", domain: "HEXACO-PI-R", mode: "personality", time: "~10 min" },
-  { icon: GraduationCap, title: "Learning Assessment", desc: "Grit, focus, energy & study style", color: "#22c55e", domain: "Grit-S, ASRS, SVS + Study Approaches", mode: "learning", time: "~10 min" },
-  { icon: ChartBar, title: "Complete Assessment", desc: "Full personality + learning profile", color: "#f43f5e", domain: "All 120 questions, cross-referenced", mode: "complete", time: "~20 min" },
-];
 
 const shake = {
   x: [0, -8, 8, -6, 6, -3, 3, 0],
@@ -37,8 +29,6 @@ export default function HomePage() {
   const [inputDob, setInputDob] = useState(dob);
   const [errors, setErrors] = useState<{ name?: boolean; email?: boolean; dob?: boolean }>({});
   const [shakeKey, setShakeKey] = useState(0);
-  const [showModes, setShowModes] = useState(false);
-
   const validate = () => {
     const nameEmpty = !inputName.trim();
     const emailInvalid = !inputEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inputEmail.trim());
@@ -56,11 +46,7 @@ export default function HomePage() {
     setName(inputName.trim());
     setEmail(inputEmail.trim());
     setDob(inputDob);
-    setShowModes(true);
-  };
-
-  const handleModeSelect = (mode: QuizMode) => {
-    setMode(mode);
+    setMode("complete");
     router.push("/test");
   };
 
@@ -116,56 +102,13 @@ export default function HomePage() {
               {(errors.name || errors.email || errors.dob) && (
                 <p className="text-xs text-red-400 -mt-1">Please fill in all fields to continue</p>
               )}
-              {!showModes && (
-                <Button onClick={handleBegin} icon className="justify-center">
-                  Begin Assessment
-                </Button>
-              )}
+              <Button onClick={handleBegin} icon className="justify-center">
+                Begin Assessment
+              </Button>
             </motion.div>
           </div>
         </Card>
       </motion.div>
-
-      {/* Assessment Mode Selection — shown after form validation */}
-      {showModes && (
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
-        >
-          <p className="text-center text-warm-gray mb-4">Choose your assessment type</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {assessmentModes.map((area, i) => (
-              <motion.div
-                key={area.title}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.1 * i }}
-              >
-                <button onClick={() => handleModeSelect(area.mode)} className="w-full text-left">
-                  <Card
-                    className="p-5 cursor-pointer hover:shadow-lg transition-shadow"
-                    outerClassName="hover:scale-[1.01] transition-transform duration-500"
-                  >
-                    <div className="flex items-center gap-3 mb-3">
-                      <div
-                        className="w-10 h-10 rounded-xl flex items-center justify-center"
-                        style={{ backgroundColor: `${area.color}15`, color: area.color }}
-                      >
-                        <area.icon size={22} weight="duotone" />
-                      </div>
-                      <Badge color={area.color}>{area.time}</Badge>
-                    </div>
-                    <h3 className="font-semibold text-espresso">{area.title}</h3>
-                    <p className="text-sm text-warm-gray mt-1">{area.desc}</p>
-                    <p className="text-[10px] text-warm-gray/60 mt-2 uppercase tracking-wider">{area.domain}</p>
-                  </Card>
-                </button>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      )}
 
       {/* Saved Reports */}
       {reports.length > 0 && (

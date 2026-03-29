@@ -45,6 +45,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | 8 | PDF polish phase A — ExecSummary, Learning, Study, Guide | done | P2 | Shipped — 4 section-specific PDF renderers |
 | 8b | PDF polish phase B — DeepDive, Strengths, Barriers | done | P2 | Shipped — 3 section-specific PDF renderers |
 | 12 | Trust signals + social proof | done | P1 | Shipped — Guarantee, Testimonials, enhanced Credibility |
+| 13 | Simplify to Complete Assessment only | done | P0 | Shipped — direct to 120-question quiz |
 
 ## Ticket Details
 
@@ -145,6 +146,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Replace "your student" / "the student" with first name in key narrative paragraphs
 - Cover page already uses name; extend to section narratives, action plan, guide sections
 - Keep it natural — not every sentence, just key moments ("Sophie's high extraversion...")
+
+### Ticket #13 AC
+- [x] Only Complete Assessment mode — no personality-only or learning-only options
+- [x] Begin Assessment goes straight to 120-question quiz (no mode selection step)
+- [x] `npm run build` exits 0
 
 ### Ticket #12 AC
 - [x] Landing page has a Guarantee section with money-back guarantee copy
