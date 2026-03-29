@@ -245,13 +245,24 @@ export function consolidateToMegaReport(
 
 	// 12. Appendix
 	const dateStr = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+	const scoreTable = scoreSummary.map(s => `${s.dim}: ${s.score.toFixed(1)}/5 (${s.percentile}th percentile, ${s.label})`).join('. ');
 	sections.push({
 		id: 'appendix', title: 'Appendix', icon: '📎',
 		content: {
 			...emptyContent(),
 			narrative: [
-				`This report was generated on ${dateStr} based on ${studentName}'s responses to 120 self-report questions covering personality (HEXACO-PI-R) and academic learning patterns.`,
-				'The HEXACO model measures six broad dimensions: Honesty-Humility, Emotionality, Extraversion, Agreeableness, Conscientiousness, and Openness to Experience. Each dimension contains four facets, measured on a 1-5 scale.',
+				'\n### About This Report',
+				`This report was generated on ${dateStr} based on ${studentName}'s responses to 120 self-report questions. The assessment covers two domains: personality (60 questions using the HEXACO-PI-R framework) and academic learning patterns (60 questions covering study approaches, motivation, self-regulation, grit, focus, subject fit, teacher preference, and exam barriers).`,
+				'\n### The HEXACO Model',
+				'The HEXACO model of personality is a research-validated framework developed by Ashton and Lee (2004, 2007) that measures six broad dimensions of personality. It extends the well-known Big Five model by adding the Honesty-Humility dimension, which captures sincerity, fairness, greed avoidance, and modesty. Each dimension contains four facets, measured on a 1-5 scale where 3.0 represents the population average.',
+				'The HEXACO model has been validated across 12+ languages and cultures, with population norms established through large-scale studies. The percentile rankings in this report are based on these norms, meaning a score at the 75th percentile indicates the student scores higher than approximately 75% of the general population on that dimension.',
+				'\n### Score Summary',
+				scoreTable || 'Scores not available.',
+				'\n### Methodology',
+				'All personality scores are self-reported. Self-report measures are the gold standard for personality assessment because personality traits are internal states that the individual has the most direct access to. However, self-report can be influenced by social desirability (answering how you think you "should" rather than how you actually are) and self-knowledge (some teenagers are still developing self-awareness). For this reason, the report emphasises patterns and trends rather than treating any single score as definitive.',
+				'The cross-reference engine in this report maps personality traits to academic outcomes using evidence-based rules derived from published research on personality and academic achievement. These are correlational patterns, not causal certainties — personality predicts tendencies, not guarantees.',
+				'\n### Recommended Reading',
+				'For parents who want to understand more about personality and academic achievement: "Quiet" by Susan Cain (introversion in education), "Grit" by Angela Duckworth (persistence and long-term goals), "Mindset" by Carol Dweck (growth vs fixed mindset), and "Why We Sleep" by Matthew Walker (the critical role of sleep in learning).',
 			],
 		},
 		rawData: {},

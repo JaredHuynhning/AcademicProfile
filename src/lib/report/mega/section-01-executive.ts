@@ -90,9 +90,26 @@ export function generateExecutiveSummaryMega(
 		}
 	}
 
-	// Para 4: What this report covers
+	// Para 4: Score overview
+	const aboveAvg = dimScores.filter(d => d.score >= 3.5).map(d => DIM_NAMES[d.key]);
+	const belowAvg = dimScores.filter(d => d.score < 2.5).map(d => DIM_NAMES[d.key]);
+	if (aboveAvg.length > 0 || belowAvg.length > 0) {
+		const parts: string[] = [];
+		if (aboveAvg.length > 0) parts.push(`scoring above average on ${aboveAvg.join(', ')}`);
+		if (belowAvg.length > 0) parts.push(`with development areas in ${belowAvg.join(', ')}`);
+		narrative.push(
+			`Across the six HEXACO dimensions, ${studentName}'s profile is distinctive — ${parts.join(', ')}. These aren't labels or limitations. They are starting points for understanding how ${studentName} naturally approaches learning, relationships, and challenge. The strategies throughout this report are designed to leverage what's strong and support what's developing.`
+		);
+	}
+
+	// Para 5: How to use this report
 	narrative.push(
 		`This report is structured in 12 sections covering every aspect of ${studentName}'s academic profile. Section 2 provides a deep dive into all six personality dimensions with research backing. Sections 3-5 cover learning style, academic drive, and study strategies. Section 6 identifies strengths to leverage, while Section 7 maps barriers and their root causes. Sections 8-9 cover social dynamics and subject fit. Section 10 provides tailored guidance for teachers, parents, and tutors. Section 11 is the action plan — specific steps to implement starting this week.`
+	);
+
+	// Para 6: How to read
+	narrative.push(
+		`For parents reading this report: you don't need to read every section cover-to-cover. Start with this Executive Summary for the big picture, then jump to Section 10 (Teacher & Parent Guide) for specific strategies you can implement at home. Section 11 (Action Plan) gives you the priority order. The deep analysis in Sections 2-9 provides the evidence behind each recommendation — read these when you want to understand the "why" behind a strategy.`
 	);
 
 	// Score summary findings

@@ -39,7 +39,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | 5 | PDF redesign (cover, TOC, charts, page breaks) | done | — | Shipped via merge to main |
 | 6 | Landing page with value proposition | done | — | Shipped via merge to main |
 | 10 | Landing page real screenshots | done | P0 | Shipped a81f343 |
-| 7 | Free summary → paywall → full report flow | ready | P0 | No Stripe = no revenue — ship simple Checkout |
+| 7 | Free summary → paywall → full report flow | backlog | P0 | Deferred — no payment integration for now |
 | 11 | Visual benchmarks in report sections | done | P1 | Shipped 43bc117 |
 | 9 | Student name personalization in narratives | done | P1 | Shipped cb2416d |
 | 8 | PDF polish phase A — ExecSummary, Learning, Study, Guide | done | P2 | Shipped — 4 section-specific PDF renderers |
@@ -48,6 +48,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | 13 | Simplify to Complete Assessment only | done | P0 | Shipped — navbar + mode selection fixed |
 | 14 | PDF rendering bugs — overlapping text, broken wrapping | done | P0 | Shipped 75b673b |
 | 15 | 50-page report — consolidate 23 sections → 12 mega-sections | done | P0 | Shipped: 12 mega-sections, 11 deep generators, 24-page PDF, ~10K words |
+| 16 | Deepen report to 50 pages — expand all generators | active | P0 | Currently 24 PDF pages / ~10K words. Need ~15K words to hit 50 pages. |
 
 ## Ticket Details
 
@@ -200,6 +201,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - [ ] PDF renderer (src/components/pdf/ReportPDF.tsx) uses MegaSectionPage for 12 sections
 - [ ] All existing content renders via rawData fallback (no content loss)
 - [ ] `npm run build` exits 0
+
+### Ticket #16 AC
+- [ ] PDF output is 40+ pages (measured via page count)
+- [ ] Web report word count is 14,000+ words
+- [ ] Every mega-section generates at least 500 words regardless of score pattern
+- [ ] `npm run build` exits 0
+- [ ] Zero runtime errors when completing a quiz and viewing the report
 
 ### #10 — Landing page real screenshots
 **Goal**: Replace placeholder preview boxes with actual report screenshots.

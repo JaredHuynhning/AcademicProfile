@@ -32,6 +32,10 @@ export function generateSocialDynamicsMega(
 		`Academic success doesn't happen in isolation. How ${studentName} interacts with classmates, collaborates on projects, handles conflict, and builds relationships all affect their learning outcomes. This section maps their social patterns based on the personality traits that drive interpersonal behaviour.`
 	);
 
+	narrative.push(
+		`Research on social learning shows that peer interaction accounts for approximately 20% of academic learning in secondary school (Hattie, 2009). Students who collaborate effectively don't just learn from teachers — they learn from each other through discussion, debate, explanation, and shared problem-solving. Understanding ${studentName}'s social style is essential for optimising this peer learning channel.`
+	);
+
 	// ─── Collaboration Style ─────────────────────────────────────────────────────
 	narrative.push('\n### Collaboration Style');
 

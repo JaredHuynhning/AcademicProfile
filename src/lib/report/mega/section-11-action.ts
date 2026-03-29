@@ -29,6 +29,14 @@ export function generateActionPlanMega(
 		`Everything in the preceding 10 sections leads to this: specific, actionable steps ${studentName} can take starting this week. These aren't aspirational goals — they're concrete changes calibrated to ${studentName}'s personality profile. Start with Action 1. Don't try to implement everything at once.`
 	);
 
+	narrative.push(
+		`Research on behaviour change shows that the most effective interventions share three features: they are specific (not "study more" but "study maths for 25 minutes at 4pm"), they are small enough to feel achievable, and they include a trigger that initiates the behaviour automatically (Fogg, 2019). Every action below is designed with these principles in mind.`
+	);
+
+	narrative.push(
+		`The order matters. Actions are ranked by expected impact for ${studentName}'s specific personality profile. The highest-impact change comes first because early wins build momentum, and momentum sustains effort through the harder changes that follow. Do not skip ahead — each action builds the foundation for the next.`
+	);
+
 	// ─── Priority Actions ────────────────────────────────────────────────────────
 	narrative.push('\n### Priority Actions');
 	let priority = 1;
@@ -85,27 +93,59 @@ export function generateActionPlanMega(
 		priority++;
 	}
 
-	// Universal high-impact action
+	// Universal high-impact actions (always generated)
 	const universalAction = `Start each study session with active recall: close your notes, write everything you remember about the topic, then check. This 5-minute exercise is the single most effective learning technique available — more powerful than re-reading, highlighting, or summarising combined.`;
 	actions.push({ title: 'Active Recall First', description: universalAction, priority });
 	narrative.push(`**Action ${priority}: Active Recall First.** ${universalAction}`);
+	priority++;
+
+	const sleepAction = `Protect your sleep. Research shows that sleep is when the brain consolidates learning — students who get 8+ hours retain 40% more than those who get 6 hours (Walker, 2017). Set a non-negotiable bedtime and a "screens off" time 30 minutes before. This single change improves memory, reduces anxiety, and increases next-day focus more than any study technique.`;
+	actions.push({ title: 'Protect Your Sleep', description: sleepAction, priority });
+	narrative.push(`**Action ${priority}: Protect Your Sleep.** ${sleepAction}`);
+	priority++;
+
+	const reviewAction = `Implement a weekly review ritual. Every Sunday evening, spend 20 minutes on three questions: (1) What did I learn this week that I want to remember? (2) What's due next week? (3) What's my one priority for Monday? Write the answers down. This habit prevents the "Sunday night panic" and ensures ${studentName} starts each week with clarity rather than chaos.`;
+	actions.push({ title: 'Weekly Review Ritual', description: reviewAction, priority });
+	narrative.push(`**Action ${priority}: Weekly Review Ritual.** ${reviewAction}`);
+	priority++;
+
+	const movementAction = `Add movement before study. A 10-minute walk, stretching routine, or quick exercise session before sitting down to study increases blood flow to the brain and improves focus for the subsequent 60-90 minutes (Hillman et al., 2008). This is not about fitness — it's about priming the brain for learning. Even standing up and doing 20 jumping jacks counts.`;
+	actions.push({ title: 'Movement Before Study', description: movementAction, priority });
+	narrative.push(`**Action ${priority}: Movement Before Study.** ${movementAction}`);
 
 	// ─── 30/60/90 Day Plan ───────────────────────────────────────────────────────
 	narrative.push('\n### 30/60/90 Day Plan');
 
 	narrative.push('\n#### Days 1-30: Quick Wins');
 	narrative.push(
-		`Focus on Actions 1 and 2 only. The goal is establishing one new habit. Don't add more until these feel automatic. ${cScore < 2.5 ? 'The study station and planner are the foundation — everything else builds on top.' : eScore >= 3.5 ? 'The anxiety toolkit should be practised daily, not just before exams — it takes 3 weeks to become effective.' : 'Pick whichever action feels most impactful and commit to it for 30 consecutive days.'}`
+		`Focus on Actions 1 and 2 only. The goal is establishing one new habit — not transforming everything overnight. Research on habit formation (Lally et al., 2010) shows that new behaviours take an average of 66 days to become automatic, but the first 30 days are where most people quit. ${cScore < 2.5 ? 'The study station and planner are the foundation — everything else builds on top.' : eScore >= 3.5 ? 'The anxiety toolkit should be practised daily, not just before exams — it takes 3 weeks to become effective.' : 'Pick whichever action feels most impactful and commit to it for 30 consecutive days.'}`
+	);
+	narrative.push(
+		`During this first month, ${studentName}'s primary success metric is consistency, not perfection. A 15-minute study session that happens every day is infinitely more valuable than a 3-hour session that happens once. Track the streak — how many consecutive days has ${studentName} completed the action? If the streak breaks, restart it the next day without guilt. The goal is to build the habit muscle, not to achieve immediate academic results.`
 	);
 
 	narrative.push('\n#### Days 31-60: Build Momentum');
 	narrative.push(
-		`Add Actions 3 and 4. By now, the first habits should be established. Extend study sessions by 10-15 minutes. Start using active recall for every study session. ${cScore < 2.5 ? 'If the planner habit has stuck, upgrade to a weekly review: every Sunday, assess what worked and what didn\'t.' : 'Begin tracking which study methods produce the best retention and double down on those.'}`
+		`Add Actions 3 and 4. By now, the first habits should be established — they should feel less effortful and more automatic. Extend study sessions by 10-15 minutes. Start using active recall for every study session. ${cScore < 2.5 ? 'If the planner habit has stuck, upgrade to a weekly review: every Sunday, assess what worked and what didn\'t.' : 'Begin tracking which study methods produce the best retention and double down on those.'}`
+	);
+	narrative.push(
+		`This is also the time to start measuring results. Is ${studentName} feeling more prepared? Are teachers noticing a change? Are grades or feedback shifting? If not, the interventions may need adjustment — not abandonment. Check whether the actions are being done consistently before concluding they don't work. Most "failed" interventions were actually "abandoned" interventions.`
 	);
 
 	narrative.push('\n#### Days 61-90: Consolidate');
 	narrative.push(
 		`Implement remaining actions. Review progress on the first actions — are they still happening? If any habits have slipped, restart them before adding new ones. By day 90, ${studentName} should have: ${cScore < 2.5 ? 'a consistent study routine, a functional planner, and at least one active recall technique.' : eScore >= 3.5 ? 'a reliable anxiety management routine, a structured exam preparation process, and measurably reduced stress.' : 'a refined study system that plays to their personality strengths and compensates for their challenges.'}`
+	);
+	narrative.push(
+		`At the 90-day mark, conduct a formal review with ${studentName}. Compare academic performance, study habits, and subjective experience to the baseline described in this report. Celebrate improvements — even small ones. Identify areas that still need work and set the next 90-day cycle. This iterative approach of assess → intervene → review → adjust is how lasting academic transformation happens.`
+	);
+
+	narrative.push('\n#### Beyond 90 Days: Long-Term Development');
+	narrative.push(
+		`Personality develops throughout adolescence. The traits measured in this report are not fixed — they are tendencies that strengthen or soften with experience, environment, and deliberate effort. Conscientiousness, in particular, shows the largest developmental change of any personality dimension between ages 15 and 25. The strategies in this report are not just about the next exam — they are about building the academic character that will serve ${studentName} through university and beyond.`
+	);
+	narrative.push(
+		`Consider re-taking this assessment in 6-12 months to track personality development and recalibrate strategies. As ${studentName} grows, their profile will evolve, and the recommendations should evolve with it.`
 	);
 
 	// ─── Weekly Rhythm ───────────────────────────────────────────────────────────
