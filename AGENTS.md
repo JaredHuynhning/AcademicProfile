@@ -43,7 +43,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | 11 | Visual benchmarks in report sections | done | P1 | Shipped 43bc117 |
 | 9 | Student name personalization in narratives | done | P1 | Shipped cb2416d |
 | 8 | PDF polish phase A — ExecSummary, Learning, Study, Guide | done | P2 | Shipped — 4 section-specific PDF renderers |
-| 8b | PDF polish phase B — DeepDive, Strengths, Barriers | ready | P2 | Depends on #8 patterns |
+| 8b | PDF polish phase B — DeepDive, Strengths, Barriers | done | P2 | Shipped — 3 section-specific PDF renderers |
 | 12 | Trust signals + social proof | backlog | P1 | About section, guarantee, HEXACO explainer, testimonial slot |
 
 ## Ticket Details
@@ -146,6 +146,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Cover page already uses name; extend to section narratives, action plan, guide sections
 - Keep it natural — not every sentence, just key moments ("Sophie's high extraversion...")
 
+### Ticket #8b AC
+- [x] renderDeepDive renders 6 dimension cards with ScoreBars, facet insights, and learning callouts
+- [x] renderStrengths renders strengths/weaknesses with two-column layout and growth mindset callout
+- [x] renderBarriers renders root cause chains, misdiagnosis two-column, cycles, and priority ranking
+- [x] All 3 sections wired into CUSTOM_SECTION_RENDERERS (deepDive, strengths, barriers)
+- [x] `npm run build` exits 0
+
 ### Ticket #8 AC
 - [x] PDFCallout, PDFTwoColumn, PDFSubheading helper components exist in ReportPDF.tsx
 - [x] renderExecSummary renders archetype + narrative + two-column strength/barrier + action callout
@@ -195,6 +202,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Recently Completed
 
+- [2026-03-29] #8b PDF polish B — 3 section-specific renderers (DeepDive, Strengths, Barriers) with dimension cards, two-column strength/weakness, root cause chains, misdiagnosis visualization
 - [2026-03-29] #8 PDF polish A — 4 section-specific renderers (ExecSummary, Learning, Study, Guide) with callouts, two-column layouts, score bars
 - [2026-03-29] #9 Name personalization — "Sophie" replaces "this student" in 7 section generators (62 occurrences)
 - [2026-03-29] #11 Visual benchmarks — interpretiveLabel(), ScoreBar benchmark line, PDFScoreBar, updated screenshots

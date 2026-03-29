@@ -638,12 +638,211 @@ function renderGuide(data: Record<string, unknown>): React.ReactElement[] {
 
 // ─── End Section-Specific Renderers ──────────────────────────────────────────
 
+function renderDeepDive(data: Record<string, unknown>): React.ReactElement[] {
+  const narrative = typeof data.narrative === "string" ? data.narrative : null;
+  const dimensions = data.dimensions as {
+    key?: string; name?: string; shortName?: string; score?: string; rawScore?: number;
+    level?: string; interpretLabel?: string; color?: string; insight?: string;
+    facetInsights?: ({ name?: string; level?: string; text?: string } | null)[];
+    learningCallout?: { title?: string; text?: string };
+  }[] | null;
+
+  const elements: React.ReactElement[] = [];
+
+  if (narrative) {
+    narrative.split(/\n\n/).filter(Boolean).forEach((para, i) => {
+      elements.push(<Text key={`n${i}`} style={styles.body}>{para.trim()}</Text>);
+    });
+  }
+
+  if (Array.isArray(dimensions)) {
+    dimensions.forEach((dim, i) => {
+      elements.push(
+        <View key={`d${i}`} style={[styles.card, { borderLeftWidth: 3, borderLeftColor: dim.color || ESPRESSO }]} wrap={false}>
+          <View style={{ flexDirection: "row" as const, justifyContent: "space-between" as const, alignItems: "center" as const, marginBottom: 4 }}>
+            <Text style={{ fontSize: 11, fontWeight: "bold", color: dim.color || ESPRESSO }}>{dim.name}</Text>
+            <Text style={{ fontSize: 9, color: WARM_GRAY }}>{dim.score}/5 — {dim.level}</Text>
+          </View>
+          {dim.rawScore != null && dim.color && (
+            <PDFScoreBar score={dim.rawScore} color={dim.color} showBenchmark label={dim.interpretLabel} />
+          )}
+          {dim.insight && <Text style={[styles.body, { marginTop: 4 }]}>{dim.insight}</Text>}
+          {Array.isArray(dim.facetInsights) && dim.facetInsights.filter(Boolean).length > 0 && (
+            <View style={{ marginTop: 4 }}>
+              {dim.facetInsights.filter(Boolean).map((f, j) => f && (
+                <View key={j} style={{ marginBottom: 3 }}>
+                  <Text style={{ fontSize: 8, fontWeight: "bold", color: ESPRESSO }}>{f.name} ({f.level})</Text>
+                  {f.text && <Text style={{ fontSize: 8, color: "#4a3f2f", lineHeight: 1.4 }}>{f.text}</Text>}
+                </View>
+              ))}
+            </View>
+          )}
+          {dim.learningCallout?.text && (
+            <PDFCallout text={dim.learningCallout.text} color={dim.color || WARM_GRAY} title={dim.learningCallout.title} />
+          )}
+        </View>
+      );
+    });
+  }
+
+  return elements;
+}
+
+function renderStrengths(data: Record<string, unknown>): React.ReactElement[] {
+  const narrative = typeof data.narrative === "string" ? data.narrative : null;
+  const dimensions = data.dimensions as {
+    key?: string; name?: string; shortName?: string; color?: string; score?: string;
+    strengths?: { name?: string; score?: string; rawScore?: number; interpretLabel?: string; analysis?: string; leverageTip?: string }[];
+    weaknesses?: { name?: string; score?: string; rawScore?: number; interpretLabel?: string; challenge?: string; actionTip?: string }[];
+    whatToDo?: string;
+  }[] | null;
+  const growthMindset = data.growthMindset as { message?: string; keyPrinciple?: string; actionStep?: string } | null;
+
+  const elements: React.ReactElement[] = [];
+
+  if (narrative) {
+    narrative.split(/\n\n/).filter(Boolean).forEach((para, i) => {
+      elements.push(<Text key={`n${i}`} style={styles.body}>{para.trim()}</Text>);
+    });
+  }
+
+  if (Array.isArray(dimensions)) {
+    dimensions.forEach((dim, i) => {
+      const hasContent = (dim.strengths && dim.strengths.length > 0) || (dim.weaknesses && dim.weaknesses.length > 0);
+      if (!hasContent) return;
+
+      elements.push(
+        <View key={`d${i}`} style={{ marginBottom: 10 }} wrap={false}>
+          <Text style={{ fontSize: 10, fontWeight: "bold", color: dim.color || ESPRESSO, marginBottom: 4 }}>{dim.name}</Text>
+          <PDFTwoColumn
+            left={
+              <View>
+                <Text style={{ fontSize: 8, color: "#22c55e", fontWeight: "bold", marginBottom: 3 }}>Strengths</Text>
+                {(dim.strengths || []).map((s, j) => (
+                  <View key={j} style={{ marginBottom: 3 }}>
+                    <Text style={{ fontSize: 8, fontWeight: "bold", color: ESPRESSO }}>{s.name} ({s.score})</Text>
+                    {s.analysis && <Text style={{ fontSize: 7, color: "#4a3f2f", lineHeight: 1.4 }}>{s.analysis}</Text>}
+                  </View>
+                ))}
+              </View>
+            }
+            right={
+              <View>
+                <Text style={{ fontSize: 8, color: "#f59e0b", fontWeight: "bold", marginBottom: 3 }}>Growth Areas</Text>
+                {(dim.weaknesses || []).map((w, j) => (
+                  <View key={j} style={{ marginBottom: 3 }}>
+                    <Text style={{ fontSize: 8, fontWeight: "bold", color: ESPRESSO }}>{w.name} ({w.score})</Text>
+                    {w.challenge && <Text style={{ fontSize: 7, color: "#4a3f2f", lineHeight: 1.4 }}>{w.challenge}</Text>}
+                  </View>
+                ))}
+              </View>
+            }
+          />
+          {dim.whatToDo && <PDFCallout text={dim.whatToDo} color={dim.color || WARM_GRAY} title="What to focus on" />}
+        </View>
+      );
+    });
+  }
+
+  if (growthMindset) {
+    const gmText = [growthMindset.message, growthMindset.keyPrinciple, growthMindset.actionStep].filter(Boolean).join(" ");
+    if (gmText) elements.push(<PDFCallout key="gm" text={gmText} color="#22c55e" title="Growth Mindset" />);
+  }
+
+  return elements;
+}
+
+function renderBarriers(data: Record<string, unknown>): React.ReactElement[] {
+  const narrative = typeof data.narrative === "string" ? data.narrative : null;
+  const rootCauseChains = data.rootCauseChains as { personalityRoot?: string; academicSymptom?: string; visibleBehaviour?: string; description?: string; impact?: number }[] | null;
+  const cycles = data.cycles as { title?: string; narrative?: string }[] | null;
+  const misdiagnoses = data.misdiagnoses as { misconception?: string; realCause?: string; description?: string }[] | null;
+  const priorityRanking = data.priorityRanking as { rank?: number; barrier?: string }[] | null;
+  const fallbackMessage = typeof data.fallbackMessage === "string" ? data.fallbackMessage : null;
+
+  const elements: React.ReactElement[] = [];
+
+  if (narrative) {
+    narrative.split(/\n\n/).filter(Boolean).forEach((para, i) => {
+      elements.push(<Text key={`n${i}`} style={styles.body}>{para.trim()}</Text>);
+    });
+  }
+
+  if (fallbackMessage && (!rootCauseChains || rootCauseChains.length === 0)) {
+    elements.push(<PDFCallout key="fb" text={fallbackMessage} color="#22c55e" title="Good News" />);
+    return elements;
+  }
+
+  if (Array.isArray(rootCauseChains) && rootCauseChains.length > 0) {
+    elements.push(<PDFSubheading key="rch" text="Root Cause Analysis" />);
+    rootCauseChains.forEach((rc, i) => {
+      elements.push(
+        <View key={`rc${i}`} style={[styles.card, { borderLeftWidth: 3, borderLeftColor: "#f59e0b" }]} wrap={false}>
+          <View style={{ flexDirection: "row" as const, gap: 8, marginBottom: 3 }}>
+            <Text style={{ fontSize: 8, color: "#f59e0b", fontWeight: "bold" }}>Personality: {rc.personalityRoot}</Text>
+            <Text style={{ fontSize: 8, color: WARM_GRAY }}>→</Text>
+            <Text style={{ fontSize: 8, color: "#ef4444", fontWeight: "bold" }}>Symptom: {rc.academicSymptom}</Text>
+          </View>
+          {rc.visibleBehaviour && <Text style={{ fontSize: 8, color: WARM_GRAY, marginBottom: 2 }}>Visible: {rc.visibleBehaviour}</Text>}
+          {rc.description && <Text style={{ fontSize: 8, color: "#4a3f2f", lineHeight: 1.4 }}>{rc.description}</Text>}
+        </View>
+      );
+    });
+  }
+
+  if (Array.isArray(misdiagnoses) && misdiagnoses.length > 0) {
+    elements.push(<PDFSubheading key="mh" text="Common Misdiagnoses" />);
+    misdiagnoses.forEach((m, i) => {
+      elements.push(
+        <PDFTwoColumn key={`m${i}`}
+          left={
+            <View style={[styles.card, { borderLeftWidth: 3, borderLeftColor: "#ef4444" }]}>
+              <Text style={{ fontSize: 8, color: "#ef4444", fontWeight: "bold", marginBottom: 2 }}>Looks Like</Text>
+              <Text style={{ fontSize: 9, color: ESPRESSO }}>{m.misconception}</Text>
+            </View>
+          }
+          right={
+            <View style={[styles.card, { borderLeftWidth: 3, borderLeftColor: "#22c55e" }]}>
+              <Text style={{ fontSize: 8, color: "#22c55e", fontWeight: "bold", marginBottom: 2 }}>Actually Is</Text>
+              <Text style={{ fontSize: 9, color: ESPRESSO }}>{m.realCause}</Text>
+            </View>
+          }
+        />
+      );
+    });
+  }
+
+  if (Array.isArray(cycles) && cycles.length > 0) {
+    elements.push(<PDFSubheading key="cyh" text="Patterns to Watch" />);
+    cycles.forEach((c, i) => {
+      elements.push(<PDFCallout key={`cy${i}`} text={c.narrative || ""} color="#f59e0b" title={c.title} />);
+    });
+  }
+
+  if (Array.isArray(priorityRanking) && priorityRanking.length > 0) {
+    elements.push(<PDFSubheading key="prh" text="Priority Order" />);
+    priorityRanking.forEach((p, i) => {
+      elements.push(
+        <View key={`pr${i}`} style={{ flexDirection: "row" as const, marginBottom: 3 }}>
+          <Text style={{ fontSize: 9, fontWeight: "bold", color: ESPRESSO, width: 20 }}>#{p.rank}</Text>
+          <Text style={{ fontSize: 9, color: "#4a3f2f", flex: 1 }}>{p.barrier}</Text>
+        </View>
+      );
+    });
+  }
+
+  return elements;
+}
+
 const CUSTOM_SECTION_RENDERERS: Record<string, (data: Record<string, unknown>) => React.ReactElement[]> = {
   executiveSummary: renderExecSummary,
   learning: renderLearning,
   study: renderStudy,
   guide: renderGuide,
   unifiedGuide: renderGuide,
+  deepDive: renderDeepDive,
+  strengths: renderStrengths,
+  barriers: renderBarriers,
 };
 
 function formatLabel(key: string): string {
