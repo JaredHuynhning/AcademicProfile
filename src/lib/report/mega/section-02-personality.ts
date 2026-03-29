@@ -229,13 +229,159 @@ function facetNarrative(key: DimKey, facetKey: string, facetName: string, score:
 
 	const dimScenarios = scenarios[key];
 	if (!dimScenarios || !dimScenarios[facetKey]) {
-		return `${studentName} shows a ${descriptor} level of ${facetName} (${score.toFixed(1)}/5, ${pct}th percentile).`;
+		return `**${facetName}** (${score.toFixed(1)}/5, ${pct}th percentile): ${studentName} shows a ${descriptor} level of ${facetName}. This facet influences how they approach academic tasks and social interactions in the classroom.`;
 	}
 
 	const s = dimScenarios[facetKey];
 	const scenario = level === 'high' ? s.high : level === 'low' ? s.low : s.mod;
 
-	return `**${facetName}** (${score.toFixed(1)}/5, ${pct}th percentile): ${scenario}`;
+	// Add academic implication paragraph for each facet
+	const implications = getAcademicImplication(key, facetKey, score, studentName);
+
+	return `**${facetName}** (${score.toFixed(1)}/5, ${pct}th percentile): ${scenario}${implications ? ' ' + implications : ''}`;
+}
+
+function getAcademicImplication(dimKey: DimKey, facetKey: string, score: number, studentName: string): string {
+	const level = classifyLevel(score);
+	const impls: Record<string, Record<string, { high: string; low: string; mod: string }>> = {
+		E: {
+			fearfulness: {
+				high: `In school, ${studentName} may avoid new activities, unfamiliar subjects, or unpredictable situations. Advance preparation and clear expectations for what's coming reduce this anxiety significantly.`,
+				low: `${studentName}'s fearlessness is an advantage for new experiences — new schools, new subjects, new social groups. But ensure they're not dismissing real risks in exam preparation or safety.`,
+				mod: `${studentName} manages uncertainty well enough to try new things without being reckless — a healthy balance for academic exploration.`,
+			},
+			anxiety: {
+				high: `This facet most directly affects exam performance. ${studentName}'s anxiety may cause "blanking" under time pressure — they know the material but can't access it when stressed. Practice exams under realistic conditions build familiarity that reduces this effect. The 4-7-8 breathing method (4 seconds in, 7 hold, 8 out) practised daily becomes an automatic calming response.`,
+				low: `${studentName}'s low anxiety is a genuine exam advantage — they stay clear-headed under pressure. However, ensure this calm isn't masking under-preparation. Students with low anxiety sometimes don't feel the productive nervousness that motivates thorough revision.`,
+				mod: `${studentName} experiences healthy pre-exam anxiety that actually helps performance — enough to motivate preparation without causing impairment. This is the optimal zone.`,
+			},
+			dependence: {
+				high: `${studentName} performs best when they know support is available — even if they don't use it. A weekly check-in provides the emotional safety net that gives them confidence to tackle challenging material independently.`,
+				low: `${studentName}'s independence is a strength for self-directed learning but may prevent them from asking for help when genuinely stuck. Frame help-seeking as strategic: "Top students ask more questions, not fewer."`,
+				mod: `${studentName} balances independence with willingness to seek help — a functional approach that serves most academic demands.`,
+			},
+			sentimentality: {
+				high: `${studentName}'s emotional depth is an academic asset in humanities — literature, history, psychology, ethics. They understand characters and historical figures at a deeper level because they feel what others felt. Channel this into essay writing where emotional insight distinguishes great answers.`,
+				low: `${studentName}'s emotional detachment helps in analytical subjects where objectivity is valued. In humanities, encourage perspective-taking exercises: "What would this person have felt and why?"`,
+				mod: `${studentName} can engage emotionally when needed and detach when objectivity serves better. This emotional flexibility is a versatile academic tool.`,
+			},
+		},
+		X: {
+			social_self_esteem: {
+				high: `This confidence translates directly into academic risk-taking: asking questions, volunteering answers, presenting to the class. ${studentName} is less inhibited by fear of looking foolish, which means they learn from public interactions that other students avoid.`,
+				low: `Low social self-esteem can create a vicious cycle: not participating → not getting feedback → not improving → feeling less confident. Breaking this requires small, low-risk participation opportunities where success is likely.`,
+				mod: `${studentName} has enough social confidence to participate meaningfully in class without seeking attention — a comfortable balance for most learning environments.`,
+			},
+			social_boldness: {
+				high: `${studentName} is natural presenter material. Use this for class presentations, oral assessments, and leading study groups. Their comfort with public attention means these high-anxiety tasks are energy-neutral or even energising for them.`,
+				low: `Public speaking is a significant stressor. Preparation reduces anxiety dramatically: practising in front of a mirror, then one person, then a small group builds confidence gradually. Never spring a presentation without preparation time.`,
+				mod: `${studentName} can handle presentations when prepared but doesn't actively seek them out — standard classroom participation is manageable.`,
+			},
+			sociability: {
+				high: `Build social study into the routine: study groups, peer teaching, discussion-based review. ${studentName} retains information better when they've talked about it. But set clear boundaries — "study group" must include actual studying.`,
+				low: `Protect ${studentName}'s solo study time. Their best learning happens in quiet, focused solitude. Limit required group work to what's genuinely necessary and allow independent preparation before collaboration.`,
+				mod: `${studentName} can switch between collaborative and solo learning as needed — a flexible approach across different classroom formats.`,
+			},
+			liveliness: {
+				high: `${studentName}'s enthusiasm is contagious and lifts the energy of any group they join. Channel this into study groups, tutoring younger students, or leading classroom activities where positive energy enhances learning for everyone.`,
+				low: `${studentName}'s quieter energy is not disengagement — it's a different processing style. They often produce more thoughtful, nuanced work because they process internally before responding.`,
+				mod: `${studentName}'s balanced energy means they engage reliably without being the loudest in the room — a steady presence in varied settings.`,
+			},
+		},
+		A: {
+			forgiveness: {
+				high: `In group projects, ${studentName}'s ability to move past conflicts quickly keeps teams functional. They don't carry grudges from one project to the next, allowing each collaboration to start fresh.`,
+				low: `Past group work conflicts may colour future attitudes toward the same students. When assigning groups, be aware of previous negative experiences. Teaching the "clean slate" principle gradually builds this capacity.`,
+				mod: `${studentName} can move past minor conflicts while learning from significant ones — a practical approach to group dynamics.`,
+			},
+			gentleness: {
+				high: `${studentName}'s kind communication makes them effective peer tutors and study partners. People feel safe asking questions and admitting confusion, creating a positive learning environment.`,
+				low: `${studentName}'s bluntness can be valuable in academic critique — they spot weak arguments and point out errors others are too polite to mention. Coach them to frame critiques constructively.`,
+				mod: `${studentName} balances kindness with honesty — direct enough to give useful feedback, gentle enough that people can hear it.`,
+			},
+			flexibility: {
+				high: `${studentName}'s willingness to compromise makes group work smoother but may mean their best ideas don't surface. Actively solicit their input before group consensus forms.`,
+				low: `${studentName}'s conviction can drive higher-quality group work. But group projects require give-and-take. Frame compromise as a strategic choice, not a weakness.`,
+				mod: `${studentName} knows when to compromise and when to stand firm — a balanced approach that produces good outcomes in most collaborative settings.`,
+			},
+			patience: {
+				high: `${studentName}'s patience is a stabilising force in group work and a significant advantage for long, complex tasks that frustrate less patient students. They can sustain effort through repetitive revision and multi-week projects.`,
+				low: `Frustration tolerance is a learnable skill. Teach ${studentName} to recognise the frustration signal and take a 60-second pause before reacting. Over time, this pause extends naturally.`,
+				mod: `${studentName}'s patience is adequate for most academic demands — they handle reasonable delays and setbacks without significant frustration.`,
+			},
+		},
+		O: {
+			aesthetic_appreciation: {
+				high: `${studentName} learns better when materials are visually appealing. Colour-coded notes, mind maps, infographics, and well-designed presentations all enhance engagement and retention. Invest in visual study tools.`,
+				low: `Minimalist, no-frills study materials work best. Don't waste time decorating notes — ${studentName}'s practical approach means function trumps form every time.`,
+				mod: `${studentName} appreciates visual quality when present but doesn't need it to learn effectively.`,
+			},
+			inquisitiveness: {
+				high: `This is ${studentName}'s academic superpower. Their natural curiosity drives deeper understanding, wider reading, and genuine engagement. The challenge is directing this curiosity productively — toward exam-relevant material during revision, and toward exploration during free time.`,
+				low: `The most effective strategy: relevance connection. Every lesson should answer "Why should I care?" with a specific, honest answer. Finding personal relevance transforms obligation into interest.`,
+				mod: `${studentName} is curious about topics that interest them and practical about topics that don't — a common and functional pattern.`,
+			},
+			creativity: {
+				high: `Open-ended assignments are where ${studentName} shines — projects, essays, presentations, and design tasks showcase their ability to generate original ideas. Structured formats may feel constraining but still need mastering for exams.`,
+				low: `${studentName} excels with clear templates, worked examples, and step-by-step instructions. This is a preference for efficiency that produces reliable, consistent work.`,
+				mod: `${studentName} can be creative when the task calls for it and systematic when it doesn't — a versatile approach across assessment types.`,
+			},
+			unconventionality: {
+				high: `${studentName} may challenge classroom norms — sometimes productively, sometimes disruptively. Channel this into debate, creative writing, or research projects where questioning assumptions is valued.`,
+				low: `${studentName} is comfortable with established methods and clear expectations. They thrive in predictable assessment formats — this reliability is a genuine strength in structured education.`,
+				mod: `${studentName} follows conventions when they make sense and questions them when they don't — a balanced approach to intellectual conformity.`,
+			},
+		},
+		H: {
+			sincerity: {
+				high: `For academic work, this means ${studentName}'s written and verbal contributions will be authentic and well-considered. Teachers can trust that submitted work is genuinely their own and that self-assessments are honest.`,
+				low: `Academically, ${studentName} may present work strategically — focusing on what makes the best impression rather than what represents their genuine understanding. Encourage authentic engagement over performance.`,
+				mod: `In academic settings, ${studentName} strikes a productive balance between presenting their best work and being genuinely reflective about their understanding.`,
+			},
+			fairness: {
+				high: `This strong ethical compass translates directly to academic integrity. ${studentName} is unlikely to plagiarise, cheat on exams, or take unfair advantages — and they may be troubled when they see others doing so.`,
+				low: `In competitive academic environments, monitor for potential shortcuts. ${studentName}'s pragmatism about rules is not inherently problematic, but explicit conversations about academic integrity boundaries are important.`,
+				mod: `${studentName} navigates academic ethics with reasonable judgement — following important rules while questioning those that seem arbitrary.`,
+			},
+			greed_avoidance: {
+				high: `This makes ${studentName} resilient against the common trap of studying "for the grade" rather than understanding. They are more likely to retain information long-term because their learning is driven by genuine interest.`,
+				low: `Use this reward-orientation constructively: set up grade targets with meaningful rewards, create visible progress trackers, and frame achievement as a game to be won.`,
+				mod: `${studentName} has a healthy relationship with rewards — motivated by them without being consumed. This balanced motivational profile works well across most academic contexts.`,
+			},
+			modesty: {
+				high: `In class, ${studentName} may not volunteer answers even when they know them. Encourage them to share their knowledge — their modesty is admirable but shouldn't prevent them from participating in discussions.`,
+				low: `${studentName}'s self-confidence can be channelled into leadership roles — class presentations, mentoring younger students, or leading study groups where their confidence inspires others.`,
+				mod: `${studentName} contributes to discussions without dominating them — a balanced participation style that works well in most classroom settings.`,
+			},
+		},
+		C: {
+			organization: {
+				high: `This organisational strength means ${studentName} rarely loses materials, forgets deadlines, or arrives unprepared. Their filing systems and note-taking are likely among the best in their year group.`,
+				low: `The most impactful immediate intervention: a single dedicated folder for current work, cleared weekly. Organisation builds from small, consistent systems — not from a complete overhaul.`,
+				mod: `${studentName}'s organisation is sufficient for current demands but may need strengthening as workload increases in later years.`,
+			},
+			diligence: {
+				high: `This is the trait that separates consistent achievers from talented underperformers. ${studentName}'s diligence means they complete revision even when bored, finish long-term projects on time, and push through the difficult middle phase of any task.`,
+				low: `The key compensating strategy is making tasks smaller and more frequent. Instead of "revise chapter 5" it's "do 10 practice questions from chapter 5." Smaller bites are easier to swallow.`,
+				mod: `${studentName} can sustain effort on tasks that feel meaningful but may drift on work perceived as pointless. Helping them see the purpose in routine tasks bridges this gap.`,
+			},
+			perfectionism: {
+				high: `Watch for the perfectionism trap: spending 4 hours on a task worth 30 minutes, refusing to submit "imperfect" work, or procrastinating because the standard feels unachievable. Teaching ${studentName} to calibrate effort to task importance is critical.`,
+				low: `${studentName} gets things done quickly and doesn't agonise over details. This efficiency is valuable — but encourage one extra review pass on important submissions. The difference between a 70% and 80% grade is often in the polish.`,
+				mod: `A healthy balance — ${studentName} aims for quality without paralysing themselves with perfectionism. They know when to polish and when to ship.`,
+			},
+			prudence: {
+				high: `${studentName} thinks before acting, which means fewer careless mistakes on exams, fewer impulsive subject choices, and more considered long-term planning. This careful approach is a genuine academic advantage.`,
+				low: `Impulsive decisions in academic contexts — rushing through exam questions, choosing subjects on a whim, starting assignments without reading the brief — can be costly. A simple "read, pause, plan" protocol before any academic task adds the deliberation that doesn't come naturally.`,
+				mod: `${studentName} balances speed with thoughtfulness — careful when it matters, decisive when speed is needed.`,
+			},
+		},
+	};
+
+	const dimImpls = impls[dimKey];
+	if (!dimImpls || !dimImpls[facetKey]) return '';
+	const impl = dimImpls[facetKey];
+	return level === 'high' ? impl.high : level === 'low' ? impl.low : impl.mod;
 }
 
 // ─── Main generator ──────────────────────────────────────────────────────────
