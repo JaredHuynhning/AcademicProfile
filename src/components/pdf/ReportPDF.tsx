@@ -1333,7 +1333,7 @@ interface ReportPDFProps {
 }
 
 function MegaSectionContent({ section }: { section: MegaSection }) {
-  const hasRichNarrative = section.content.narrative.length > 3;
+  const hasRichNarrative = section.content.narrative.length > 2;
 
   // If the section has rich mega-narrative content, render that
   if (hasRichNarrative) {
@@ -1495,11 +1495,17 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
 
       {/* Content: each mega-section gets its own page */}
       {contentSections.map((section, sectionIndex) => {
-        // Action plan gets special treatment
-        if (section.id === 'action-plan' && section.rawData?.actionPlan) {
+        // Action plan: render mega content (rich narrative), not old ActionSheet
+        if (section.id === 'action-plan') {
           return (
-            <Page key={section.id} size="A4" style={styles.page} wrap={false}>
-              <PDFActionSheet data={section.rawData.actionPlan as any} studentName={name || "Student"} />
+            <Page key={section.id} size="A4" style={styles.page} wrap>
+              <View style={styles.sectionHeader} wrap={false} minPresenceAhead={80}>
+                <Text style={styles.sectionEyebrow}>Section {String(sectionIndex + 1).padStart(2, "0")}</Text>
+                <Text style={styles.sectionTitle}>{section.title}</Text>
+                {section.subtitle && <Text style={{ fontSize: 11, color: WARM_GRAY, marginBottom: 8 }}>{section.subtitle}</Text>}
+                <View style={styles.sectionRule} />
+              </View>
+              <MegaSectionContent section={section} />
               <View style={styles.footer} fixed>
                 <Text>{name} — Academic Profile</Text>
                 <Text render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} />
