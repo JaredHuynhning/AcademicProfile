@@ -8,8 +8,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Current State
 
-- **Last session**: 2026-03-30 — Shipped #14 (PDF fixes) + #15 Phases 1-3 (50-page report: 12 mega-sections with deep content generators)
-- **Next action**: #15 Phase 4 (polish: TOC update, running headers, visual testing) then #7 (payment flow).
+- **Last session**: 2026-03-30 — Shipped #14 (PDF fixes) + #15 (12 mega-section architecture, 11 deep content generators, 24-page PDF with ~10K words of research-backed personality analysis)
+- **Next action**: #7 (Free summary → paywall → full report with Stripe Checkout) — the last revenue blocker.
 
 ## Launch Readiness
 
@@ -47,7 +47,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | 12 | Trust signals + social proof | done | P1 | Shipped — Guarantee, Testimonials, enhanced Credibility |
 | 13 | Simplify to Complete Assessment only | done | P0 | Shipped — navbar + mode selection fixed |
 | 14 | PDF rendering bugs — overlapping text, broken wrapping | done | P0 | Shipped 75b673b |
-| 15 | 50-page report — consolidate 23 sections → 12 mega-sections | active | P0 | Phases 1-3 shipped. Phase 4 (polish) remaining. |
+| 15 | 50-page report — consolidate 23 sections → 12 mega-sections | done | P0 | Shipped: 12 mega-sections, 11 deep generators, 24-page PDF, ~10K words |
 
 ## Ticket Details
 
@@ -226,6 +226,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Recently Completed
 
+- [2026-03-30] #15 50-page report — 12 mega-sections with 11 deep generators (personality, learning, character, study, strengths, barriers, social, subject fit, guide, action plan). 24-page PDF, ~10K words.
+- [2026-03-30] #14 PDF rendering fixes — 9 fixes (wrap, minWidth, vertical layout, lineHeight)
 - [2026-03-29] #12 Trust signals — Guarantee (money-back), Testimonials (3 quotes), enhanced Credibility with parent-friendly HEXACO explainer
 - [2026-03-29] #8b PDF polish B — 3 section-specific renderers (DeepDive, Strengths, Barriers) with dimension cards, two-column strength/weakness, root cause chains, misdiagnosis visualization
 - [2026-03-29] #8 PDF polish A — 4 section-specific renderers (ExecSummary, Learning, Study, Guide) with callouts, two-column layouts, score bars
