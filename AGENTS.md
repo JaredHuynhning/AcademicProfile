@@ -8,8 +8,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Current State
 
-- **Last session**: 2026-03-29 — CEO value audit + shipped 4 tickets (#10 screenshots, #11 benchmarks, #9 name personalization, #8 PDF polish A). Reprioritized for $49 launch.
-- **Next action**: Start ticket #7 (Stripe payment flow) — the sole remaining revenue blocker before $49 launch.
+- **Last session**: 2026-03-29 — CEO value audit + shipped 7 tickets (#8, #8b, #9, #10, #11, #12, #13). PDF has rendering bugs and all sections need more content depth.
+- **Next action**: Fix PDF rendering (#14) then deepen content across all report sections (#15). These are the real blockers for $49 value.
 
 ## Launch Readiness
 
@@ -46,6 +46,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | 8b | PDF polish phase B — DeepDive, Strengths, Barriers | done | P2 | Shipped — 3 section-specific PDF renderers |
 | 12 | Trust signals + social proof | done | P1 | Shipped — Guarantee, Testimonials, enhanced Credibility |
 | 13 | Simplify to Complete Assessment only | done | P0 | Shipped — navbar + mode selection fixed |
+| 14 | PDF rendering bugs — overlapping text, broken wrapping | ready | P0 | Guide section has overlapping callouts, text running off page |
+| 15 | Report content depth — all sections need more substance | ready | P0 | Every section needs more paragraphs, analysis, specific advice |
 
 ## Ticket Details
 
