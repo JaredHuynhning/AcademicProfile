@@ -5,6 +5,9 @@
  */
 import { DIM_ORDER, DIM_NAMES, DIM_COLORS, DIM_SHORT, scorePercentile, interpretiveLabel, toDimensionsMap } from './helpers';
 import { generatePersonalityDeepDive } from './mega/section-02-personality';
+import { generateExecutiveSummaryMega } from './mega/section-01-executive';
+import { generateLearningProfileMega } from './mega/section-03-learning';
+import { generateAcademicCharacterMega } from './mega/section-04-character';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -114,9 +117,11 @@ export function consolidateToMegaReport(
 	const cover = r.cover as Record<string, unknown> | null;
 
 	// 1. Cover + Executive Summary
-	sections.push({
-		id: 'cover-summary', title: 'Executive Summary', icon: '📊',
-		content: {
+	const archetype = (exec?.archetype as string) || (cover as any)?.personalityArchetype || 'The Balanced Generalist';
+	const crossRefResult = r._crossRefResult || null;
+	const execContent = dims
+		? generateExecutiveSummaryMega(dims, studentName, archetype, crossRefResult)
+		: {
 			...emptyContent(),
 			narrative: exec?.narrative ? [exec.narrative as string] : [],
 			keyFindings: [
@@ -124,7 +129,10 @@ export function consolidateToMegaReport(
 				...(exec?.topBarrier ? [{ title: 'Top Barrier', text: (exec.topBarrier as any)?.insight || '', type: 'barrier' as const, color: '#f59e0b' }] : []),
 			],
 			actions: exec?.topAction ? [{ title: 'Priority Action', description: exec.topAction as string, priority: 1 }] : [],
-		},
+		};
+	sections.push({
+		id: 'cover-summary', title: 'Executive Summary', icon: '📊',
+		content: execContent,
 		rawData: { executiveSummary: exec, cover, glance: r.glance },
 	});
 
@@ -140,16 +148,22 @@ export function consolidateToMegaReport(
 	});
 
 	// 3. How Your Mind Works
+	const learningContent = dims
+		? generateLearningProfileMega(dims, results.studyProfile || null, results.learnerProfile || null, studentName)
+		: { ...emptyContent(), narrative: pickNarratives(r.learning, r.howYouLearn) };
 	sections.push({
 		id: 'learning-profile', title: 'How Your Mind Works', subtitle: 'Learning Profile', icon: '💡',
-		content: { ...emptyContent(), narrative: pickNarratives(r.learning, r.howYouLearn) },
+		content: learningContent,
 		rawData: { learning: r.learning, howYouLearn: r.howYouLearn, studyProfile: r.studyProfile },
 	});
 
 	// 4. Academic Character & Drive
+	const charContent = dims
+		? generateAcademicCharacterMega(dims, results.studyProfile || null, results.learnerProfile || null, studentName)
+		: { ...emptyContent(), narrative: pickNarratives(r.academicCharacter, r.drives) };
 	sections.push({
 		id: 'academic-character', title: 'Academic Character & Drive', icon: '🔥',
-		content: { ...emptyContent(), narrative: pickNarratives(r.academicCharacter, r.drives) },
+		content: charContent,
 		rawData: { academicCharacter: r.academicCharacter, drives: r.drives },
 	});
 
@@ -215,8 +229,6 @@ export function consolidateToMegaReport(
 		},
 		rawData: {},
 	});
-
-	const archetype = (exec?.archetype as string) || (cover as any)?.personalityArchetype || 'The Balanced Generalist';
 
 	return {
 		studentName, date: dateStr, archetype, sections, radarData, scoreSummary, raw: rawReport,
