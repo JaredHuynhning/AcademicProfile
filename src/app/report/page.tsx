@@ -709,9 +709,24 @@ function MegaSectionBody({ section, studentName }: { section: MegaSection; stude
     <div className="space-y-4">
       {section.content.narrative.length > 0 && (
         <div className="space-y-4 mb-6">
-          {section.content.narrative.map((para, i) => (
-            <p key={`n${i}`} className="text-espresso/80 leading-relaxed text-[15px]">{clean(para)}</p>
-          ))}
+          {section.content.narrative.map((para, i) => {
+            if (para.startsWith('\n### ')) {
+              return <h3 key={`n${i}`} className="font-display text-xl font-bold text-espresso mt-10 mb-2">{para.replace(/^[\n#]+\s*/, '')}</h3>;
+            }
+            if (para.startsWith('\n#### ')) {
+              return <h4 key={`n${i}`} className="font-display text-base font-semibold text-espresso mt-6 mb-1">{para.replace(/^[\n#]+\s*/, '')}</h4>;
+            }
+            // Handle **bold** inline
+            if (para.includes('**')) {
+              const parts = para.split(/\*\*(.*?)\*\*/g);
+              return (
+                <p key={`n${i}`} className="text-espresso/80 leading-relaxed text-[15px]">
+                  {parts.map((part, j) => j % 2 === 1 ? <strong key={j} className="text-espresso font-semibold">{part}</strong> : part)}
+                </p>
+              );
+            }
+            return <p key={`n${i}`} className="text-espresso/80 leading-relaxed text-[15px]">{clean(para)}</p>;
+          })}
         </div>
       )}
       {section.content.keyFindings.map((f, i) => (

@@ -1333,39 +1333,79 @@ interface ReportPDFProps {
 }
 
 function MegaSectionContent({ section }: { section: MegaSection }) {
-  const elements: React.ReactElement[] = [];
+  const hasRichNarrative = section.content.narrative.length > 3;
 
-  // Try custom renderers for rawData keys
+  // If the section has rich mega-narrative content, render that
+  if (hasRichNarrative) {
+    const elements: React.ReactElement[] = [];
+
+    section.content.narrative.forEach((para, i) => {
+      if (para.startsWith('\n### ')) {
+        elements.push(
+          <View key={`h3-${i}`} style={{ marginTop: 16, marginBottom: 8 }}>
+            <Text style={{ fontSize: 14, fontWeight: 'bold', color: ESPRESSO }}>{para.replace(/^[\n#]+\s*/, '')}</Text>
+            <View style={{ width: 30, height: 2, backgroundColor: ESPRESSO, marginTop: 3 }} />
+          </View>
+        );
+      } else if (para.startsWith('\n#### ')) {
+        elements.push(
+          <Text key={`h4-${i}`} style={{ fontSize: 11, fontWeight: 'bold', color: ESPRESSO, marginTop: 10, marginBottom: 4 }}>
+            {para.replace(/^[\n#]+\s*/, '')}
+          </Text>
+        );
+      } else if (para.includes('**')) {
+        // Bold text: split on ** and render inline
+        const parts = para.split(/\*\*(.*?)\*\*/g);
+        elements.push(
+          <Text key={`n${i}`} style={[styles.body, { marginBottom: 6 }]}>
+            {parts.map((part, j) => j % 2 === 1
+              ? <Text key={j} style={{ fontWeight: 'bold', color: ESPRESSO }}>{part}</Text>
+              : part
+            )}
+          </Text>
+        );
+      } else {
+        elements.push(<Text key={`n${i}`} style={[styles.body, { marginBottom: 6 }]}>{para}</Text>);
+      }
+    });
+
+    section.content.keyFindings.forEach((f, i) => {
+      elements.push(<PDFCallout key={`f${i}`} text={f.text} title={f.title} color={f.color || WARM_GRAY} />);
+    });
+
+    section.content.actions.forEach((a, i) => {
+      elements.push(<PDFCallout key={`a${i}`} text={a.description} title={a.title} color="#3b82f6" />);
+    });
+
+    return <>{elements}</>;
+  }
+
+  // Fallback: try custom renderers for rawData keys
+  const customElements: React.ReactElement[] = [];
   if (section.rawData) {
     for (const [key, data] of Object.entries(section.rawData)) {
       if (data && typeof data === 'object' && CUSTOM_SECTION_RENDERERS[key]) {
-        elements.push(...CUSTOM_SECTION_RENDERERS[key](data as Record<string, unknown>));
+        customElements.push(...CUSTOM_SECTION_RENDERERS[key](data as Record<string, unknown>));
       }
     }
   }
+  if (customElements.length > 0) return <>{customElements}</>;
 
-  // If custom renderers produced content, use that
-  if (elements.length > 0) return <>{elements}</>;
-
-  // Fallback: render mega-section structured content + rawData via generic renderer
+  // Final fallback: mega-section structured content + rawData via generic renderer
   const fallback: React.ReactElement[] = [];
 
-  // Narratives
   section.content.narrative.forEach((para, i) => {
     fallback.push(<Text key={`n${i}`} style={[styles.body, { marginBottom: 6 }]}>{para}</Text>);
   });
 
-  // Findings as callouts
   section.content.keyFindings.forEach((f, i) => {
     fallback.push(<PDFCallout key={`f${i}`} text={f.text} title={f.title} color={f.color || WARM_GRAY} />);
   });
 
-  // Actions as callouts
   section.content.actions.forEach((a, i) => {
     fallback.push(<PDFCallout key={`a${i}`} text={a.description} title={a.title} color="#3b82f6" />);
   });
 
-  // Generic rawData rendering for sections without custom renderers
   if (section.rawData) {
     for (const [key, data] of Object.entries(section.rawData)) {
       if (!data || typeof data !== 'object' || CUSTOM_SECTION_RENDERERS[key]) continue;

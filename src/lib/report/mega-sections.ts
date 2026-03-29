@@ -4,6 +4,7 @@
  * Consolidates 23 thin section generators → 12 mega-sections.
  */
 import { DIM_ORDER, DIM_NAMES, DIM_COLORS, DIM_SHORT, scorePercentile, interpretiveLabel, toDimensionsMap } from './helpers';
+import { generatePersonalityDeepDive } from './mega/section-02-personality';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -127,10 +128,14 @@ export function consolidateToMegaReport(
 		rawData: { executiveSummary: exec, cover, glance: r.glance },
 	});
 
-	// 2. Who You Are
+	// 2. Who You Are — use deep narrative generator if dimensions available
+	const dims = hasDims ? toDimensionsMap(results.dimensions) : null;
+	const personalityContent = dims
+		? generatePersonalityDeepDive(dims, studentName)
+		: { ...emptyContent(), narrative: pickNarratives(r.deepDive, r.whoYouAre) };
 	sections.push({
 		id: 'personality-deep-dive', title: 'Who You Are', subtitle: 'Personality Deep Dive', icon: '🧠',
-		content: { ...emptyContent(), narrative: pickNarratives(r.deepDive, r.whoYouAre) },
+		content: personalityContent,
 		rawData: { deepDive: r.deepDive, whoYouAre: r.whoYouAre },
 	});
 
