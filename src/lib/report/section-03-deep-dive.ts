@@ -2,7 +2,7 @@
 /**
  * Section 3-4: Deep Dive into Six Dimensions
  */
-import { DIM_ORDER, DIM_COLORS, DIM_SHORT, DIM_ICONS, formatScore, scorePercent, classifyLevel, DimensionsMap } from './helpers';
+import { DIM_ORDER, DIM_COLORS, DIM_SHORT, DIM_ICONS, formatScore, scorePercent, classifyLevel, interpretiveLabel, DimensionsMap } from './helpers';
 
 interface Results {
 	dimensions: DimensionsMap;
@@ -33,6 +33,7 @@ export function generateDeepDive(results: Results) {
 				rawScore: dim.score,
 				percent: scorePercent(dim.score),
 				level: dim.level,
+				interpretLabel: interpretiveLabel(dim.score),
 				color: DIM_COLORS[key],
 				insight,
 				facetInsights: getFacetInsights(key, dim.facets),

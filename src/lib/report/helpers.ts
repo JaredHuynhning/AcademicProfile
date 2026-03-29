@@ -89,6 +89,23 @@ export function scorePercentile(score: number, mean = 3.0, sd = 0.7): number {
 	return Math.min(99, Math.max(1, Math.round(cdf * 100)));
 }
 
+/** Population mean for HEXACO-PI-R (1-5 scale). */
+export const POPULATION_MEAN = 3.0;
+
+/**
+ * Human-readable label for where a score falls relative to the population.
+ * Uses percentile thresholds for statistical accuracy.
+ */
+export function interpretiveLabel(score: number, mean = POPULATION_MEAN, sd = 0.7): string {
+	const pct = scorePercentile(score, mean, sd);
+	if (pct <= 10) return 'Well Below Average';
+	if (pct <= 30) return 'Below Average';
+	if (pct <= 70) return 'Average';
+	if (pct <= 85) return 'Above Average';
+	if (pct <= 95) return 'Well Above Average';
+	return 'Exceptional';
+}
+
 /**
  * Format score to one decimal place.
  */

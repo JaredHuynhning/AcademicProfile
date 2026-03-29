@@ -38,9 +38,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | 4 | Action sheet tear-out page | done | — | Shipped via merge to main |
 | 5 | PDF redesign (cover, TOC, charts, page breaks) | done | — | Shipped via merge to main |
 | 6 | Landing page with value proposition | done | — | Shipped via merge to main |
-| 10 | Landing page real screenshots | active | P0 | Capturing screenshots with Playwright, updating ReportPreview |
+| 10 | Landing page real screenshots | done | P0 | Shipped a81f343 |
 | 7 | Free summary → paywall → full report flow | ready | P0 | No Stripe = no revenue — ship simple Checkout |
-| 11 | Visual benchmarks in report sections | ready | P1 | Makes numbers meaningful — table stakes for paid assessment |
+| 11 | Visual benchmarks in report sections | active | P1 | Brainstorming phase — designing benchmark visualization approach |
 | 9 | Student name personalization in narratives | ready | P1 | "Sophie" vs "this student" = $10 perceived value for 2hrs work |
 | 8 | PDF polish phase A — ExecSummary, Learning, Study, Guide | ready | P2 | Presentation must match content quality |
 | 8b | PDF polish phase B — DeepDive, Strengths, Barriers | ready | P2 | Depends on #8 patterns |
@@ -146,6 +146,16 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Cover page already uses name; extend to section narratives, action plan, guide sections
 - Keep it natural — not every sentence, just key moments ("Sophie's high extraversion...")
 
+### Ticket #11 AC
+- [x] `interpretiveLabel()` function exists in helpers.ts and returns correct labels
+- [x] ScoreBar component accepts showBenchmark + interpretLabel props
+- [x] Cover section shows mini ScoreBar with benchmark line on trait cards
+- [x] Glance/dimension score bars show benchmark line (via generic ObjectCard renderer)
+- [x] All score displays show interpretive label text ("Above Average", etc.)
+- [x] PDF cover + generic content show benchmark markers via PDFScoreBar
+- [x] `npm run build` exits 0
+- [x] Landing page screenshots updated with new benchmark visuals
+
 ### #10 — Landing page real screenshots
 **Goal**: Replace placeholder preview boxes with actual report screenshots.
 **Tasks**:
@@ -171,6 +181,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Recently Completed
 
+- [2026-03-29] #10 Landing page real screenshots — 4 Playwright-captured report section images replacing placeholder text
 - [2026-03-26] #6 Landing page — PAS storytelling, pricing, FAQ, 9 sections at /landing
 - [2026-03-26] #5 PDF redesign — editorial clean: cover, TOC, section eyebrows, three-column footer
 - [2026-03-26] #4 Action sheet tear-out — numbered priorities, study Rx, quick wins, stop-doing, weekly rhythm
@@ -223,23 +234,22 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 
 
+
 <!-- compaction-checkpoint-start -->
 ## Pre-Compaction Checkpoint
-**When**: 2026-03-26 22:29:47 | **Branch**: main | **Activity**: 5 msgs, 0
+**When**: 2026-03-29 21:23:37 | **Branch**: main | **Activity**: 3 msgs, 0
 0 tools, 0
 0 files
 
 **Recent work**:
-- - - - - - - - - - - - - - - - - - - ### [20:30:21] 💬 User Message
-- - - - - - - - - - - - - - - - - - - ### [21:00:27] 💬 User Message
-- - - - - - - - - - - - - - - - - - - ### [21:12:54] 💬 User Message
-- - - - - - - - - - - - - - - - - - - ### [21:13:53] 💬 User Message
-- - - - - - - - - - - - - - - - - - - ### [22:10:40] 💬 User Message
+- ### [12:25:56] 💬 User Message
+- ### [13:15:52] 💬 User Message
+- ### [13:19:40] 💬 User Message
 
 **Modified files**:
 - 
 
-**Dirty files** (3): .claude-project.json,AGENTS.md,AGENTS.md.backup
+**Dirty files** (4): .claude-project.json,AGENTS.md,AGENTS.md.backup,.claude/
 
 > Resume context: Read this section + git diff + recent session log to reconstruct state.
 <!-- compaction-checkpoint-end -->

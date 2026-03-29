@@ -6,7 +6,7 @@
  */
 import {
 	DIM_ORDER, DIM_COLORS, DIM_SHORT, DIM_ICONS, DIM_NAMES,
-	formatScore, classifyDimensionFacets, isInverseFacet,
+	formatScore, classifyDimensionFacets, isInverseFacet, interpretiveLabel,
 	DimensionsMap
 } from './helpers';
 
@@ -34,6 +34,7 @@ export function generateStrengths(results: Results) {
 			...f,
 			score: formatScore(f.score),
 			rawScore: f.score,
+			interpretLabel: interpretiveLabel(f.score),
 			analysis: getStrengthAnalysis(f.key, f.score),
 			leverageTip: getLeverageTip(f.key)
 		}));
@@ -42,6 +43,7 @@ export function generateStrengths(results: Results) {
 			...f,
 			score: formatScore(f.score),
 			rawScore: f.score,
+			interpretLabel: interpretiveLabel(f.score),
 			challenge: getWeaknessAnalysis(f.key, f.score),
 			actionTip: getActionTip(f.key)
 		}));
@@ -50,6 +52,7 @@ export function generateStrengths(results: Results) {
 			...f,
 			score: formatScore(f.score),
 			rawScore: f.score,
+			interpretLabel: interpretiveLabel(f.score),
 			description: getPreferenceDescription(f.key, f.score)
 		}));
 

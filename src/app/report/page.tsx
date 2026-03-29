@@ -22,7 +22,7 @@ import type { ActionSheetProps } from "@/components/report/ActionSheet";
 
 // Keys that are internal metadata — never render
 const SKIP_KEYS = new Set([
-  "key", "icon", "color", "rawScore", "classification", "rank", "role",
+  "key", "icon", "color", "rawScore", "classification", "rank", "role", "interpretLabel",
   "shortName", "radarData", "personalityArchetype", "passionClassification", "confidenceClassification",
   "matchPercent", "match_score", "dualFire", "type", "impact", "profile",
   "percentile", "structureScore", "warmthScore", "carrotScore", "stickScore",
@@ -333,6 +333,7 @@ function ObjectCard({ data }: { data: Record<string, unknown> }) {
     const cardName = extractTitle(data);
     const color = typeof data.color === "string" ? data.color : undefined;
     const rawScore = typeof data.rawScore === "number" ? data.rawScore : null;
+    const dimInterpretLabel = typeof data.interpretLabel === "string" ? data.interpretLabel : undefined;
     const whatToDo = typeof data.whatToDo === "string" ? data.whatToDo : null;
     return (
       <div className="mb-4">
@@ -343,7 +344,7 @@ function ObjectCard({ data }: { data: Record<string, unknown> }) {
         )}
         {rawScore != null && color && (
           <div className="mb-3 max-w-xs">
-            <ScoreBar score={rawScore} color={color} />
+            <ScoreBar score={rawScore} color={color} showBenchmark interpretLabel={dimInterpretLabel} />
           </div>
         )}
         <StrengthsWeaknessesField
@@ -384,6 +385,7 @@ function ObjectCard({ data }: { data: Record<string, unknown> }) {
   const title = extractTitle(data);
   const color = typeof data.color === "string" ? data.color : undefined;
   const rawScore = typeof data.rawScore === "number" ? data.rawScore : null;
+  const objInterpretLabel = typeof data.interpretLabel === "string" ? data.interpretLabel : undefined;
   const score = typeof data.score === "string" || typeof data.score === "number" ? data.score : null;
   const level = typeof data.level === "string" ? formatLevel(data.level) : null;
 
@@ -446,7 +448,7 @@ function ObjectCard({ data }: { data: Record<string, unknown> }) {
       )}
       {rawScore != null && color && (
         <div className="mb-2 max-w-xs">
-          <ScoreBar score={rawScore} color={color} />
+          <ScoreBar score={rawScore} color={color} showBenchmark interpretLabel={objInterpretLabel} />
         </div>
       )}
       {!title && score != null && (
@@ -597,8 +599,10 @@ function CoverSection({ data }: { data: Record<string, unknown> }) {
     key: string;
     name: string;
     score: string;
+    rawScore?: number;
     level: string;
     percentile?: number;
+    interpretLabel?: string;
     color: string;
   }[];
 
@@ -639,6 +643,16 @@ function CoverSection({ data }: { data: Record<string, unknown> }) {
                 {trait.score}
               </p>
               <p className="text-xs text-warm-gray mt-0.5">{trait.level}</p>
+              {trait.rawScore != null && (
+                <div className="mt-2 px-1">
+                  <ScoreBar
+                    score={trait.rawScore}
+                    color={trait.color}
+                    showBenchmark
+                    interpretLabel={trait.interpretLabel}
+                  />
+                </div>
+              )}
               {trait.percentile != null && (
                 <p className="text-[10px] text-warm-gray/60 mt-1">
                   Higher than {trait.percentile}% of students

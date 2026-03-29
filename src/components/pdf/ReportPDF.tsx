@@ -4,7 +4,7 @@ import type { TestResults } from "@/lib/types";
 import { PDFRadarChart } from "./PDFRadarChart";
 import { PDFActionSheet } from "./PDFActionSheet";
 import { PDFTableOfContents } from "./PDFTableOfContents";
-import { scorePercentile } from "@/lib/report/helpers";
+import { scorePercentile, interpretiveLabel, POPULATION_MEAN } from "@/lib/report/helpers";
 
 const CREAM = "#fdfbf7";
 const ESPRESSO = "#2c2417";
@@ -192,7 +192,7 @@ const DIM_COLORS: Record<string, string> = {
 
 // Keys to skip when rendering
 const SKIP_KEYS = new Set([
-  "key", "icon", "color", "rawScore", "classification", "rank", "role",
+  "key", "icon", "color", "rawScore", "classification", "rank", "role", "interpretLabel",
   "shortName", "radarData", "passionClassification", "confidenceClassification",
   "matchPercent", "match_score", "dualFire", "type", "impact", "profile",
   "percentile", "structureScore", "warmthScore", "carrotScore", "stickScore",
@@ -227,6 +227,27 @@ const TEXT_KEYS = new Set([
   "oneMinuteBrief", "insight", "question", "misconception", "realCause",
   "cycle", "method", "rationale", "action",
 ]);
+
+function PDFScoreBar({ score, maxScore = 5, color = ESPRESSO, showBenchmark = false, label }: {
+  score: number; maxScore?: number; color?: string; showBenchmark?: boolean; label?: string;
+}) {
+  const pct = Math.min(100, Math.max(0, (score / maxScore) * 100));
+  const benchPct = (POPULATION_MEAN / maxScore) * 100;
+  return (
+    <View style={{ marginTop: 4, marginBottom: label ? 2 : 0 }}>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+        <View style={{ flex: 1, height: 4, borderRadius: 2, backgroundColor: "#e8e0d4", position: "relative" as const }}>
+          <View style={{ position: "absolute" as const, left: 0, top: 0, bottom: 0, borderRadius: 2, width: `${pct}%`, backgroundColor: color }} />
+          {showBenchmark && (
+            <View style={{ position: "absolute" as const, left: `${benchPct}%`, top: -1, width: 0.5, height: 6, backgroundColor: WARM_GRAY }} />
+          )}
+        </View>
+        <Text style={{ fontSize: 7, fontWeight: "bold", color: ESPRESSO, minWidth: 16, textAlign: "right" as const }}>{score.toFixed(1)}</Text>
+      </View>
+      {label && <Text style={{ fontSize: 6, color: WARM_GRAY, marginTop: 1 }}>{label}</Text>}
+    </View>
+  );
+}
 
 function formatLabel(key: string): string {
   return key
@@ -391,6 +412,9 @@ function renderObject(data: Record<string, unknown>, keyIndex?: number): React.R
   const title = extractTitle(data);
   const text = extractDisplayText(data);
   const score = typeof data.score === "number" || typeof data.score === "string" ? data.score : null;
+  const rawScore = typeof data.rawScore === "number" ? data.rawScore : null;
+  const objColor = typeof data.color === "string" ? data.color : undefined;
+  const objInterpLabel = typeof data.interpretLabel === "string" ? data.interpretLabel : undefined;
 
   // Collect text fields
   const texts: string[] = [];
@@ -429,6 +453,9 @@ function renderObject(data: Record<string, unknown>, keyIndex?: number): React.R
   return (
     <PDFCard key={keyIndex} title={title ? `${title}${score != null ? ` — ${score}` : ""}` : null}>
       {!title && score != null && <Text style={styles.body}>{String(score)}</Text>}
+      {rawScore != null && objColor && (
+        <PDFScoreBar score={rawScore} color={objColor} showBenchmark label={objInterpLabel} />
+      )}
       {texts.map((t, i) => (
         <Text key={i} style={styles.body}>{t}</Text>
       ))}
@@ -746,14 +773,15 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
         {results.dimensions && typeof results.dimensions === "object" && (
           <View style={styles.coverScores}>
             {Object.values(results.dimensions as unknown as Record<string, { name: string; score: number }>).map((dim) => (
-              <View key={dim.name} style={styles.coverScoreCard}>
+              <View key={dim.name} style={[styles.coverScoreCard, { minWidth: 90 }]}>
                 <Text style={styles.coverScoreName}>
                   {dim.name.replace(" to Experience", "").split("-")[0]}
                 </Text>
                 <Text style={[styles.coverScoreValue, { color: DIM_COLORS[dim.name] || ESPRESSO }]}>
                   {dim.score.toFixed(1)}
                 </Text>
-                <Text style={{ fontSize: 7, color: WARM_GRAY, marginTop: 2 }}>
+                <PDFScoreBar score={dim.score} color={DIM_COLORS[dim.name] || ESPRESSO} showBenchmark label={interpretiveLabel(dim.score)} />
+                <Text style={{ fontSize: 6, color: WARM_GRAY, marginTop: 2 }}>
                   Top {100 - scorePercentile(dim.score)}%
                 </Text>
               </View>
