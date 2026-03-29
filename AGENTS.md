@@ -8,8 +8,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Current State
 
-- **Last session**: 2026-03-29 — Shipped #14 (PDF rendering fixes: removed wrap={false}, added minWidth constraints, converted root-cause to vertical layout)
-- **Next action**: Working on #15 — Phase 1a: new consolidated generator architecture for 50-page report.
+- **Last session**: 2026-03-30 — Shipped #14 (PDF fixes) + #15 Phases 1-3 (50-page report: 12 mega-sections with deep content generators)
+- **Next action**: #15 Phase 4 (polish: TOC update, running headers, visual testing) then #7 (payment flow).
 
 ## Launch Readiness
 
@@ -47,7 +47,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | 12 | Trust signals + social proof | done | P1 | Shipped — Guarantee, Testimonials, enhanced Credibility |
 | 13 | Simplify to Complete Assessment only | done | P0 | Shipped — navbar + mode selection fixed |
 | 14 | PDF rendering bugs — overlapping text, broken wrapping | done | P0 | Shipped 75b673b |
-| 15 | 50-page report — consolidate 23 sections → 12 mega-sections | active | P0 | Phase 1a: new architecture + PDF fixes. See spec: docs/superpowers/specs/2026-03-30-50-page-report-design.md |
+| 15 | 50-page report — consolidate 23 sections → 12 mega-sections | active | P0 | Phases 1-3 shipped. Phase 4 (polish) remaining. |
 
 ## Ticket Details
 
