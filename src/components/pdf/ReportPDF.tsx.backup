@@ -253,11 +253,11 @@ function PDFScoreBar({ score, maxScore = 5, color = ESPRESSO, showBenchmark = fa
 
 function PDFCallout({ text, color = WARM_GRAY, title }: { text: string; color?: string; title?: string }) {
   return (
-    <View style={{ flexDirection: "row" as const, marginBottom: 8 }}>
+    <View style={{ flexDirection: "row" as const, marginBottom: 8 }} wrap={false}>
       <View style={{ width: 3, backgroundColor: color, borderRadius: 1, marginRight: 8 }} />
       <View style={{ flex: 1 }}>
         {title && <Text style={{ fontSize: 9, fontWeight: "bold", color: ESPRESSO, marginBottom: 2 }}>{title}</Text>}
-        <Text style={{ fontSize: 9, lineHeight: 1.4, color: "#4a3f2f" }}>{text}</Text>
+        <Text style={{ fontSize: 9, lineHeight: 1.5, color: "#4a3f2f" }}>{text}</Text>
       </View>
     </View>
   );
@@ -266,15 +266,15 @@ function PDFCallout({ text, color = WARM_GRAY, title }: { text: string; color?: 
 function PDFTwoColumn({ left, right }: { left: React.ReactNode; right: React.ReactNode }) {
   return (
     <View style={{ flexDirection: "row" as const, gap: 10, marginBottom: 8 }}>
-      <View style={{ flex: 1, minWidth: 0 }}>{left}</View>
-      <View style={{ flex: 1, minWidth: 0 }}>{right}</View>
+      <View style={{ flex: 1 }}>{left}</View>
+      <View style={{ flex: 1 }}>{right}</View>
     </View>
   );
 }
 
 function PDFSubheading({ text }: { text: string }) {
   return (
-    <View style={{ marginTop: 14, marginBottom: 10 }}>
+    <View style={{ marginTop: 14, marginBottom: 6 }}>
       <Text style={{ fontSize: 12, fontWeight: "bold", color: ESPRESSO }}>{text}</Text>
       <View style={{ width: 24, height: 2, backgroundColor: ESPRESSO, marginTop: 3 }} />
     </View>
@@ -595,7 +595,7 @@ function renderGuide(data: Record<string, unknown>): React.ReactElement[] {
     if (Array.isArray(supportStrategies)) {
       supportStrategies.forEach((s, i) => {
         elements.push(
-          <View key={`ss${i}`} style={[styles.card, { marginTop: 4 }]}>
+          <View key={`ss${i}`} style={[styles.card, { marginTop: 4 }]} wrap={false}>
             <Text style={styles.cardTitle}>{s.area}</Text>
             <PDFTwoColumn
               left={
@@ -658,7 +658,7 @@ function renderDeepDive(data: Record<string, unknown>): React.ReactElement[] {
   if (Array.isArray(dimensions)) {
     dimensions.forEach((dim, i) => {
       elements.push(
-        <View key={`d${i}`} style={[styles.card, { borderLeftWidth: 3, borderLeftColor: dim.color || ESPRESSO }]}>
+        <View key={`d${i}`} style={[styles.card, { borderLeftWidth: 3, borderLeftColor: dim.color || ESPRESSO }]} wrap={false}>
           <View style={{ flexDirection: "row" as const, justifyContent: "space-between" as const, alignItems: "center" as const, marginBottom: 4 }}>
             <Text style={{ fontSize: 11, fontWeight: "bold", color: dim.color || ESPRESSO }}>{dim.name}</Text>
             <Text style={{ fontSize: 9, color: WARM_GRAY }}>{dim.score}/5 — {dim.level}</Text>
@@ -712,7 +712,7 @@ function renderStrengths(data: Record<string, unknown>): React.ReactElement[] {
       if (!hasContent) return;
 
       elements.push(
-        <View key={`d${i}`} style={{ marginBottom: 10 }}>
+        <View key={`d${i}`} style={{ marginBottom: 10 }} wrap={false}>
           <Text style={{ fontSize: 10, fontWeight: "bold", color: dim.color || ESPRESSO, marginBottom: 4 }}>{dim.name}</Text>
           <PDFTwoColumn
             left={
@@ -777,10 +777,10 @@ function renderBarriers(data: Record<string, unknown>): React.ReactElement[] {
     elements.push(<PDFSubheading key="rch" text="Root Cause Analysis" />);
     rootCauseChains.forEach((rc, i) => {
       elements.push(
-        <View key={`rc${i}`} style={[styles.card, { borderLeftWidth: 3, borderLeftColor: "#f59e0b" }]}>
-          <View style={{ marginBottom: 3 }}>
+        <View key={`rc${i}`} style={[styles.card, { borderLeftWidth: 3, borderLeftColor: "#f59e0b" }]} wrap={false}>
+          <View style={{ flexDirection: "row" as const, gap: 8, marginBottom: 3 }}>
             <Text style={{ fontSize: 8, color: "#f59e0b", fontWeight: "bold" }}>Personality: {rc.personalityRoot}</Text>
-            <Text style={{ fontSize: 7, color: WARM_GRAY, marginVertical: 1 }}>  ↓</Text>
+            <Text style={{ fontSize: 8, color: WARM_GRAY }}>→</Text>
             <Text style={{ fontSize: 8, color: "#ef4444", fontWeight: "bold" }}>Symptom: {rc.academicSymptom}</Text>
           </View>
           {rc.visibleBehaviour && <Text style={{ fontSize: 8, color: WARM_GRAY, marginBottom: 2 }}>Visible: {rc.visibleBehaviour}</Text>}

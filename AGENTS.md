@@ -9,7 +9,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ## Current State
 
 - **Last session**: 2026-03-29 — CEO value audit + shipped 7 tickets (#8, #8b, #9, #10, #11, #12, #13). PDF has rendering bugs and all sections need more content depth.
-- **Next action**: Fix PDF rendering (#14) then deepen content across all report sections (#15). These are the real blockers for $49 value.
+- **Next action**: Working on #14 — fix PDF rendering bugs (overlapping text, broken wrapping in Guide and other sections).
 
 ## Launch Readiness
 
@@ -46,7 +46,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | 8b | PDF polish phase B — DeepDive, Strengths, Barriers | done | P2 | Shipped — 3 section-specific PDF renderers |
 | 12 | Trust signals + social proof | done | P1 | Shipped — Guarantee, Testimonials, enhanced Credibility |
 | 13 | Simplify to Complete Assessment only | done | P0 | Shipped — navbar + mode selection fixed |
-| 14 | PDF rendering bugs — overlapping text, broken wrapping | ready | P0 | Guide section has overlapping callouts, text running off page |
+| 14 | PDF rendering bugs — overlapping text, broken wrapping | active | P0 | Guide section has overlapping callouts, text running off page |
 | 15 | Report content depth — web AND PDF need more substance | ready | P0 | Both web and PDF are thin — generators need deeper narratives, more analysis, more specific advice. Web and PDF must have parity. |
 
 ## Ticket Details
@@ -285,22 +285,27 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 
 
+
+
+
+
 <!-- compaction-checkpoint-start -->
 ## Pre-Compaction Checkpoint
-**When**: 2026-03-29 22:26:14 | **Branch**: main | **Activity**: 4 msgs, 0
+**When**: 2026-03-29 23:33:48 | **Branch**: main | **Activity**: 5 msgs, 0
 0 tools, 0
 0 files
 
 **Recent work**:
-- - ### [12:25:56] 💬 User Message
-- - ### [13:15:52] 💬 User Message
-- - ### [13:19:40] 💬 User Message
-- ### [21:28:29] 💬 User Message
+- - - - ### [23:09:32] 💬 User Message
+- - - - ### [23:11:42] 💬 User Message
+- - - - ### [23:14:22] 💬 User Message
+- - - - ### [23:17:42] 💬 User Message
+- - - ### [23:26:28] 💬 User Message
 
 **Modified files**:
 - 
 
-**Dirty files** (4): .claude-project.json,AGENTS.md,AGENTS.md.backup,.claude/
+**Dirty files** (7): .claude-project.json,AGENTS.md,AGENTS.md.backup,src/components/pdf/ReportPDF.tsx,.claude/
 
 > Resume context: Read this section + git diff + recent session log to reconstruct state.
 <!-- compaction-checkpoint-end -->

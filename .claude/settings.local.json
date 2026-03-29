@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /Users/jared/Desktop/Software Developement/AcademicProfile/src -type f \\\\\\(-name *.tsx -o -name *.jsx \\\\\\))"
+    ]
+  }
+}

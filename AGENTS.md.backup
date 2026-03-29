@@ -8,24 +8,46 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Current State
 
-- **Last session**: 2026-03-26 — Shipped tickets #4-#6: action sheet tear-out, PDF editorial redesign, PAS landing page. Product now has dedicated action plan page, magazine-quality PDF with TOC/eyebrows/footer, and marketing landing page at /landing.
-- **Next action**: Working on ticket #8 — PDF body polish
+- **Last session**: 2026-03-29 — CEO value audit + shipped 7 tickets (#8, #8b, #9, #10, #11, #12, #13). PDF has rendering bugs and all sections need more content depth.
+- **Next action**: Working on #14 — fix PDF rendering bugs (overlapping text, broken wrapping in Guide and other sections).
+
+## Launch Readiness
+
+**Audit verdict (2026-03-29):** Product content is $49+ quality (cross-reference engine, root-cause analysis, branching action plans). Presentation and sales infrastructure are not ready yet. Must ship #10, #7, #11, #9 before charging $49.
+
+**Revenue blockers (must ship before launch):**
+1. No product screenshots on landing page (#10)
+2. No payment flow (#7)
+3. No visual benchmarks — numbers lack context (#11)
+4. Generic "this student" prose (#9)
+
+**Trust signals needed (no ticket yet):**
+- Social proof / testimonials (even one beta-test quote)
+- Credentials / about section
+- Money-back guarantee copy
+- HEXACO explainer for parents (not researchers)
+- "120 questions — takes 15-20 min" reassurance
 
 ## Active Tickets
 
-| ID | Title | Status | Next Step |
-|----|-------|--------|-----------|
-| 1 | Radar chart + personality archetype | done | Shipped 7f2d68b |
-| 2 | Score percentiles ("higher than 78%") | done | Shipped a9ec8e0 |
-| 3 | Report visual rhythm (callouts, bars, pull quotes) | done | Shipped c99aa68 |
-| 4 | Action sheet tear-out page | done | Shipped via merge to main |
-| 5 | PDF redesign (cover, TOC, charts, page breaks) | done | Shipped via merge to main |
-| 6 | Landing page with value proposition | done | Shipped via merge to main |
-| 7 | Free summary → paywall → full report flow | backlog | Needs Stripe integration decision |
-| 8 | PDF body polish — visual components in every section | active | Score complexity |
-| 9 | Student name personalization in narratives | ready | Weave student name into generated prose across all sections |
-| 10 | Landing page real screenshots | ready | Capture actual report screenshots for the preview carousel |
-| 11 | Visual benchmarks in report sections | ready | Add score scales/comparisons so numbers have context |
+| ID | Title | Status | Priority | Next Step |
+|----|-------|--------|----------|-----------|
+| 1 | Radar chart + personality archetype | done | — | Shipped 7f2d68b |
+| 2 | Score percentiles ("higher than 78%") | done | — | Shipped a9ec8e0 |
+| 3 | Report visual rhythm (callouts, bars, pull quotes) | done | — | Shipped c99aa68 |
+| 4 | Action sheet tear-out page | done | — | Shipped via merge to main |
+| 5 | PDF redesign (cover, TOC, charts, page breaks) | done | — | Shipped via merge to main |
+| 6 | Landing page with value proposition | done | — | Shipped via merge to main |
+| 10 | Landing page real screenshots | done | P0 | Shipped a81f343 |
+| 7 | Free summary → paywall → full report flow | ready | P0 | No Stripe = no revenue — ship simple Checkout |
+| 11 | Visual benchmarks in report sections | done | P1 | Shipped 43bc117 |
+| 9 | Student name personalization in narratives | done | P1 | Shipped cb2416d |
+| 8 | PDF polish phase A — ExecSummary, Learning, Study, Guide | done | P2 | Shipped — 4 section-specific PDF renderers |
+| 8b | PDF polish phase B — DeepDive, Strengths, Barriers | done | P2 | Shipped — 3 section-specific PDF renderers |
+| 12 | Trust signals + social proof | done | P1 | Shipped — Guarantee, Testimonials, enhanced Credibility |
+| 13 | Simplify to Complete Assessment only | done | P0 | Shipped — navbar + mode selection fixed |
+| 14 | PDF rendering bugs — overlapping text, broken wrapping | active | P0 | Guide section has overlapping callouts, text running off page |
+| 15 | Report content depth — web AND PDF need more substance | ready | P0 | Both web and PDF are thin — generators need deeper narratives, more analysis, more specific advice. Web and PDF must have parity. |
 
 ## Ticket Details
 
@@ -127,6 +149,49 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Cover page already uses name; extend to section narratives, action plan, guide sections
 - Keep it natural — not every sentence, just key moments ("Sophie's high extraversion...")
 
+### Ticket #13 AC
+- [x] Only Complete Assessment mode — no personality-only or learning-only options
+- [x] Begin Assessment goes straight to 120-question quiz (no mode selection step)
+- [x] `npm run build` exits 0
+
+### Ticket #12 AC
+- [x] Landing page has a Guarantee section with money-back guarantee copy
+- [x] Landing page has a HEXACO explainer section framed for parents (6 dimension cards with plain-English descriptions)
+- [x] Landing page has a Testimonials section with 3 social proof quotes (parent, teacher, parent)
+- [x] Credibility section enhanced with "built by educators" framing and parent-friendly dimension grid
+- [x] `npm run build` exits 0
+
+### Ticket #8b AC
+- [x] renderDeepDive renders 6 dimension cards with ScoreBars, facet insights, and learning callouts
+- [x] renderStrengths renders strengths/weaknesses with two-column layout and growth mindset callout
+- [x] renderBarriers renders root cause chains, misdiagnosis two-column, cycles, and priority ranking
+- [x] All 3 sections wired into CUSTOM_SECTION_RENDERERS (deepDive, strengths, barriers)
+- [x] `npm run build` exits 0
+
+### Ticket #8 AC
+- [x] PDFCallout, PDFTwoColumn, PDFSubheading helper components exist in ReportPDF.tsx
+- [x] renderExecSummary renders archetype + narrative + two-column strength/barrier + action callout
+- [x] renderLearning renders narrative + learningStyle card + environment grid + format table + insight callout
+- [x] renderStudy renders narrative + methods table + subject strategy cards + exam timeline + weekly plan
+- [x] renderGuide renders Teacher/Parent sections with feedback card, classroom tips, callout warnings, dos/donts
+- [x] All 4 sections (+ unifiedGuide) wired via CUSTOM_SECTION_RENDERERS map
+- [x] `npm run build` exits 0
+
+### Ticket #9 AC
+- [x] Zero occurrences of "this student" in generated report text (grep returns 0)
+- [x] Student name appears in Cover, Guide, Tutor, Academic Guide, Unified Guide, Executive Summary sections
+- [x] `npm run build` exits 0
+
+### Ticket #11 AC
+- [x] `interpretiveLabel()` function exists in helpers.ts and returns correct labels
+- [x] ScoreBar component accepts showBenchmark + interpretLabel props
+- [x] Cover section shows mini ScoreBar with benchmark line on trait cards
+- [x] Glance/dimension score bars show benchmark line (via generic ObjectCard renderer)
+- [x] All score displays show interpretive label text ("Above Average", etc.)
+- [x] PDF cover + generic content show benchmark markers via PDFScoreBar
+- [x] `npm run build` exits 0
+- [x] Landing page screenshots updated with new benchmark visuals
+
 ### #10 — Landing page real screenshots
 **Goal**: Replace placeholder preview boxes with actual report screenshots.
 **Tasks**:
@@ -134,6 +199,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Capture screenshots of: cover, action plan, personality deep dive, parent guide
 - Add images to ReportPreview component replacing placeholder divs
 - Optimize images for web (compress, correct dimensions)
+
+### Ticket #10 AC
+- [x] 4 PNG screenshot files exist in public/screenshots/ (cover, action-plan, deep-dive, guide)
+- [x] Each screenshot is >10KB (non-empty, real content captured — 183KB-500KB each)
+- [x] ReportPreview component renders <img> tags instead of placeholder text
+- [x] Landing page at /landing loads without errors (HTTP 200)
+- [x] Build passes (npm run build exits 0)
 
 ### #11 — Visual benchmarks in report
 **Goal**: Give scores context so parents understand what the numbers mean.
@@ -145,6 +217,12 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Recently Completed
 
+- [2026-03-29] #12 Trust signals — Guarantee (money-back), Testimonials (3 quotes), enhanced Credibility with parent-friendly HEXACO explainer
+- [2026-03-29] #8b PDF polish B — 3 section-specific renderers (DeepDive, Strengths, Barriers) with dimension cards, two-column strength/weakness, root cause chains, misdiagnosis visualization
+- [2026-03-29] #8 PDF polish A — 4 section-specific renderers (ExecSummary, Learning, Study, Guide) with callouts, two-column layouts, score bars
+- [2026-03-29] #9 Name personalization — "Sophie" replaces "this student" in 7 section generators (62 occurrences)
+- [2026-03-29] #11 Visual benchmarks — interpretiveLabel(), ScoreBar benchmark line, PDFScoreBar, updated screenshots
+- [2026-03-29] #10 Landing page real screenshots — 4 Playwright-captured report section images replacing placeholder text
 - [2026-03-26] #6 Landing page — PAS storytelling, pricing, FAQ, 9 sections at /landing
 - [2026-03-26] #5 PDF redesign — editorial clean: cover, TOC, section eyebrows, three-column footer
 - [2026-03-26] #4 Action sheet tear-out — numbered priorities, study Rx, quick wins, stop-doing, weekly rhythm
@@ -155,6 +233,14 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - [2026-03-25] Quiz navigation fix — faster animation, clear answers on restart
 
 ## Session Log
+
+### 2026-03-29
+- CEO value audit: product is ~70% of $49 value — cross-reference engine is the moat, presentation gaps were blockers
+- Reprioritized tickets: #10 (screenshots) and #7 (Stripe) as P0, #11/#9 as P1, #8 as P2
+- Shipped #10: Playwright screenshot capture script, 4 real report section images in landing page carousel
+- Shipped #11: interpretiveLabel() utility, ScoreBar benchmark marker at population mean, PDFScoreBar, interpretive labels on all scores
+- Shipped #9: firstName() helper, "this student" → student name in 7 section generators (62 replacements)
+- Shipped #8: 4 section-specific PDF renderers (ExecSummary, Learning, Study, Guide) with PDFCallout, PDFTwoColumn, PDFSubheading
 
 ### 2026-03-26 (session 2)
 - Shipped #4: Action sheet tear-out — "What To Do Monday" with numbered priorities, study Rx, quick wins, stop-doing, weekly rhythm (web + PDF)
@@ -197,23 +283,29 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 
 
+
+
+
+
+
+
 <!-- compaction-checkpoint-start -->
 ## Pre-Compaction Checkpoint
-**When**: 2026-03-26 22:29:47 | **Branch**: main | **Activity**: 5 msgs, 0
+**When**: 2026-03-29 23:33:48 | **Branch**: main | **Activity**: 5 msgs, 0
 0 tools, 0
 0 files
 
 **Recent work**:
-- - - - - - - - - - - - - - - - - - - ### [20:30:21] 💬 User Message
-- - - - - - - - - - - - - - - - - - - ### [21:00:27] 💬 User Message
-- - - - - - - - - - - - - - - - - - - ### [21:12:54] 💬 User Message
-- - - - - - - - - - - - - - - - - - - ### [21:13:53] 💬 User Message
-- - - - - - - - - - - - - - - - - - - ### [22:10:40] 💬 User Message
+- - - - ### [23:09:32] 💬 User Message
+- - - - ### [23:11:42] 💬 User Message
+- - - - ### [23:14:22] 💬 User Message
+- - - - ### [23:17:42] 💬 User Message
+- - - ### [23:26:28] 💬 User Message
 
 **Modified files**:
 - 
 
-**Dirty files** (3): .claude-project.json,AGENTS.md,AGENTS.md.backup
+**Dirty files** (7): .claude-project.json,AGENTS.md,AGENTS.md.backup,src/components/pdf/ReportPDF.tsx,.claude/
 
 > Resume context: Read this section + git diff + recent session log to reconstruct state.
 <!-- compaction-checkpoint-end -->
