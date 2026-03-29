@@ -19,10 +19,12 @@ export function generateSocialDynamicsMega(
 	const C = dimensions.C;
 	const E = dimensions.E;
 	const H = dimensions.H;
+	const O = dimensions.O;
 
 	const xScore = X?.score || 3.0;
 	const aScore = A?.score || 3.0;
 	const cScore = C?.score || 3.0;
+	const oScore = O?.score || 3.0;
 	const eScore = E?.score || 3.0;
 	const hScore = H?.score || 3.0;
 

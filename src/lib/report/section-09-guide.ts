@@ -18,7 +18,7 @@ export function generateGuide(results: Results) {
 	return {
 		teacher: buildTeacherGuide(dims, ranked),
 		parent: buildParentGuide(dims, ranked),
-		sharedInsights: buildSharedInsights(dims)
+		sharedInsights: buildSharedInsights(dims, n)
 	};
 }
 
@@ -348,7 +348,7 @@ function buildParentWarnings(dims: DimensionsMap) {
 	return warnings.slice(0, 4);
 }
 
-function buildSharedInsights(dims: DimensionsMap) {
+function buildSharedInsights(dims: DimensionsMap, n: string) {
 	return {
 		keyMessage: `${n}'s personality is a unique combination of traits, not a label. The goal is to understand their natural tendencies so we can create conditions where they thrive.`,
 		alignmentTip: 'Teachers and parents working together is the most powerful support system. Share observations about what works and what does not, consistency between school and home accelerates growth.',

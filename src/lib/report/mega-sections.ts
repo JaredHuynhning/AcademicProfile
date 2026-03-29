@@ -105,8 +105,8 @@ export function consolidateToMegaReport(
 	const radarData: MegaReport['radarData'] = [];
 	const scoreSummary: MegaReport['scoreSummary'] = [];
 	const hasDims = Array.isArray(results.dimensions) && results.dimensions.length > 0;
-	if (hasDims) {
-		const dims = toDimensionsMap(results.dimensions);
+	const dims = hasDims ? toDimensionsMap(results.dimensions) : null;
+	if (dims) {
 		for (const key of DIM_ORDER) {
 			const d = dims[key];
 			if (!d) continue;
@@ -144,7 +144,6 @@ export function consolidateToMegaReport(
 	});
 
 	// 2. Who You Are — use deep narrative generator if dimensions available
-	const dims = hasDims ? toDimensionsMap(results.dimensions) : null;
 	const personalityContent = dims
 		? generatePersonalityDeepDive(dims, studentName)
 		: { ...emptyContent(), narrative: pickNarratives(r.deepDive, r.whoYouAre) };
