@@ -12,6 +12,9 @@ import { generateStudyPlaybookMega } from './mega/section-05-study';
 import { generateStrengthsMega } from './mega/section-06-strengths';
 import { generateBarriersMega } from './mega/section-07-barriers';
 import { generateSocialDynamicsMega } from './mega/section-08-social';
+import { generateSubjectFitMega } from './mega/section-09-subject-fit';
+import { generateGuideMega } from './mega/section-10-guide';
+import { generateActionPlanMega } from './mega/section-11-action';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -212,23 +215,32 @@ export function consolidateToMegaReport(
 	});
 
 	// 9. Subject Fit & Career Signals
+	const subjectContent = dims
+		? generateSubjectFitMega(dims, results.learnerProfile || null, studentName)
+		: { ...emptyContent(), narrative: extractNarratives(r.subjectFit) };
 	sections.push({
 		id: 'subject-fit', title: 'Subject Fit & Career Signals', icon: '🎯',
-		content: { ...emptyContent(), narrative: extractNarratives(r.subjectFit) },
+		content: subjectContent,
 		rawData: { subjectFit: r.subjectFit },
 	});
 
 	// 10. Teacher & Parent Guide
+	const guideContent = dims
+		? generateGuideMega(dims, studentName)
+		: { ...emptyContent(), narrative: pickNarratives(r.unifiedGuide, r.guide) };
 	sections.push({
 		id: 'guide', title: 'Teacher & Parent Guide', icon: '📋',
-		content: { ...emptyContent(), narrative: pickNarratives(r.unifiedGuide, r.guide) },
+		content: guideContent,
 		rawData: { guide: r.guide, unifiedGuide: r.unifiedGuide, tutor: r.tutor, academicGuide: r.academicGuide },
 	});
 
 	// 11. Action Plan
+	const actionContent = dims
+		? generateActionPlanMega(dims, studentName)
+		: { ...emptyContent(), narrative: extractNarratives(r.actionPlan) };
 	sections.push({
 		id: 'action-plan', title: 'What To Do Monday', subtitle: 'Action Plan', icon: '✅',
-		content: { ...emptyContent(), narrative: extractNarratives(r.actionPlan) },
+		content: actionContent,
 		rawData: { actionPlan: r.actionPlan },
 	});
 
