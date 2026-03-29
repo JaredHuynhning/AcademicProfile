@@ -8,6 +8,10 @@ import { generatePersonalityDeepDive } from './mega/section-02-personality';
 import { generateExecutiveSummaryMega } from './mega/section-01-executive';
 import { generateLearningProfileMega } from './mega/section-03-learning';
 import { generateAcademicCharacterMega } from './mega/section-04-character';
+import { generateStudyPlaybookMega } from './mega/section-05-study';
+import { generateStrengthsMega } from './mega/section-06-strengths';
+import { generateBarriersMega } from './mega/section-07-barriers';
+import { generateSocialDynamicsMega } from './mega/section-08-social';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -168,30 +172,42 @@ export function consolidateToMegaReport(
 	});
 
 	// 5. Study Strategy Playbook
+	const studyContent = dims
+		? generateStudyPlaybookMega(dims, results.studyProfile || null, results.learnerProfile || null, studentName)
+		: { ...emptyContent(), narrative: pickNarratives(r.study, r.whatWorks) };
 	sections.push({
 		id: 'study-playbook', title: 'Study Strategy Playbook', icon: '📚',
-		content: { ...emptyContent(), narrative: pickNarratives(r.study, r.whatWorks) },
+		content: studyContent,
 		rawData: { study: r.study, whatWorks: r.whatWorks },
 	});
 
 	// 6. Strengths & Superpowers
+	const strengthsContent = dims
+		? generateStrengthsMega(dims, crossRefResult, studentName)
+		: { ...emptyContent(), narrative: pickNarratives(r.strengths, r.whatsWorking) };
 	sections.push({
 		id: 'strengths', title: 'Strengths & Superpowers', icon: '💪',
-		content: { ...emptyContent(), narrative: pickNarratives(r.strengths, r.whatsWorking) },
+		content: strengthsContent,
 		rawData: { strengths: r.strengths, whatsWorking: r.whatsWorking },
 	});
 
 	// 7. Barriers & Root Causes
+	const barriersContent = dims
+		? generateBarriersMega(dims, crossRefResult, results.learnerProfile || null, studentName)
+		: { ...emptyContent(), narrative: pickNarratives(r.barriers, r.rootCause) };
 	sections.push({
 		id: 'barriers', title: 'Barriers & Root Causes', icon: '🚧',
-		content: { ...emptyContent(), narrative: pickNarratives(r.barriers, r.rootCause) },
+		content: barriersContent,
 		rawData: { barriers: r.barriers, rootCause: r.rootCause },
 	});
 
 	// 8. Social & Group Dynamics
+	const socialContent = dims
+		? generateSocialDynamicsMega(dims, studentName)
+		: { ...emptyContent(), narrative: extractNarratives(r.group) };
 	sections.push({
 		id: 'social-dynamics', title: 'Social & Group Dynamics', icon: '👥',
-		content: { ...emptyContent(), narrative: extractNarratives(r.group) },
+		content: socialContent,
 		rawData: { group: r.group },
 	});
 
