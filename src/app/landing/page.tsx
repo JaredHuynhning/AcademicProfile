@@ -4,7 +4,9 @@ import { RootCause } from "@/components/landing/RootCause";
 import { FeatureGrid } from "@/components/landing/FeatureGrid";
 import { ReportPreview } from "@/components/landing/ReportPreview";
 import { Credibility } from "@/components/landing/Credibility";
+import { Testimonials } from "@/components/landing/Testimonials";
 import { Pricing } from "@/components/landing/Pricing";
+import { Guarantee } from "@/components/landing/Guarantee";
 import { FAQ } from "@/components/landing/FAQ";
 import { FinalCTA } from "@/components/landing/FinalCTA";
 
@@ -18,7 +20,9 @@ export default function LandingPage() {
         <FeatureGrid />
         <ReportPreview />
         <Credibility />
+        <Testimonials />
         <Pricing />
+        <Guarantee />
         <FAQ />
         <FinalCTA />
       </div>

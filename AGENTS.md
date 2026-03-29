@@ -44,7 +44,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | 9 | Student name personalization in narratives | done | P1 | Shipped cb2416d |
 | 8 | PDF polish phase A — ExecSummary, Learning, Study, Guide | done | P2 | Shipped — 4 section-specific PDF renderers |
 | 8b | PDF polish phase B — DeepDive, Strengths, Barriers | done | P2 | Shipped — 3 section-specific PDF renderers |
-| 12 | Trust signals + social proof | backlog | P1 | About section, guarantee, HEXACO explainer, testimonial slot |
+| 12 | Trust signals + social proof | done | P1 | Shipped — Guarantee, Testimonials, enhanced Credibility |
 
 ## Ticket Details
 
@@ -146,6 +146,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Cover page already uses name; extend to section narratives, action plan, guide sections
 - Keep it natural — not every sentence, just key moments ("Sophie's high extraversion...")
 
+### Ticket #12 AC
+- [x] Landing page has a Guarantee section with money-back guarantee copy
+- [x] Landing page has a HEXACO explainer section framed for parents (6 dimension cards with plain-English descriptions)
+- [x] Landing page has a Testimonials section with 3 social proof quotes (parent, teacher, parent)
+- [x] Credibility section enhanced with "built by educators" framing and parent-friendly dimension grid
+- [x] `npm run build` exits 0
+
 ### Ticket #8b AC
 - [x] renderDeepDive renders 6 dimension cards with ScoreBars, facet insights, and learning callouts
 - [x] renderStrengths renders strengths/weaknesses with two-column layout and growth mindset callout
@@ -202,6 +209,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Recently Completed
 
+- [2026-03-29] #12 Trust signals — Guarantee (money-back), Testimonials (3 quotes), enhanced Credibility with parent-friendly HEXACO explainer
 - [2026-03-29] #8b PDF polish B — 3 section-specific renderers (DeepDive, Strengths, Barriers) with dimension cards, two-column strength/weakness, root cause chains, misdiagnosis visualization
 - [2026-03-29] #8 PDF polish A — 4 section-specific renderers (ExecSummary, Learning, Study, Guide) with callouts, two-column layouts, score bars
 - [2026-03-29] #9 Name personalization — "Sophie" replaces "this student" in 7 section generators (62 occurrences)
