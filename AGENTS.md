@@ -8,8 +8,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Current State
 
-- **Last session**: 2026-03-29 — CEO value audit. Reprioritized tickets for $49 launch readiness. Revenue-blocking items moved to top of queue.
-- **Next action**: Start ticket #10 (landing page screenshots) — the #1 conversion blocker identified in value audit.
+- **Last session**: 2026-03-29 — CEO value audit + shipped 4 tickets (#10 screenshots, #11 benchmarks, #9 name personalization, #8 PDF polish A). Reprioritized for $49 launch.
+- **Next action**: Start ticket #7 (Stripe payment flow) — the sole remaining revenue blocker before $49 launch.
 
 ## Launch Readiness
 
@@ -209,6 +209,14 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - [2026-03-25] Quiz navigation fix — faster animation, clear answers on restart
 
 ## Session Log
+
+### 2026-03-29
+- CEO value audit: product is ~70% of $49 value — cross-reference engine is the moat, presentation gaps were blockers
+- Reprioritized tickets: #10 (screenshots) and #7 (Stripe) as P0, #11/#9 as P1, #8 as P2
+- Shipped #10: Playwright screenshot capture script, 4 real report section images in landing page carousel
+- Shipped #11: interpretiveLabel() utility, ScoreBar benchmark marker at population mean, PDFScoreBar, interpretive labels on all scores
+- Shipped #9: firstName() helper, "this student" → student name in 7 section generators (62 replacements)
+- Shipped #8: 4 section-specific PDF renderers (ExecSummary, Learning, Study, Guide) with PDFCallout, PDFTwoColumn, PDFSubheading
 
 ### 2026-03-26 (session 2)
 - Shipped #4: Action sheet tear-out — "What To Do Monday" with numbered priorities, study Rx, quick wins, stop-doing, weekly rhythm (web + PDF)
