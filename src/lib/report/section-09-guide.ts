@@ -11,6 +11,7 @@ interface Results {
 }
 
 export function generateGuide(results: Results) {
+	const n = (results as any).studentName || 'This student';
 	const dims = results.dimensions;
 	const ranked = rankDimensions(dims);
 
@@ -349,7 +350,7 @@ function buildParentWarnings(dims: DimensionsMap) {
 
 function buildSharedInsights(dims: DimensionsMap) {
 	return {
-		keyMessage: 'This student\'s personality is a unique combination of traits, not a label. The goal is to understand their natural tendencies so we can create conditions where they thrive.',
+		keyMessage: `${n}'s personality is a unique combination of traits, not a label. The goal is to understand their natural tendencies so we can create conditions where they thrive.`,
 		alignmentTip: 'Teachers and parents working together is the most powerful support system. Share observations about what works and what does not, consistency between school and home accelerates growth.',
 		reminderNote: 'Personality traits are tendencies that can be developed, not fixed limits. With the right support and encouragement, every student can grow in any area.'
 	};

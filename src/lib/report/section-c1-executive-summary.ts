@@ -6,8 +6,9 @@
 import { getLearningArchetype, DIM_NAMES } from './helpers';
 
 export function generateExecutiveSummary(results, crossRefResult) {
+	const n = results.studentName || 'This student';
 	const archetype = getLearningArchetype(results.dimensions, results.studyProfile);
-	const name = results.narrative?.name || 'This student';
+	const name = results.narrative?.name || n;
 
 	const confirmations = [...(crossRefResult.byType.confirmation || [])].sort(
 		(a, b) => b.impact - a.impact

@@ -4,6 +4,8 @@
  */
 import { isHigh, isLow, DIM_SHORT, DimensionsMap } from './helpers';
 
+let n = 'This student';
+
 interface Archetype {
 	name?: string;
 	description?: string;
@@ -18,6 +20,7 @@ interface Results {
 }
 
 export function generateTutor(results: Results) {
+	n = (results as any).studentName || 'This student';
 	const archetypes = results.archetypes || [];
 	const top3 = archetypes.slice(0, 3);
 
@@ -148,10 +151,10 @@ function getRedFlags(archetype: Archetype, dims: DimensionsMap): string[] {
 		flags.push('Dismisses the student\'s emotions or anxiety. "Just relax" is not helpful guidance');
 	}
 	if (isLow(dims.C.score)) {
-		flags.push('Does not provide structure or follow-up between sessions: this student needs accountability');
+		flags.push(`Does not provide structure or follow-up between sessions: ${n} needs accountability`);
 	}
 	if (isHigh(dims.O.score)) {
-		flags.push('Only uses textbook methods: this student needs creative and varied approaches');
+		flags.push(`Only uses textbook methods: ${n} needs creative and varied approaches`);
 	}
 
 	return flags.slice(0, 4);
@@ -174,7 +177,7 @@ function buildEvaluationTips(dims: DimensionsMap) {
 		{
 			tip: 'Look for rapport',
 			details: isHigh(dims.E.score)
-				? 'Emotional connection is especially important for this student. The tutor should be warm and patient.'
+				? `Emotional connection is especially important for ${n}. The tutor should be warm and patient.`
 				: isHigh(dims.X.score)
 					? 'Social connection matters, the tutor should be engaging and conversational.'
 					: 'Professional rapport is key, the tutor should be competent and reliable.'

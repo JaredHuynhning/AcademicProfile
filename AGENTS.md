@@ -40,8 +40,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | 6 | Landing page with value proposition | done | — | Shipped via merge to main |
 | 10 | Landing page real screenshots | done | P0 | Shipped a81f343 |
 | 7 | Free summary → paywall → full report flow | ready | P0 | No Stripe = no revenue — ship simple Checkout |
-| 11 | Visual benchmarks in report sections | active | P1 | Brainstorming phase — designing benchmark visualization approach |
-| 9 | Student name personalization in narratives | ready | P1 | "Sophie" vs "this student" = $10 perceived value for 2hrs work |
+| 11 | Visual benchmarks in report sections | done | P1 | Shipped 43bc117 |
+| 9 | Student name personalization in narratives | active | P1 | Replacing "this student" with actual name across all section generators |
 | 8 | PDF polish phase A — ExecSummary, Learning, Study, Guide | ready | P2 | Presentation must match content quality |
 | 8b | PDF polish phase B — DeepDive, Strengths, Barriers | ready | P2 | Depends on #8 patterns |
 | 12 | Trust signals + social proof | backlog | P1 | About section, guarantee, HEXACO explainer, testimonial slot |
@@ -146,6 +146,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Cover page already uses name; extend to section narratives, action plan, guide sections
 - Keep it natural — not every sentence, just key moments ("Sophie's high extraversion...")
 
+### Ticket #9 AC
+- [x] Zero occurrences of "this student" in generated report text (grep returns 0)
+- [x] Student name appears in Cover, Guide, Tutor, Academic Guide, Unified Guide, Executive Summary sections
+- [x] `npm run build` exits 0
+
 ### Ticket #11 AC
 - [x] `interpretiveLabel()` function exists in helpers.ts and returns correct labels
 - [x] ScoreBar component accepts showBenchmark + interpretLabel props
@@ -181,6 +186,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Recently Completed
 
+- [2026-03-29] #11 Visual benchmarks — interpretiveLabel(), ScoreBar benchmark line, PDFScoreBar, updated screenshots
 - [2026-03-29] #10 Landing page real screenshots — 4 Playwright-captured report section images replacing placeholder text
 - [2026-03-26] #6 Landing page — PAS storytelling, pricing, FAQ, 9 sections at /landing
 - [2026-03-26] #5 PDF redesign — editorial clean: cover, TOC, section eyebrows, three-column footer

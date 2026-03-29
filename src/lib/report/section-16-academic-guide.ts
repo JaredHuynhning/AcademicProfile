@@ -9,6 +9,9 @@
  */
 import { generateRootCause } from './section-15-root-cause';
 
+// Module-level student name — set by generateAcademicGuide before helpers run
+let n = 'This student';
+
 // --- Urgency classification ---
 
 function classifyUrgency(sp, lp, rootCause) {
@@ -92,13 +95,13 @@ function buildInstructionTips(sp, lp) {
 	// Study approach
 	if (sp?.dominantApproach === 'surface') {
 		tips.push({
-			tip: "Use questioning techniques before giving answers, ask 'why does this work?' not just 'what is the answer?' This student defaults to memorising rather than understanding.",
+			tip: `Use questioning techniques before giving answers, ask 'why does this work?' not just 'what is the answer?' ${n} defaults to memorising rather than understanding.`,
 			evidence: `Surface approach: ${sp.studyApproaches.surface.score.toFixed(1)}/5, Deep: ${sp.studyApproaches.deep.score.toFixed(1)}/5`,
 			priority: 'high'
 		});
 	} else if (sp?.dominantApproach === 'deep') {
 		tips.push({
-			tip: 'Provide extension materials and open-ended problems: this student craves depth and will disengage with pure repetition.',
+			tip: `Provide extension materials and open-ended problems: ${n} craves depth and will disengage with pure repetition.`,
 			evidence: `Deep approach: ${sp.studyApproaches.deep.score.toFixed(1)}/5`,
 			priority: 'medium'
 		});
@@ -113,21 +116,21 @@ function buildInstructionTips(sp, lp) {
 	// Self-regulation gaps
 	if (sp?.selfRegulation?.planning?.score < 2.5) {
 		tips.push({
-			tip: 'Provide explicit study plans and checkpoint deadlines: this student lacks internal planning structures and will benefit from externally imposed milestones.',
+			tip: `Provide explicit study plans and checkpoint deadlines: ${n} lacks internal planning structures and will benefit from externally imposed milestones.`,
 			evidence: `Planning: ${sp.selfRegulation.planning.score.toFixed(1)}/5`,
 			priority: 'high'
 		});
 	}
 	if (sp?.selfRegulation?.selfEfficacy?.score < 2.5) {
 		tips.push({
-			tip: "Give specific, skill-based praise ('your analysis of X was sophisticated') rather than generic praise. This student doubts their ability and needs concrete evidence of competence.",
+			tip: `Give specific, skill-based praise ('your analysis of X was sophisticated') rather than generic praise. ${n} doubts their ability and needs concrete evidence of competence.`,
 			evidence: `Self-efficacy: ${sp.selfRegulation.selfEfficacy.score.toFixed(1)}/5`,
 			priority: 'high'
 		});
 	}
 	if (sp?.selfRegulation?.effortRegulation?.score < 2.5) {
 		tips.push({
-			tip: 'Break long tasks into 15-minute segments with visible progress markers. This student struggles to sustain effort when work is difficult or boring.',
+			tip: `Break long tasks into 15-minute segments with visible progress markers. ${n} struggles to sustain effort when work is difficult or boring.`,
 			evidence: `Effort regulation: ${sp.selfRegulation.effortRegulation.score.toFixed(1)}/5`,
 			priority: 'high'
 		});
@@ -141,7 +144,7 @@ function buildInstructionTips(sp, lp) {
 	}
 	if (sp?.selfRegulation?.helpSeeking?.score < 2.5) {
 		tips.push({
-			tip: "Proactively check understanding: this student won't ask for help even when stuck. Brief private check-ins during independent work are essential.",
+			tip: `Proactively check understanding: ${n} won't ask for help even when stuck. Brief private check-ins during independent work are essential.`,
 			evidence: `Help-seeking: ${sp.selfRegulation.helpSeeking.score.toFixed(1)}/5`,
 			priority: 'medium'
 		});
@@ -150,7 +153,7 @@ function buildInstructionTips(sp, lp) {
 	// Energy
 	if (lp?.energy?.netEnergy?.score < 2.5) {
 		tips.push({
-			tip: "Schedule demanding cognitive tasks for the start of class: this student's energy depletes rapidly. Avoid placing high-stakes assessments late in the day.",
+			tip: `Schedule demanding cognitive tasks for the start of class: ${n}'s energy depletes rapidly. Avoid placing high-stakes assessments late in the day.`,
 			evidence: `Net energy: ${lp.energy.netEnergy.score.toFixed(1)}/5`,
 			priority: 'high'
 		});
@@ -159,7 +162,7 @@ function buildInstructionTips(sp, lp) {
 	// Procrastination
 	if (lp?.focus?.procrastination?.score < 2.5) {
 		tips.push({
-			tip: 'Set frequent short deadlines rather than one large due date. This student procrastinates significantly and needs external structure to start tasks.',
+			tip: `Set frequent short deadlines rather than one large due date. ${n} procrastinates significantly and needs external structure to start tasks.`,
 			evidence: `Procrastination resistance: ${lp.focus.procrastination.score.toFixed(1)}/5`,
 			priority: 'high'
 		});
@@ -168,7 +171,7 @@ function buildInstructionTips(sp, lp) {
 	// Combinations
 	if (sp?.dominantApproach === 'surface' && sp?.motivationProfile === 'controlled') {
 		tips.push({
-			tip: "This student is going through the motions. Find one topic where they show even slight curiosity and use it as an entry point to deeper engagement. Force won't work, connection might.",
+			tip: `${n} is going through the motions. Find one topic where they show even slight curiosity and use it as an entry point to deeper engagement. Force won't work, connection might.`,
 			evidence: `Surface approach + controlled motivation`,
 			priority: 'high'
 		});
@@ -250,7 +253,7 @@ const EXAM_STRATEGIES = {
 	anxiety: {
 		label: 'Exam Anxiety',
 		strategies: [
-			'Allow extra time or accommodations if possible: this student likely knows more than their exam results show',
+			`Allow extra time or accommodations if possible: ${n} likely knows more than their exam results show`,
 			'Offer regular practice tests under timed conditions to build familiarity',
 			'Never comment publicly on visible anxiety, check in privately afterwards'
 		]
@@ -274,7 +277,7 @@ const EXAM_STRATEGIES = {
 	preparation: {
 		label: 'Preparation-Focused',
 		strategies: [
-			"This student's attributions are healthy, focus on study quality (active recall, spaced repetition) not quantity",
+			`${n}'s attributions are healthy, focus on study quality (active recall, spaced repetition) not quantity`,
 			'Help them identify specific weak topics through diagnostic tests rather than broad revision',
 			'Encourage them to create practice exams from their notes, active generation beats passive review'
 		]
@@ -324,7 +327,7 @@ function buildTeacherWarnings(lp, sp, rootCause) {
 		warnings.push({
 			signal: 'Declining work quality despite continued long hours, physical complaints, withdrawal from peers',
 			meaning: 'Energy depletion masking as reduced effort: they are trying but running on empty',
-			action: 'Have a private conversation about workload. This student needs permission to rest, not pressure to perform.'
+			action: `Have a private conversation about workload. ${n} needs permission to rest, not pressure to perform.`
 		});
 	}
 	if (rootCause?.primaryPattern?.id === 'capable-but-checked-out') {
@@ -651,7 +654,7 @@ function buildRootCauseSummary(rootCause) {
 
 	let summary = `The data suggests a pattern of ${p.title.toLowerCase()}. `;
 	// Rewrite diagnosis for adult audience
-	summary += p.diagnosis.replace(/\bYou\b/g, 'This student').replace(/\byou\b/g, 'they').replace(/\byour\b/g, 'their').replace(/You're/g, "They're").replace(/you're/g, "they're").replace(/You've/g, "They've").replace(/you've/g, "they've");
+	summary += p.diagnosis.replace(/\bYou\b/g, `${n}`).replace(/\byou\b/g, 'they').replace(/\byour\b/g, 'their').replace(/You're/g, "They're").replace(/you're/g, "they're").replace(/You've/g, "They've").replace(/you've/g, "they've");
 	summary += ` Key indicators: ${evidenceParts.join(', ')}.`;
 
 	if (rootCause.secondaryPattern) {
@@ -698,7 +701,7 @@ function buildTopThreeActions(teacher, parent, rootCause, urgency) {
 	// Fill remaining with defaults
 	while (actions.length < 3) {
 		if (actions.length === 0) {
-			actions.push({ action: 'Maintain current approach: this student is doing well', who: 'both', timeframe: 'Ongoing', why: 'No significant concerns identified' });
+			actions.push({ action: `Maintain current approach: ${n} is doing well`, who: 'both', timeframe: 'Ongoing', why: 'No significant concerns identified' });
 		} else if (actions.length === 1) {
 			actions.push({ action: 'Regular brief check-ins to catch emerging issues early', who: 'both', timeframe: 'Weekly', why: 'Prevention is easier than intervention' });
 		} else {
@@ -709,12 +712,14 @@ function buildTopThreeActions(teacher, parent, rootCause, urgency) {
 	return actions.slice(0, 3);
 }
 
-const KEY_MESSAGES = {
-	enrichment: 'This student is thriving academically. Your role is to enrich, encourage, and watch for signs of perfectionism or overwork.',
-	support: 'This student has genuine strengths alongside specific gaps. Targeted support in 1-2 areas will unlock significant improvement.',
-	intervention: 'This student needs focused support. The data points to a clear pattern that, once addressed, will release their potential.',
-	urgent: 'This student is struggling in ways that may not be fully visible. Coordinated action between school and home is important now.'
-};
+function getKeyMessages(n: string) {
+	return {
+		enrichment: `${n} is thriving academically. Your role is to enrich, encourage, and watch for signs of perfectionism or overwork.`,
+		support: `${n} has genuine strengths alongside specific gaps. Targeted support in 1-2 areas will unlock significant improvement.`,
+		intervention: `${n} needs focused support. The data points to a clear pattern that, once addressed, will release their potential.`,
+		urgent: `${n} is struggling in ways that may not be fully visible. Coordinated action between school and home is important now.`
+	};
+}
 
 // --- Main generator ---
 
@@ -723,6 +728,7 @@ const KEY_MESSAGES = {
  * @returns {object|null}
  */
 export function generateAcademicGuide(results) {
+	n = results.studentName || 'This student';
 	const sp = results.studyProfile;
 	const lp = results.learnerProfile;
 
@@ -753,7 +759,7 @@ export function generateAcademicGuide(results) {
 	const shared = {
 		rootCauseSummary: buildRootCauseSummary(rootCause),
 		topThreeActions: buildTopThreeActions(teacher, parent, rootCause, urgency),
-		keyMessage: KEY_MESSAGES[urgency] || KEY_MESSAGES.support
+		keyMessage: getKeyMessages(n)[urgency] || getKeyMessages(n).support
 	};
 
 	return { urgency, teacher, parent, shared };

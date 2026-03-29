@@ -46,9 +46,11 @@ export function generateReport(results: any, name: string) {
 	const hasComplete = hasPersonality && hasStudy && hasLearner;
 
 	// Convert scorer's dimension array to the map format expected by report templates
+	// Inject studentName (first name) so all generators can personalize narratives
+	const first = name ? name.split(' ')[0] : 'This student';
 	const enriched = hasPersonality
-		? { ...results, dimensions: toDimensionsMap(results.dimensions) }
-		: results;
+		? { ...results, dimensions: toDimensionsMap(results.dimensions), studentName: first }
+		: { ...results, studentName: first };
 
 	let crossRefResult = null;
 	if (hasComplete) {

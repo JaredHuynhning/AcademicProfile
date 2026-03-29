@@ -6,6 +6,7 @@
 import { getLearningArchetype, classifyLevel, DIM_NAMES } from './helpers';
 
 export function generateUnifiedGuide(results, crossRefResult) {
+	const n = results.studentName || 'This student';
 	const dims = results.dimensions;
 	const sp = results.studyProfile;
 	const lp = results.learnerProfile;
@@ -31,19 +32,19 @@ export function generateUnifiedGuide(results, crossRefResult) {
 
 	const strategies = [];
 	if (xLevel === 'high') {
-		strategies.push('Allow class discussion and peer-to-peer explanation — this student learns best by talking through ideas.');
+		strategies.push(`Allow class discussion and peer-to-peer explanation — ${n} learns best by talking through ideas.`);
 		strategies.push('Consider peer tutoring or study group facilitation roles. Leadership in learning contexts builds confidence.');
 	} else if (xLevel === 'low') {
-		strategies.push('Offer written or one-on-one channels for questions — this student struggles to ask in front of the class.');
+		strategies.push(`Offer written or one-on-one channels for questions — ${n} struggles to ask in front of the class.`);
 		strategies.push('Do not cold-call unexpectedly. Give advance notice before asking for verbal responses.');
 	} else {
 		strategies.push('Flexible participation — sometimes collaborative, sometimes independent. Check in to see which mode fits the moment.');
 	}
 
 	if (cLevel === 'high') {
-		strategies.push('Provide structured rubrics and clear expectations. This student performs best when they know exactly what is required.');
+		strategies.push(`Provide structured rubrics and clear expectations. ${n} performs best when they know exactly what is required.`);
 	} else {
-		strategies.push('Break assignments into smaller checkpoints with regular feedback — this student needs external structure to self-regulate effectively.');
+		strategies.push(`Break assignments into smaller checkpoints with regular feedback — ${n} needs external structure to self-regulate effectively.`);
 	}
 
 	if (highAnxiety) {
@@ -55,12 +56,12 @@ export function generateUnifiedGuide(results, crossRefResult) {
 
 	const feedbackApproach =
 		highAnxiety || emotionalityLevel === 'high'
-			? 'Lead with what is working before addressing gaps. For this student, criticism lands harder — frame corrections as growth opportunities, not failures. Written feedback is often better received than verbal.'
+			? `Lead with what is working before addressing gaps. For ${n}, criticism lands harder — frame corrections as growth opportunities, not failures. Written feedback is often better received than verbal.`
 			: teacherPreferenceWarmth >= 4
-				? 'This student values warmth in feedback. A supportive tone is not "softness" — it is the most effective delivery method for this personality type.'
+				? `${n} values warmth in feedback. A supportive tone is not "softness" — it is the most effective delivery method for this personality type.`
 				: teacherPreferenceStructure >= 4
-					? 'This student prefers direct, specific feedback with clear next steps. Avoid vague praise — tell them exactly what to improve and how.'
-					: 'Balanced feedback works well. Be honest, specific, and constructive. This student can handle direct feedback delivered respectfully.';
+					? `${n} prefers direct, specific feedback with clear next steps. Avoid vague praise — tell them exactly what to improve and how.`
+					: `Balanced feedback works well. Be honest, specific, and constructive. ${n} can handle direct feedback delivered respectfully.`;
 
 	const warningSignalsTeacher = rootCauses.slice(0, 3).map((i) => ({
 		watch: i.visibleBehaviour || 'Observable change in engagement or output',
@@ -73,7 +74,7 @@ export function generateUnifiedGuide(results, crossRefResult) {
 	// Parent support
 	const homeEnvironment =
 		xLevel === 'low'
-			? 'Create a quiet, dedicated study space with minimal interruptions. This student recharges through solitude and works best with low social demand at home.'
+			? `Create a quiet, dedicated study space with minimal interruptions. ${n} recharges through solitude and works best with low social demand at home.`
 			: xLevel === 'high'
 				? 'Allow some social connection alongside study — brief family check-ins or study with a sibling or friend can help maintain energy.'
 				: 'A calm, organised home environment works well. Minimal noise during key study blocks is helpful but occasional social interaction is fine.';
@@ -90,8 +91,8 @@ export function generateUnifiedGuide(results, crossRefResult) {
 		highAnxiety
 			? 'Validate anxiety without amplifying it. Avoid "You should have started earlier" — this adds shame. Instead: "What would make the next step feel manageable?" Help build a pre-exam calming routine.'
 			: dims?.E?.score >= 3.5
-				? 'This student feels things deeply. Provide emotional availability, especially before assessments. A brief "how are you feeling about this?" goes a long way.'
-				: 'This student is relatively emotionally self-sufficient. Support looks like asking questions rather than offering advice.';
+				? `${n} feels things deeply. Provide emotional availability, especially before assessments. A brief "how are you feeling about this?" goes a long way.`
+				: `${n} is relatively emotionally self-sufficient. Support looks like asking questions rather than offering advice.`;
 
 	const conversationStarters = buildConversationStarters(dims, sp, lp, archetype);
 
@@ -111,7 +112,7 @@ export function generateUnifiedGuide(results, crossRefResult) {
 
 	// Tutor match
 	const tutorTraits = buildTutorTraits(dims, sp, highAnxiety);
-	const tutorRationale = `This student's ${archetype} profile means they need a tutor who ${tutorTraits.slice(0, 2).join(' and ')}. Mismatched tutor styles risk reinforcing existing barriers rather than addressing them.`;
+	const tutorRationale = `${n}'s ${archetype} profile means they need a tutor who ${tutorTraits.slice(0, 2).join(' and ')}. Mismatched tutor styles risk reinforcing existing barriers rather than addressing them.`;
 
 	const tutorMatch = { traits: tutorTraits, rationale: tutorRationale };
 
