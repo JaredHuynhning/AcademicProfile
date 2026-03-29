@@ -62,6 +62,14 @@ export function generateSubjectFitMega(
 		`Which subjects naturally align with ${studentName}'s personality — and which will require more effort? This section maps the fit between their personality traits and major subject areas, helping parents and teachers understand why some subjects feel easy and others feel like pushing uphill.`
 	);
 
+	narrative.push(
+		`Research on personality-subject fit explains approximately 10-15% of the variance in subject grades beyond general ability (Vedel, 2014). This means two students of equal intelligence may receive different grades in the same subject simply because their personality is more or less aligned with the subject's demands. Understanding this alignment helps set realistic expectations, choose appropriate support strategies, and make informed decisions about subject selection.`
+	);
+
+	narrative.push(
+		`A mismatched personality-subject fit does NOT mean ${studentName} cannot succeed in that subject. It means they will need different strategies — and possibly more effort — than a student whose personality naturally aligns. Many of the world's best scientists were not "naturally scientific" in personality; they developed strategies to compensate for their natural tendencies. The same is true for any student in any subject.`
+	);
+
 	// ─── Subject Alignment ───────────────────────────────────────────────────────
 	narrative.push('\n### Subject Alignment Matrix');
 

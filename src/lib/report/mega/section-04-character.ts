@@ -38,6 +38,14 @@ export function generateAcademicCharacterMega(
 		`Academic character is the set of personality-driven behaviours that determine how ${studentName} approaches their schoolwork day after day. It's not about intelligence — it's about what they do with their intelligence. Research consistently shows that character traits like persistence, organisation, and self-regulation account for more of the variance in academic achievement than cognitive ability alone (Duckworth et al., 2007).`
 	);
 
+	narrative.push(
+		`The concept of "academic character" encompasses four interrelated components: work ethic (how hard and consistently a student works), persistence (how they handle difficulty and setbacks), goal orientation (what success means to them), and self-regulation (how well they manage their own learning process). Each component is measurable through personality data, and each is developable through targeted intervention. This section analyses all four for ${studentName}, providing both a diagnostic understanding and actionable recommendations.`
+	);
+
+	narrative.push(
+		`Crucially, academic character is not fixed. Unlike IQ, which is relatively stable, character traits develop substantially through adolescence and early adulthood. A student who appears "lazy" at 14 may develop exceptional discipline by 18 — with the right environment, scaffolding, and motivation. The goal is not to label ${studentName}, but to understand their current starting point and accelerate the natural development of productive academic habits.`
+	);
+
 	// ─── Work Ethic ──────────────────────────────────────────────────────────────
 	narrative.push('\n### Work Ethic');
 

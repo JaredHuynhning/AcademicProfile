@@ -25,6 +25,10 @@ export function generateLearningProfileMega(
 		`Understanding how ${studentName} learns — not just what they know — is the key to unlocking their academic potential. This section maps their learning style, attention patterns, motivation drivers, and ideal study environment, all derived from the intersection of their personality profile and academic learning data.`
 	);
 
+	narrative.push(
+		`Every student has a unique learning fingerprint shaped by the interaction between personality traits, cognitive preferences, and environmental factors. Two students with identical intelligence can achieve vastly different outcomes simply because their learning approach matches — or mismatches — the demands of their educational environment. Research consistently shows that alignment between learning style and teaching format can improve retention by 25-40% (Pashler et al., 2008). The goal of this section is to identify ${studentName}'s optimal learning conditions so that parents, teachers, and ${studentName} themselves can engineer more of those conditions into their daily academic life.`
+	);
+
 	// ─── Learning Style ──────────────────────────────────────────────────────────
 	narrative.push('\n### Learning Style');
 

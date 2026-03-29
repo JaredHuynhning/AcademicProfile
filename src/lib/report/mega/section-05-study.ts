@@ -29,6 +29,14 @@ export function generateStudyPlaybookMega(
 		`This section translates ${studentName}'s personality and learning profile into specific, actionable study strategies. Every recommendation is calibrated to their unique combination of traits — not generic advice, but strategies that work for someone with exactly ${studentName}'s profile.`
 	);
 
+	narrative.push(
+		`The science of effective studying has advanced dramatically in the last two decades. Research from cognitive psychology has identified which techniques actually work (active recall, spaced repetition, interleaving) and which are popular but ineffective (re-reading, highlighting, summarising). What's less well-known is that personality type moderates which effective techniques are most sustainable for a given student. A technique that works brilliantly for a highly conscientious introvert may be abandoned within a week by an extraverted student with lower natural discipline. This section matches the right technique to the right personality.`
+	);
+
+	narrative.push(
+		`The strategies below are ordered by expected fit for ${studentName}'s specific profile. Start with the highest-ranked methods and add others gradually. Trying to implement every technique at once is a common trap — it overwhelms the student and leads to abandoning everything. One well-implemented technique beats five poorly-implemented ones every time.`
+	);
+
 	// ─── Optimal Study Methods ───────────────────────────────────────────────────
 	narrative.push('\n### Optimal Study Methods');
 
