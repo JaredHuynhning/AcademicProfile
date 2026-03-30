@@ -112,6 +112,11 @@ export function generateExecutiveSummaryMega(
 		`For parents reading this report: you don't need to read every section cover-to-cover. Start with this Executive Summary for the big picture, then jump to Section 10 (Teacher & Parent Guide) for specific strategies you can implement at home. Section 11 (Action Plan) gives you the priority order. The deep analysis in Sections 2-9 provides the evidence behind each recommendation — read these when you want to understand the "why" behind a strategy.`
 	);
 
+	// Para 7: What this report is NOT
+	narrative.push(
+		`A note on what this report is and is not. This is a personality-based academic profile — it identifies how ${studentName}'s natural tendencies shape their learning, and provides strategies that work WITH those tendencies rather than against them. It is NOT a measure of intelligence, a clinical diagnosis, or a prediction of future success. Personality is one piece of the academic puzzle, alongside intelligence, opportunity, teaching quality, and effort. What makes personality uniquely valuable is that it's actionable: while IQ is relatively fixed, the way personality interacts with the learning environment can be optimised through the strategies in this report.`
+	);
+
 	// Score summary findings
 	DIM_ORDER.forEach(key => {
 		const dim = dimensions[key];

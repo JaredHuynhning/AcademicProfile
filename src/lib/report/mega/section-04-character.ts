@@ -186,6 +186,39 @@ export function generateAcademicCharacterMega(
 		topic: 'Self-regulation',
 	});
 
+	// ─── Intrinsic vs Extrinsic Motivation ───────────────────────────────────────
+	narrative.push('\n### What Truly Drives This Student');
+
+	narrative.push(
+		`Understanding what genuinely motivates ${studentName} — not what adults think should motivate them — is the key to sustainable academic effort. Motivation research identifies four sources of drive: autonomy (choice and control), competence (getting better at things), relatedness (connection to people), and purpose (feeling that the work matters). ${studentName}'s personality profile suggests which of these sources is most powerful for them.`
+	);
+
+	if (hScore < 2.5 && cScore >= 3.0) {
+		narrative.push(
+			`${studentName} is driven by **achievement and recognition**. They want to be seen as successful, score highly, and receive tangible rewards. This is not shallow — it's a legitimate motivational profile that can produce exceptional results when channelled constructively. The strategy: make achievement visible. Grade trackers, personal bests, leaderboards, and explicit recognition for improvement all feed this drive. The risk: over-focus on grades at the expense of genuine learning. Balance achievement motivation with occasional "no grade" learning experiences that build intrinsic interest.`
+		);
+	} else if (oScore >= 3.5) {
+		narrative.push(
+			`${studentName} is driven by **curiosity and mastery**. They want to understand deeply, explore ideas, and feel intellectually stimulated. Grades are less motivating than the feeling of "getting it." The strategy: give them permission to go deep in subjects they love, connect boring material to interesting questions, and frame challenges as puzzles rather than obligations. The risk: neglecting subjects that don't spark curiosity. Help them see that mastery of even uninteresting material is a skill worth developing.`
+		);
+	} else if (cScore >= 3.5 && eScore < 3.0) {
+		narrative.push(
+			`${studentName} is driven by **competence and routine**. They find satisfaction in doing things well, consistently, and efficiently. Their motivation comes from the process itself — the daily rhythm of study, the steady accumulation of knowledge, the quiet pride of consistent effort. The strategy: build and maintain routines, set process goals ("study maths for 30 minutes daily") rather than outcome goals ("get an A in maths"), and celebrate consistency. The risk: rigidity. Help them adapt when routines need to change (new subjects, new teachers, exam periods).`
+		);
+	} else if (eScore >= 3.5 && hScore >= 3.0) {
+		narrative.push(
+			`${studentName} is driven by **relatedness and purpose**. They want to feel connected to others and believe their work matters beyond just grades. They study harder for teachers they respect, subjects they see as meaningful, and goals that align with their values. The strategy: build strong relationships with teachers, connect academic material to real-world impact, and frame studying as preparation for helping others. The risk: disengagement when relationships are weak or purposes unclear.`
+		);
+	} else {
+		narrative.push(
+			`${studentName}'s motivation profile is multifaceted — no single driver dominates. They respond to a mix of achievement, curiosity, routine, and connection depending on the context. This flexibility means they can be engaged by different approaches in different subjects: competition in maths, exploration in science, social connection in group projects, practical application in vocational subjects. The strategy: vary the motivational approach by subject and context rather than relying on a single technique.`
+		);
+	}
+
+	narrative.push(
+		`Whatever ${studentName}'s primary drive, one principle applies universally: motivation follows action, not the other way around. Waiting to "feel motivated" before starting is a trap that leads to chronic procrastination. Instead, commit to starting — even for just 5 minutes. Research consistently shows that motivation increases after beginning a task, not before (Baumeister & Tierney, 2011). The hardest part is the first minute.`
+	);
+
 	return {
 		narrative,
 		keyFindings,

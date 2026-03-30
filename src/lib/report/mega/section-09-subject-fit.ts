@@ -170,7 +170,11 @@ export function generateSubjectFitMega(
 	narrative.push('\n### Early Career Signals');
 
 	narrative.push(
-		`While it's far too early for career counselling, personality research reveals interesting patterns between HEXACO profiles and career satisfaction. These are not predictions — they're data points worth exploring as ${studentName} discovers their interests over time.`
+		`While it's far too early for career counselling, personality research reveals interesting patterns between HEXACO profiles and career satisfaction. These are not predictions — they're data points worth exploring as ${studentName} discovers their interests over time. The strongest career signal at this age is not what personality data says, but what makes ${studentName} lose track of time — whatever that is, it's worth exploring further.`
+	);
+
+	narrative.push(
+		`Research by Holland (1997) and McKay & Tokar (2012) shows meaningful connections between personality dimensions and career satisfaction. These connections don't determine career choice — they indicate where ${studentName} is most likely to find sustained engagement and fulfilment. People who work in fields that align with their personality report 30-40% higher job satisfaction and are significantly less likely to burn out.`
 	);
 
 	const oScore = dimensions.O?.score || 3.0;
