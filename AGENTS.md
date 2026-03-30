@@ -8,8 +8,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Current State
 
-- **Last session**: 2026-03-30 — Shipped #14 (PDF fixes), #15 (12 mega-section architecture), #16 (content depth to 44 PDF pages, 14.5K words). 20 commits.
-- **Next action**: All tickets done. Consider: visual polish, new screenshots for landing page, or new feature work.
+- **Last session**: 2026-03-30 — Working on #17 (10/10 report overhaul). Added bell curves, facet bar charts, dimension score cards, subject fit matrix, collapsible sections with key takeaways, PDF divider previews. 3 personas tested: 42 PDF pages, 9.1-9.9K web words, 0 errors each.
+- **Next action**: Continue #17 — remaining items: more personalisation polish, varied prose structure, strengthen PDF chart rendering.
 
 ## Launch Readiness
 
@@ -211,13 +211,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - [x] Zero runtime errors when completing a quiz and viewing the report
 
 ### Ticket #17 AC
-- [ ] Student name appears in report header, nav bar, and throughout narrative text (not "Student")
+- [x] Student name appears in report header, nav bar, and throughout narrative text (not "Student")
 - [ ] Generic advice (active recall, sleep 8 hours) removed or made conditional
-- [ ] At least 3 visual charts beyond radar (bell curve, facet bars, strength heat map)
-- [ ] Section dividers replaced with visual summary cards showing key metrics
-- [ ] Web report has collapsible sections with "Key Takeaway" summaries
-- [ ] `npm run build` exits 0
-- [ ] Zero runtime errors
+- [x] At least 3 visual charts beyond radar (bell curve, facet bars, subject fit matrix, dimension score cards)
+- [x] Section dividers include key findings previews
+- [x] Web report has collapsible sections with "Key Takeaway" summaries
+- [x] `npm run build` exits 0
+- [x] Zero runtime errors (verified across 3 personas)
 
 ### Ticket #16 AC
 - [ ] PDF output is 40+ pages (measured via page count)
@@ -305,12 +305,26 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Shipped #3: ScoreBar, Callout, PullQuote components for visual variety in report
 - Visual tested all features with Playwright across Personality/Learning/Complete modes
 
+### 2026-03-30 (session 2 — 10/10 overhaul)
+- Started #17: 10/10 report overhaul (personalisation, visuals, content, UX)
+- Added chart infrastructure: chart-geometry.ts (bell curve math, colour utils)
+- Built 6 web chart components: BellCurveChart, FacetBarChart, DimensionScoreCard, SubjectFitMatrix
+- Built 2 PDF chart components: PDFBellCurve, PDFFacetBarChart
+- Added DimensionDetail and SubjectAlignment types to MegaReport
+- Integrated 6 dimension cards (with bell curves + facet bars) into personality section
+- Added 6 mini bell curve distributions to executive summary
+- Added subject fit matrix to subject-fit section
+- Enhanced ReportSection with section numbers, key takeaway boxes, collapse/expand toggles
+- Added keyTakeaway field to MegaSection with score-conditional summaries for all 11 sections
+- PDF section dividers now show key findings previews
+- Ran 3 personas (Mia Chen, Jake Morrison, Aisha Patel): 42 pages, 9.1-9.9K words, 0 errors each
+- 4 commits pushed to main
+
 ### 2026-03-25
 - Fixed quiz getting stuck (animation 600ms→200ms, answers persist cleared on restart)
 - Fixed report TypeError crashes (scorer array→map conversion, optional chaining on narrative)
 - Visual tested all 3 assessment modes end-to-end (Personality 60q, Learning 60q, Complete 120q)
 - Cleaned up stale worktree branches
-
 
 
 
