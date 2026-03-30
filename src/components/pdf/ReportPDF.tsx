@@ -1362,7 +1362,7 @@ function PDFDimensionCard({ dim }: { dim: DimensionDetail }) {
 }
 
 function MegaSectionContent({ section, dimensionDetails }: { section: MegaSection; dimensionDetails?: DimensionDetail[] }) {
-  const hasRichNarrative = section.content.narrative.length > 2;
+  const hasRichNarrative = section.content.narrative.length > 0;
 
   // If the section has rich mega-narrative content, render that
   if (hasRichNarrative) {
@@ -1501,9 +1501,9 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
           </Text>
         ) : null}
 
-        {Array.isArray(coverData?.radarData) ? (
+        {mega.radarData.length > 0 ? (
           <View style={{ alignItems: 'center' as const, marginBottom: 16 }}>
-            <PDFRadarChart data={coverData.radarData as { label: string; value: number; color: string }[]} size={160} />
+            <PDFRadarChart data={mega.radarData.map(d => ({ label: d.dim, value: d.score, color: d.color }))} size={160} />
           </View>
         ) : null}
 
@@ -1554,79 +1554,37 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
         </View>
       </Page>
 
-      {/* Content: section divider + content for each mega-section */}
-      {contentSections.flatMap((section, sectionIndex) => {
-        // Build a key findings summary for the divider page
-        const topFindings = section.content.keyFindings.slice(0, 3);
-
-        const dividerPage = (
-          <Page key={`divider-${section.id}`} size="A4" style={{
-            ...styles.coverPage,
-            justifyContent: 'center' as const,
-            paddingTop: 0,
-          }}>
-            <Text style={{ fontSize: 9, color: WARM_GRAY, textTransform: 'uppercase' as const, letterSpacing: 3, marginBottom: 8 }}>
+      {/* Content: inline section headers + content (no separate divider pages) */}
+      {contentSections.map((section, sectionIndex) => (
+        <Page key={section.id} size="A4" style={styles.page} wrap>
+          {/* Inline section header — replaces wasteful full-page dividers */}
+          <View style={{ marginBottom: 24 }}>
+            <Text style={{ fontSize: 8, color: WARM_GRAY, textTransform: 'uppercase' as const, letterSpacing: 3, marginBottom: 4 }}>
               Section {String(sectionIndex + 1).padStart(2, '0')}
             </Text>
-            <Text style={{ fontSize: 22, fontWeight: 'bold', color: ESPRESSO, marginBottom: 6, textAlign: 'center' as const }}>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', color: ESPRESSO, marginBottom: 4 }}>
               {section.title}
             </Text>
             {section.subtitle && (
-              <Text style={{ fontSize: 12, color: WARM_GRAY, fontStyle: 'italic', textAlign: 'center' as const, marginBottom: 16 }}>
+              <Text style={{ fontSize: 10, color: WARM_GRAY, fontStyle: 'italic', marginBottom: 8 }}>
                 {section.subtitle}
               </Text>
             )}
-            <View style={{ width: 40, height: 3, backgroundColor: ESPRESSO, alignSelf: 'center' as const, marginBottom: 20 }} />
+            <View style={{ width: 30, height: 2, backgroundColor: ESPRESSO, marginBottom: 12 }} />
+          </View>
 
-            {/* Key findings preview on divider */}
-            {topFindings.length > 0 && (
-              <View style={{ maxWidth: 360, alignSelf: 'center' as const, gap: 6 }}>
-                <Text style={{ fontSize: 7, color: WARM_GRAY, textTransform: 'uppercase', letterSpacing: 1.5, textAlign: 'center' as const, marginBottom: 4 }}>
-                  Key Findings
-                </Text>
-                {topFindings.map((f, i) => (
-                  <View key={i} style={{ flexDirection: 'row', gap: 6, alignItems: 'flex-start', paddingHorizontal: 12 }}>
-                    <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: f.color || WARM_GRAY, marginTop: 3 }} />
-                    <View style={{ flex: 1 }}>
-                      <Text style={{ fontSize: 8, fontWeight: 'bold', color: ESPRESSO }}>{f.title}</Text>
-                      <Text style={{ fontSize: 7, color: WARM_GRAY, lineHeight: 1.4 }}>{f.text.substring(0, 120)}{f.text.length > 120 ? '...' : ''}</Text>
-                    </View>
-                  </View>
-                ))}
-              </View>
-            )}
-          </Page>
-        );
-        // Action plan: render mega content (rich narrative), not old ActionSheet
-        if (section.id === 'action-plan') {
-          return [
-            dividerPage,
-            <Page key={section.id} size="A4" style={styles.page} wrap>
-              <MegaSectionContent section={section} dimensionDetails={mega.dimensionDetails} />
-              <View style={styles.footer} fixed>
-                <Text>{name} — Academic Profile</Text>
-                <Text render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} />
-              </View>
-            </Page>,
-          ];
-        }
+          <MegaSectionContent section={section} dimensionDetails={mega.dimensionDetails} />
 
-        return [
-          dividerPage,
-          <Page key={section.id} size="A4" style={styles.page} wrap>
-            <MegaSectionContent section={section} dimensionDetails={mega.dimensionDetails} />
-
-            <View style={styles.footer} fixed>
-              <View style={styles.footerRule} />
-              <View style={styles.footerRow}>
-                <Text>{name}</Text>
-                <Text style={styles.footerCenter}>{section.title}</Text>
-                <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
-              </View>
+          <View style={styles.footer} fixed>
+            <View style={styles.footerRule} />
+            <View style={styles.footerRow}>
+              <Text>{name}</Text>
+              <Text style={styles.footerCenter}>{section.title}</Text>
+              <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
             </View>
-          </Page>,
-        ];
-      })}
+          </View>
+        </Page>
+      ))}
     </Document>
   );
 }
