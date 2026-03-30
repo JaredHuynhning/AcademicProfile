@@ -678,9 +678,13 @@ function MegaSectionBody({ section, studentName }: { section: MegaSection; stude
     return (
       <div className="space-y-8">
         <CoverSection data={section.rawData.cover as Record<string, unknown>} />
-        {section.content.narrative.map((para, i) => (
-          <p key={`n${i}`} className="text-espresso/80 leading-relaxed text-[15px]">{clean(para)}</p>
-        ))}
+        {section.content.narrative.map((para, i) => {
+          if (para.includes('**')) {
+            const parts = para.split(/\*\*(.*?)\*\*/g);
+            return <p key={`n${i}`} className="text-espresso/80 leading-relaxed text-[15px]">{parts.map((part, j) => j % 2 === 1 ? <strong key={j} className="text-espresso font-semibold">{part}</strong> : part)}</p>;
+          }
+          return <p key={`n${i}`} className="text-espresso/80 leading-relaxed text-[15px]">{clean(para)}</p>;
+        })}
         {section.content.keyFindings.map((f, i) => (
           <Callout key={`f${i}`} icon={f.type === 'strength' ? '💪' : '⚠️'} title={f.title}>
             {f.text}
@@ -715,7 +719,9 @@ function MegaSectionBody({ section, studentName }: { section: MegaSection; stude
     );
   }
 
-  // Generic: render narratives + findings + rawData via SectionContent
+  // Generic: render narratives + findings, only fall back to rawData when no mega narrative
+  const hasRichNarrative = section.content.narrative.length > 2;
+
   return (
     <div className="space-y-4">
       {section.content.narrative.length > 0 && (
@@ -727,7 +733,6 @@ function MegaSectionBody({ section, studentName }: { section: MegaSection; stude
             if (para.startsWith('\n#### ')) {
               return <h4 key={`n${i}`} className="font-display text-base font-semibold text-espresso mt-6 mb-1">{para.replace(/^[\n#]+\s*/, '')}</h4>;
             }
-            // Handle **bold** inline
             if (para.includes('**')) {
               const parts = para.split(/\*\*(.*?)\*\*/g);
               return (
@@ -750,7 +755,8 @@ function MegaSectionBody({ section, studentName }: { section: MegaSection; stude
           {a.description}
         </Callout>
       ))}
-      {section.rawData && Object.entries(section.rawData).map(([key, data]) => {
+      {/* Only render rawData when mega narrative is thin — avoids duplicate content */}
+      {!hasRichNarrative && section.rawData && Object.entries(section.rawData).map(([key, data]) => {
         if (!data || typeof data !== 'object') return null;
         return <SectionContent key={key} data={data as Record<string, unknown>} />;
       })}
