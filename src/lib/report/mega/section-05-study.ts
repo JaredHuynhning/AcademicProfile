@@ -182,6 +182,29 @@ export function generateStudyPlaybookMega(
 		topic: 'Exam preparation',
 	});
 
+	// ─── Memory & Retention ──────────────────────────────────────────────────────
+	narrative.push('\n### Memory & Retention Science');
+
+	narrative.push(
+		`How ${studentName} remembers information is shaped by both their personality and their study technique. Understanding the science of memory helps explain why some methods work and others don't, and why different personality types benefit from different approaches.`
+	);
+
+	narrative.push(
+		`**The Forgetting Curve:** Without review, students forget approximately 70% of new information within 24 hours and 90% within a week (Ebbinghaus, 1885). The only effective countermeasure is spaced retrieval — actively recalling information at increasing intervals (1 day, 3 days, 7 days, 14 days, 30 days). ${cScore >= 3.5 ? `${studentName}'s high conscientiousness makes them an excellent candidate for spaced repetition systems like Anki — they'll actually maintain the daily review habit.` : `${studentName} will need external reminders to maintain a review schedule. Set phone alarms or tie review sessions to existing habits (review flashcards right after breakfast, right before bed).`}`
+	);
+
+	narrative.push(
+		`**Encoding Depth:** Information encoded deeply (connected to existing knowledge, emotionally meaningful, actively processed) lasts longer than information encoded superficially (re-read, highlighted, copied). ${oScore >= 3.5 ? `${studentName}'s natural curiosity drives deep encoding — they ask "why?" and "how does this connect?" automatically. This is their biggest retention advantage.` : `${studentName} may default to surface encoding (re-reading, highlighting). Actively converting surface study into deep study — by asking "why is this true?" and "how does this connect to what I already know?" for each concept — dramatically improves retention.`}`
+	);
+
+	narrative.push(
+		`**Sleep & Memory:** Sleep is not rest — it's active memory consolidation. During deep sleep, the brain replays the day's learning and transfers it from short-term to long-term storage. Research shows that students who study and then sleep retain 20-40% more than students who study the same material and stay awake (Walker, 2017). ${eScore >= 3.5 ? `For ${studentName}, who may experience pre-exam sleep disruption from anxiety, protecting sleep is doubly important. A consistent sleep routine, no screens 30 minutes before bed, and calming activities (reading fiction, light stretching) help ensure the brain gets the consolidation time it needs.` : `${studentName}'s steady emotions mean sleep is unlikely to be disrupted by academic anxiety. Focus on maintaining a consistent 8-9 hour sleep schedule and avoiding the temptation to sacrifice sleep for last-minute cramming — it's counterproductive.`}`
+	);
+
+	narrative.push(
+		`**The Testing Effect:** Perhaps the most powerful memory finding in cognitive psychology: the act of retrieving information from memory strengthens that memory more than additional study of the same information (Roediger & Butler, 2011). Every time ${studentName} closes their notes and tries to recall what they learned, they're not just checking their memory — they're building it. A failed recall attempt (forgetting, then looking up the answer) strengthens memory MORE than a successful one. Struggling to remember is the brain's signal to prioritise that information for long-term storage.`
+	);
+
 	// ─── Weekly Schedule ─────────────────────────────────────────────────────────
 	narrative.push('\n### Weekly Schedule Template');
 

@@ -217,6 +217,35 @@ export function generateStrengthsMega(
 		);
 	}
 
+	// ─── Strengths in Action ─────────────────────────────────────────────────────
+	const cScore = dimensions.C?.score || 3.0;
+	const eScore = dimensions.E?.score || 3.0;
+	const oScore = dimensions.O?.score || 3.0;
+	const xScore = dimensions.X?.score || 3.0;
+	const aScore = dimensions.A?.score || 3.0;
+
+	narrative.push('\n### Putting Strengths to Work');
+
+	narrative.push(
+		`Knowing your strengths is only the first step — deploying them strategically is what creates results. Here is a practical guide for ${studentName} to apply their top personality strengths across different academic situations:`
+	);
+
+	narrative.push(
+		`**During exams:** ${cScore >= 3.5 ? `${studentName}'s conscientiousness means they're likely well-prepared, but may over-check answers at the expense of time management. Strategy: allocate specific time per question based on marks available, and move on when time is up — even if the answer isn't perfect.` : eScore < 3.0 ? `${studentName}'s emotional steadiness under pressure is their exam superpower. While other students panic, they can think clearly. Strategy: use the first 5 minutes of every exam to read the full paper, plan time allocation, and start with the highest-confidence question to build momentum.` : oScore >= 3.5 ? `${studentName}'s creative thinking can produce original, insightful answers that stand out from generic responses. Strategy: for essay questions, spend 3 minutes brainstorming unusual angles or connections before writing. An unexpected perspective, backed by evidence, earns top marks.` : `${studentName} should focus on playing to whichever strength is most relevant to each question type. Multiple choice rewards steady focus. Essays reward creative thinking. Calculations reward methodical precision. Match the approach to the assessment format.`}`
+	);
+
+	narrative.push(
+		`**During group projects:** ${xScore >= 3.5 && aScore >= 3.0 ? `${studentName} naturally takes the coordination role — but should consciously step into specific responsibilities rather than trying to manage everything. Strategy: volunteer for the role that matches their strongest dimension (organiser if high-C, idea generator if high-O, presenter if high-X) and let others own other roles.` : xScore < 2.5 ? `${studentName}'s strength in group work is the quality of their individual contributions, not their social leadership. Strategy: volunteer to own a specific deliverable (the research, the analysis, the written section) rather than taking coordination or presentation roles.` : `${studentName}'s balanced profile makes them versatile in groups — able to fill whatever role is missing. Strategy: identify what the group lacks and fill that gap.`}`
+	);
+
+	narrative.push(
+		`**When choosing electives or activities:** ${oScore >= 3.5 ? `Choose subjects and activities that reward exploration and creativity: advanced arts, research projects, debating, creative writing, independent study units.` : cScore >= 3.5 ? `Choose subjects with clear structure and cumulative skill-building: advanced maths, sciences with practical components, music (structured practice), and sports with clear progression pathways.` : xScore >= 3.5 ? `Choose activities with social components: team sports, drama, debate club, peer mentoring, student council.` : `Choose a mix of subjects that play to different strengths — ${studentName}'s balanced profile means they can succeed across a variety of contexts.`}`
+	);
+
+	narrative.push(
+		`**When motivation is low:** Return to the strengths identified in this section. Ask: "How can I use my top strength to make this task more engaging?" A highly conscientious student can turn any task into a challenge against their own best time. A highly open student can find an interesting angle on any topic. An extraverted student can turn study into a social event. Strengths are not just descriptions — they are tools.`
+	);
+
 	return {
 		narrative,
 		keyFindings,
