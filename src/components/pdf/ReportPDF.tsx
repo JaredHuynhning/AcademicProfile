@@ -1493,36 +1493,45 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
         </View>
       </Page>
 
-      {/* Content: each mega-section gets its own page */}
-      {contentSections.map((section, sectionIndex) => {
+      {/* Content: section divider + content for each mega-section */}
+      {contentSections.flatMap((section, sectionIndex) => {
+        const dividerPage = (
+          <Page key={`divider-${section.id}`} size="A4" style={{
+            ...styles.coverPage,
+            justifyContent: 'center' as const,
+            paddingTop: 0,
+          }}>
+            <Text style={{ fontSize: 9, color: WARM_GRAY, textTransform: 'uppercase' as const, letterSpacing: 3, marginBottom: 8 }}>
+              Section {String(sectionIndex + 1).padStart(2, '0')}
+            </Text>
+            <Text style={{ fontSize: 22, fontWeight: 'bold', color: ESPRESSO, marginBottom: 6, textAlign: 'center' as const }}>
+              {section.title}
+            </Text>
+            {section.subtitle && (
+              <Text style={{ fontSize: 12, color: WARM_GRAY, fontStyle: 'italic', textAlign: 'center' as const, marginBottom: 16 }}>
+                {section.subtitle}
+              </Text>
+            )}
+            <View style={{ width: 40, height: 3, backgroundColor: ESPRESSO, alignSelf: 'center' as const }} />
+          </Page>
+        );
         // Action plan: render mega content (rich narrative), not old ActionSheet
         if (section.id === 'action-plan') {
-          return (
+          return [
+            dividerPage,
             <Page key={section.id} size="A4" style={styles.page} wrap>
-              <View style={styles.sectionHeader} wrap={false} minPresenceAhead={80}>
-                <Text style={styles.sectionEyebrow}>Section {String(sectionIndex + 1).padStart(2, "0")}</Text>
-                <Text style={styles.sectionTitle}>{section.title}</Text>
-                {section.subtitle && <Text style={{ fontSize: 11, color: WARM_GRAY, marginBottom: 8 }}>{section.subtitle}</Text>}
-                <View style={styles.sectionRule} />
-              </View>
               <MegaSectionContent section={section} />
               <View style={styles.footer} fixed>
                 <Text>{name} — Academic Profile</Text>
                 <Text render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} />
               </View>
-            </Page>
-          );
+            </Page>,
+          ];
         }
 
-        return (
+        return [
+          dividerPage,
           <Page key={section.id} size="A4" style={styles.page} wrap>
-            <View style={styles.sectionHeader} wrap={false} minPresenceAhead={80}>
-              <Text style={styles.sectionEyebrow}>Section {String(sectionIndex + 1).padStart(2, "0")}</Text>
-              <Text style={styles.sectionTitle}>{section.title}</Text>
-              {section.subtitle && <Text style={{ fontSize: 11, color: WARM_GRAY, marginBottom: 8 }}>{section.subtitle}</Text>}
-              <View style={styles.sectionRule} />
-            </View>
-
             <MegaSectionContent section={section} />
 
             <View style={styles.footer} fixed>
@@ -1533,8 +1542,8 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
                 <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
               </View>
             </View>
-          </Page>
-        );
+          </Page>,
+        ];
       })}
     </Document>
   );
