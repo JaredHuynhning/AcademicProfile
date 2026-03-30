@@ -117,6 +117,97 @@ export function generateExecutiveSummaryMega(
 		`A note on what this report is and is not. This is a personality-based academic profile — it identifies how ${studentName}'s natural tendencies shape their learning, and provides strategies that work WITH those tendencies rather than against them. It is NOT a measure of intelligence, a clinical diagnosis, or a prediction of future success. Personality is one piece of the academic puzzle, alongside intelligence, opportunity, teaching quality, and effort. What makes personality uniquely valuable is that it's actionable: while IQ is relatively fixed, the way personality interacts with the learning environment can be optimised through the strategies in this report.`
 	);
 
+	// ─── "Aha Moment" Dimension Interactions ────────────────────────────────────
+	// These are the insights that make parents say "that's EXACTLY my child"
+	narrative.push('\n### What Makes This Profile Unique');
+
+	const interactionInsights: string[] = [];
+	const cScore = dimensions.C?.score || 3;
+	const oScore = dimensions.O?.score || 3;
+	const eScore = dimensions.E?.score || 3;
+	const xScore = dimensions.X?.score || 3;
+	const aScore = dimensions.A?.score || 3;
+	const hScore = dimensions.H?.score || 3;
+
+	// C × E interactions
+	if (cScore >= 3.5 && eScore >= 3.5) {
+		interactionInsights.push(`**The Anxious Achiever:** ${studentName}'s high conscientiousness means they always prepare thoroughly, but their high emotionality means they still feel anxious despite being well-prepared. You may notice ${studentName} studying extensively and then saying "I'm going to fail" — this isn't laziness or lack of preparation. The preparation is real; the anxiety is separate. The strategy is to trust the preparation process and recognise that anxiety is not evidence of under-preparation.`);
+	}
+	if (cScore < 2.5 && eScore < 2.5) {
+		interactionInsights.push(`**The Relaxed Risk-Taker:** ${studentName} combines low urgency with emotional calm — meaning they rarely feel the productive anxiety that motivates most students to start studying. They're genuinely unworried, not just pretending. This makes deadline-based motivation ineffective. Instead, focus on intrinsic interest: "What about this topic is actually cool?" and external accountability: "Show me your progress at 4pm."`);
+	}
+
+	// C × O interactions
+	if (cScore >= 3.5 && oScore < 2.5) {
+		interactionInsights.push(`**The Reliable Executor:** ${studentName} is the student who always hands work in on time and follows instructions precisely — but may not go beyond what's asked. They're not being lazy; they're being efficient. To unlock deeper learning, frame extensions as part of the task: "The assignment is to answer this question AND explain why the answer matters."`);
+	}
+	if (cScore < 2.5 && oScore >= 3.5) {
+		interactionInsights.push(`**The Brilliant Starter:** ${studentName} has no shortage of ideas and genuine intellectual curiosity — but finishing projects is the challenge. You may notice half-finished books, abandoned hobbies, and creative projects that fizzle out. This isn't lack of ability; it's the friction between curiosity (which moves to the next interesting thing) and discipline (which stays on the current thing). The fix: shorter projects, visible progress tracking, and celebrating completion, not just starting.`);
+	}
+
+	// X × A interactions
+	if (xScore >= 3.5 && aScore < 2.5) {
+		interactionInsights.push(`**The Dominant Leader:** ${studentName} is confident in groups AND willing to push back on others — which makes them a natural leader but sometimes a difficult group member. Other parents may describe their child's group project experiences with ${studentName} differently than ${studentName} does. Coaching them on inclusive leadership ("great leaders make others feel heard") channels this energy productively.`);
+	}
+	if (xScore < 2.5 && aScore >= 3.5) {
+		interactionInsights.push(`**The Quiet Accommodator:** ${studentName} is reserved AND deeply cooperative — which means they may consistently defer to louder group members even when they have better ideas. You may notice they do more than their share of group work without complaint. This isn't strength; it's a pattern that builds resentment over time. Teaching them to express preferences early ("I'd like to do the research section") prevents the buildup.`);
+	}
+
+	// E × X interactions
+	if (eScore >= 3.5 && xScore < 2.5) {
+		interactionInsights.push(`**The Internal Storm:** ${studentName} feels emotions deeply but processes them privately. You may not see the anxiety, frustration, or excitement — but it's there. Check-ins need to be private and non-pressured: "How are you feeling about the exam?" over dinner, not "Are you worried?" in front of siblings. They won't volunteer emotional information but will share if asked gently in the right setting.`);
+	}
+	if (eScore < 2.5 && xScore >= 3.5) {
+		interactionInsights.push(`**The Social Rock:** ${studentName} is emotionally unflappable AND highly social — which makes them the person others lean on during stressful times. This is a genuine strength, but watch for emotional caretaking fatigue: they may absorb others' stress while appearing fine themselves. Regularly ask "How are YOU doing?" — not just "How are your friends doing?"`);
+	}
+
+	// H × C interactions
+	if (hScore >= 3.5 && cScore >= 3.5) {
+		interactionInsights.push(`**The Principled Worker:** ${studentName} combines strong ethics with strong discipline — they do the right thing AND they do it consistently. This is the student who would never cheat on a test, even if they could get away with it. Recognise this integrity; it's genuinely rare and should be celebrated, not taken for granted.`);
+	}
+	if (hScore < 2.5 && cScore < 2.5) {
+		interactionInsights.push(`**The Corner-Cutter:** ${studentName} is pragmatic about rules AND about effort — meaning they may seek shortcuts that are technically allowed but not in the spirit of the assignment. This isn't malice; it's efficiency-seeking. Channel it constructively: "What's the smartest way to get an A?" rather than "Just work harder." Their strategic thinking is a genuine asset when directed at legitimate challenges.`);
+	}
+
+	if (interactionInsights.length > 0) {
+		interactionInsights.forEach(insight => narrative.push(insight));
+	} else {
+		narrative.push(`${studentName}'s moderate profile across most dimensions means they don't show the dramatic trait interactions that produce easily recognisable patterns. This is actually an advantage: they're flexible enough to adapt their approach to different situations rather than being locked into one mode. The strategies in this report help ${studentName} consciously choose which mode to activate in each context.`);
+	}
+
+	// ─── "What Teachers See vs What's Really Happening" ──────────────────────
+	narrative.push('\n### What Teachers See vs What\'s Really Happening');
+
+	const teacherTable: { visible: string; underlying: string }[] = [];
+
+	if (xScore < 2.5) {
+		teacherTable.push({ visible: 'Doesn\'t participate in class discussions', underlying: `${studentName} is processing deeply and may have excellent answers — they just don't feel comfortable sharing unprepared thoughts publicly. Give them questions in advance.` });
+	}
+	if (cScore < 2.5) {
+		teacherTable.push({ visible: 'Homework is late or incomplete', underlying: `${studentName} isn't being defiant — they lack the organisational systems that other students have naturally. A planner with daily check-ins solves 80% of this problem.` });
+	}
+	if (eScore >= 3.5) {
+		teacherTable.push({ visible: 'Seems overly anxious before tests', underlying: `${studentName}'s anxiety is genuine, not attention-seeking. They may actually know the material well but the stress response blocks retrieval. Practice tests under realistic conditions build familiarity that reduces this effect.` });
+	}
+	if (oScore >= 3.5 && cScore < 3.0) {
+		teacherTable.push({ visible: 'Gets distracted easily, goes off-topic', underlying: `${studentName}'s curiosity is genuine intellectual engagement, not defiance. They follow tangents because the tangent is genuinely interesting. An "explore later" notebook channels this without disrupting class.` });
+	}
+	if (aScore < 2.5) {
+		teacherTable.push({ visible: 'Argues with group members, seems difficult', underlying: `${studentName} is actually trying to improve the work quality — they challenge weak ideas because they care about the outcome. Coaching on constructive framing helps: "What if we tried..." instead of "That won't work."` });
+	}
+	if (hScore < 2.5 && xScore >= 3.5) {
+		teacherTable.push({ visible: 'Seems to be "playing the system"', underlying: `${studentName} is strategically social — they know how to get what they want. This is a leadership skill when directed constructively. Give them legitimate leadership roles that reward their social intelligence.` });
+	}
+	if (eScore < 2.5 && cScore < 2.5) {
+		teacherTable.push({ visible: 'Doesn\'t seem to care about grades', underlying: `${studentName} genuinely doesn't feel academic anxiety — which means they lack the urgency that drives most students. They need externally created stakes (rewards, consequences) because internal motivation is low.` });
+	}
+
+	if (teacherTable.length > 0) {
+		teacherTable.forEach(row => {
+			narrative.push(`**What teachers see:** "${row.visible}" — **What's really happening:** ${row.underlying}`);
+		});
+	}
+
 	// Score summary findings
 	DIM_ORDER.forEach(key => {
 		const dim = dimensions[key];

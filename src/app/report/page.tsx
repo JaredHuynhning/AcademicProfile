@@ -17,6 +17,7 @@ import { HexacoRadarChart } from "@/components/report/HexacoRadarChart";
 import { ScoreBar } from "@/components/ui/ScoreBar";
 import { DimensionScoreCard } from "@/components/report/DimensionScoreCard";
 import { BellCurveChart } from "@/components/report/BellCurveChart";
+import { ProfileAtAGlance } from "@/components/report/ProfileAtAGlance";
 import { Callout } from "@/components/ui/Callout";
 import { PullQuote } from "@/components/ui/PullQuote";
 import { ActionSheet } from "@/components/report/ActionSheet";
@@ -913,6 +914,20 @@ export default function ReportPage() {
           </h1>
           <p className="text-warm-gray mt-2">{megaReport.date}</p>
         </div>
+
+        {/* Profile at a Glance dashboard */}
+        {megaReport.dimensionDetails.length > 0 && (
+          <div className="max-w-4xl mx-auto px-6 mb-4">
+            <ProfileAtAGlance
+              studentName={name || "Student"}
+              archetype={megaReport.archetype}
+              radarData={megaReport.radarData.map(d => ({ label: d.dim, value: d.score, color: d.color }))}
+              dimensionDetails={megaReport.dimensionDetails}
+              topStrength={megaReport.sections[0]?.content.keyFindings.find(f => f.type === 'strength')?.text}
+              topBarrier={megaReport.sections[0]?.content.keyFindings.find(f => f.type === 'barrier')?.text}
+            />
+          </div>
+        )}
 
         {/* Sections */}
         <div className="max-w-4xl mx-auto px-6">

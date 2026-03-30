@@ -210,14 +210,44 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - [x] `npm run build` exits 0
 - [x] Zero runtime errors when completing a quiz and viewing the report
 
-### Ticket #17 AC
-- [x] Student name appears in report header, nav bar, and throughout narrative text (not "Student")
-- [ ] Generic advice (active recall, sleep 8 hours) removed or made conditional
-- [x] At least 3 visual charts beyond radar (bell curve, facet bars, subject fit matrix, dimension score cards)
-- [x] Section dividers include key findings previews
-- [x] Web report has collapsible sections with "Key Takeaway" summaries
+### Ticket #17 AC — 10/10 Standard (Parents + Students)
+
+**Personalisation (must feel like it was written by someone who KNOWS this child):**
+- [x] Student name woven throughout narrative, not bolted on — reads naturally
+- [x] Generic advice (active recall, sleep, movement) made conditional on personality scores
+- [x] Different personas produce visibly different reports (different archetypes, different advice order, different emphasis)
+- [ ] "Aha moment" density: at least 3 insights per section that make a parent say "that's EXACTLY my child"
+- [ ] Score-interaction insights: e.g., "High C + Low X = perfectionist who won't ask for help" — not just individual dimensions
+- [ ] Prose variety: no two consecutive paragraphs start the same way; varied sentence structure across sections
+
+**Visual Impact (must look like a premium product, not a homework assignment):**
+- [x] 6 bell curve distribution charts showing where student falls on population curve
+- [x] 6 dimension score cards with facet bar breakdowns
+- [x] Subject fit alignment matrix with colour-coded bars
+- [x] Collapsible sections with animated expand/collapse
+- [x] Section numbers and "Key Takeaway" boxes at the top of each section
+- [ ] Strength/weakness visual summary — top 3 strengths vs top 3 barriers as visual cards, not just text
+- [ ] "Your Profile at a Glance" — single-screen visual dashboard (web) showing archetype + radar + top 3 numbers
+
+**Content Depth (must answer every question a parent would have):**
+- [x] Each personality dimension gets its own deep-dive with all 4 facets analysed
+- [x] Study methods ranked by personality fit, not generic
+- [x] Subject-specific strategies based on dimension alignment
+- [x] 30/60/90 day action plan with score-conditional actions
+- [ ] Conversation scripts: actual word-for-word dialogue parents can use ("When your child says X, try responding with Y")
+- [ ] "What teachers see vs what's really happening" — table mapping visible behaviours to underlying personality drivers
+
+**Web UX (must feel premium and professional):**
+- [x] Smooth scroll-triggered animations on section entry
+- [x] Floating table of contents for navigation
+- [x] PDF download working (42 pages, 0 errors across 3 personas)
+- [ ] Progress indicator showing how far through the report the reader is
+- [ ] Print-friendly styling (no dark backgrounds, appropriate page breaks)
+
+**Reliability:**
 - [x] `npm run build` exits 0
-- [x] Zero runtime errors (verified across 3 personas)
+- [x] Zero runtime errors across 3 distinct personas (Mia Chen, Jake Morrison, Aisha Patel)
+- [x] 42 PDF pages per persona, 9.1-9.9K web words
 
 ### Ticket #16 AC
 - [ ] PDF output is 40+ pages (measured via page count)
@@ -366,9 +396,10 @@ This version has breaking changes — APIs, conventions, and file structure may 
   - All fixes tested against design spec; npm run build passes
   - Commit: 75b673b
 
+
 <!-- compaction-checkpoint-start -->
 ## Pre-Compaction Checkpoint
-**When**: 2026-03-30 19:02:05 | **Branch**: main | **Activity**: 0 msgs, 0 tools, 0 files
+**When**: 2026-03-30 19:32:53 | **Branch**: main | **Activity**: 0 msgs, 0 tools, 0 files
 
 **Recent work**:
 - 
@@ -376,7 +407,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 **Modified files**:
 - 
 
-**Dirty files** (5): AGENTS.md,samples/,screenshots/,scripts/e2e-report-test.mjs,scripts/run-personas.mjs
+**Dirty files** (4): .claude-project.json,AGENTS.md.backup,samples/,screenshots/
 
 > Resume context: Read this section + git diff + recent session log to reconstruct state.
 <!-- compaction-checkpoint-end -->

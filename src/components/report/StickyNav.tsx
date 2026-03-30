@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, DownloadSimple, BookmarkSimple, CircleNotch } from "@phosphor-icons/react";
 
@@ -13,6 +13,19 @@ interface StickyNavProps {
 export function StickyNav({ studentName, onSave, onDownloadPDF }: StickyNavProps) {
   const router = useRouter();
   const [downloading, setDownloading] = useState(false);
+  const [readProgress, setReadProgress] = useState(0);
+
+  useEffect(() => {
+    function handleScroll() {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (docHeight > 0) {
+        setReadProgress(Math.min(100, Math.round((scrollTop / docHeight) * 100)));
+      }
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   async function handleDownload() {
     setDownloading(true);
@@ -25,6 +38,13 @@ export function StickyNav({ studentName, onSave, onDownloadPDF }: StickyNavProps
 
   return (
     <header className="no-print fixed top-0 left-0 right-0 z-50 bg-cream backdrop-blur-xl border-b border-warm-gray/10">
+      {/* Reading progress bar */}
+      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-warm-gray/5">
+        <div
+          className="h-full bg-espresso/30 transition-[width] duration-150"
+          style={{ width: `${readProgress}%` }}
+        />
+      </div>
       <div className="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0">
           <button
