@@ -48,7 +48,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | 13 | Simplify to Complete Assessment only | done | P0 | Shipped — navbar + mode selection fixed |
 | 14 | PDF rendering bugs — overlapping text, broken wrapping | done | P0 | Shipped 75b673b |
 | 15 | 50-page report — consolidate 23 sections → 12 mega-sections | done | P0 | Shipped: 12 mega-sections, 11 deep generators, 24-page PDF, ~10K words |
-| 16 | Deepen report to 50 pages — expand all generators | active | P0 | Currently 24 PDF pages / ~10K words. Need ~15K words to hit 50 pages. |
+| 16 | Deepen report to 50 pages — expand all generators | done | P0 | Shipped: 44 PDF pages, 14.5K words, section dividers, premium layout |
 
 ## Ticket Details
 
@@ -194,13 +194,20 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - [x] Landing page screenshots updated with new benchmark visuals
 
 ### Ticket #15 AC
-- [ ] MegaSection, MegaSectionContent, MegaReport types exported from src/lib/report/mega-sections.ts
-- [ ] consolidateToMegaReport() produces exactly 12 sections
-- [ ] generateMegaReport() exported from src/lib/report/index.ts
-- [ ] Web report page (src/app/report/page.tsx) renders 12 mega-sections via generateMegaReport
-- [ ] PDF renderer (src/components/pdf/ReportPDF.tsx) uses MegaSectionPage for 12 sections
-- [ ] All existing content renders via rawData fallback (no content loss)
-- [ ] `npm run build` exits 0
+- [x] MegaSection, MegaSectionContent, MegaReport types exported from src/lib/report/mega-sections.ts
+- [x] consolidateToMegaReport() produces exactly 12 sections
+- [x] generateMegaReport() exported from src/lib/report/index.ts
+- [x] Web report page renders 12 mega-sections via generateMegaReport
+- [x] PDF renderer uses MegaSectionPage for 12 sections
+- [x] All existing content renders via rawData fallback (no content loss)
+- [x] `npm run build` exits 0
+
+### Ticket #16 AC
+- [x] PDF output is 40+ pages (44 pages verified)
+- [x] Web report word count is 14,000+ words (14,477 verified)
+- [x] Every mega-section generates substantial content regardless of score pattern
+- [x] `npm run build` exits 0
+- [x] Zero runtime errors when completing a quiz and viewing the report
 
 ### Ticket #16 AC
 - [ ] PDF output is 40+ pages (measured via page count)
