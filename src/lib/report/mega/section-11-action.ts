@@ -29,9 +29,15 @@ export function generateActionPlanMega(
 		`Everything in the preceding 10 sections leads to this: specific, actionable steps ${studentName} can take starting this week. These aren't aspirational goals — they're concrete changes calibrated to ${studentName}'s personality profile. Start with Action 1. Don't try to implement everything at once.`
 	);
 
-	narrative.push(
-		`Research on behaviour change shows that the most effective interventions share three features: they are specific (not "study more" but "study maths for 25 minutes at 4pm"), they are small enough to feel achievable, and they include a trigger that initiates the behaviour automatically (Fogg, 2019). Every action below is designed with these principles in mind.`
-	);
+	if (cScore < 3.0) {
+		narrative.push(
+			`For ${studentName}, the science of behaviour change is especially relevant. Research shows that successful interventions are specific (not "study more" but "study maths for 25 minutes at 4pm"), small enough to feel achievable, and tied to a trigger that initiates the behaviour automatically (Fogg, 2019). Every action below is designed with these principles — because ${studentName}'s personality means they need the structure to be built into the plan, not left to willpower.`
+		);
+	} else {
+		narrative.push(
+			`Each action below is specific and actionable — designed so ${studentName} can start immediately without needing to figure out how. The order reflects expected impact for their unique personality combination.`
+		);
+	}
 
 	narrative.push(
 		`The order matters. Actions are ranked by expected impact for ${studentName}'s specific personality profile. The highest-impact change comes first because early wins build momentum, and momentum sustains effort through the harder changes that follow. Do not skip ahead — each action builds the foundation for the next.`
@@ -93,25 +99,42 @@ export function generateActionPlanMega(
 		priority++;
 	}
 
-	// Universal high-impact actions (always generated)
-	const universalAction = `Start each study session with active recall: close your notes, write everything you remember about the topic, then check. This 5-minute exercise is the single most effective learning technique available — more powerful than re-reading, highlighting, or summarising combined.`;
-	actions.push({ title: 'Active Recall First', description: universalAction, priority });
-	narrative.push(`**Action ${priority}: Active Recall First.** ${universalAction}`);
-	priority++;
+	// Score-conditional supporting actions — only include what's relevant to this student's profile
+	if (oScore < 3.5) {
+		// Low-moderate openness students need active recall framing more — they won't naturally seek deep encoding
+		const recallAction = `Start each study session with active recall: close your notes, write everything you remember about the topic, then check. For ${studentName}, this is especially important because ${oScore < 2.5 ? 'a preference for familiar methods may lead to passive re-reading — active recall feels harder but is 3x more effective' : 'it converts surface-level familiarity into genuine understanding'}.`;
+		actions.push({ title: 'Active Recall First', description: recallAction, priority });
+		narrative.push(`**Action ${priority}: Active Recall First.** ${recallAction}`);
+		priority++;
+	}
 
-	const sleepAction = `Protect your sleep. Research shows that sleep is when the brain consolidates learning — students who get 8+ hours retain 40% more than those who get 6 hours (Walker, 2017). Set a non-negotiable bedtime and a "screens off" time 30 minutes before. This single change improves memory, reduces anxiety, and increases next-day focus more than any study technique.`;
-	actions.push({ title: 'Protect Your Sleep', description: sleepAction, priority });
-	narrative.push(`**Action ${priority}: Protect Your Sleep.** ${sleepAction}`);
-	priority++;
+	if (eScore >= 3.0 || cScore < 3.0) {
+		// Sleep action — emphasise for anxious students and those with low discipline (who are more likely to sacrifice sleep)
+		const sleepAction = eScore >= 3.5
+			? `Protect your sleep — this is non-negotiable for ${studentName}. Higher emotionality means pre-exam anxiety can disrupt sleep, which then impairs next-day recall, which increases anxiety further. Break the cycle: set a "screens off" time 30 minutes before bed, practise the 4-7-8 breathing technique nightly, and maintain a consistent 8-9 hour sleep window. Research shows students who sleep well retain 20-40% more than those who cram late (Walker, 2017).`
+			: `Protect your sleep. ${studentName}'s profile suggests they might sacrifice sleep for late-night study sessions or screen time. Set a non-negotiable bedtime — even 30 minutes more sleep per night measurably improves memory consolidation and next-day focus.`;
+		actions.push({ title: 'Protect Your Sleep', description: sleepAction, priority });
+		narrative.push(`**Action ${priority}: Protect Your Sleep.** ${sleepAction}`);
+		priority++;
+	}
 
-	const reviewAction = `Implement a weekly review ritual. Every Sunday evening, spend 20 minutes on three questions: (1) What did I learn this week that I want to remember? (2) What's due next week? (3) What's my one priority for Monday? Write the answers down. This habit prevents the "Sunday night panic" and ensures ${studentName} starts each week with clarity rather than chaos.`;
-	actions.push({ title: 'Weekly Review Ritual', description: reviewAction, priority });
-	narrative.push(`**Action ${priority}: Weekly Review Ritual.** ${reviewAction}`);
-	priority++;
+	if (cScore < 3.0) {
+		// Weekly review — especially important for low-C students who lack natural planning
+		const reviewAction = `Start a Sunday evening check-in (20 minutes maximum). Three questions: (1) What worked this week? (2) What's due next week? (3) What's my one priority for Monday? Write it down in your planner. For ${studentName}, this ritual replaces the "Sunday night panic" with a concrete plan — and having a plan reduces the activation energy needed to start on Monday.`;
+		actions.push({ title: 'Sunday Check-In', description: reviewAction, priority });
+		narrative.push(`**Action ${priority}: Sunday Check-In.** ${reviewAction}`);
+		priority++;
+	}
 
-	const movementAction = `Add movement before study. A 10-minute walk, stretching routine, or quick exercise session before sitting down to study increases blood flow to the brain and improves focus for the subsequent 60-90 minutes (Hillman et al., 2008). This is not about fitness — it's about priming the brain for learning. Even standing up and doing 20 jumping jacks counts.`;
-	actions.push({ title: 'Movement Before Study', description: movementAction, priority });
-	narrative.push(`**Action ${priority}: Movement Before Study.** ${movementAction}`);
+	if (eScore >= 3.5 || xScore < 2.5) {
+		// Movement before study — especially valuable for anxious or introverted students who need a state transition
+		const movementAction = eScore >= 3.5
+			? `Add a 10-minute walk or stretch before each study session. For ${studentName}, this serves a dual purpose: it reduces the background anxiety that inhibits focus, and it creates a clear boundary between "school stress mode" and "productive study mode." Research shows even brief exercise improves concentration for the next 60-90 minutes (Hillman et al., 2008).`
+			: `Start each study session with 10 minutes of movement — a walk, stretching, or light exercise. For ${studentName}, who processes internally and may carry tension from social interactions at school, this physical reset clears mental space for focused solo work.`;
+		actions.push({ title: 'Movement Before Study', description: movementAction, priority });
+		narrative.push(`**Action ${priority}: Movement Before Study.** ${movementAction}`);
+		priority++;
+	}
 
 	// ─── 30/60/90 Day Plan ───────────────────────────────────────────────────────
 	narrative.push('\n### 30/60/90 Day Plan');
@@ -160,7 +183,9 @@ export function generateActionPlanMega(
 	narrative.push('\n### Stop Doing');
 
 	const stopDoing: string[] = [];
-	stopDoing.push(`**Stop re-reading.** It feels productive but produces minimal retention. Replace every re-reading session with active recall.`);
+	if (oScore < 3.5) {
+		stopDoing.push(`**Stop re-reading.** ${studentName}'s preference for familiar methods may mean defaulting to passive review. Close the book. Write what you remember. Check. This is harder but produces 3x better retention.`);
+	}
 
 	if (cScore < 2.5) {
 		stopDoing.push(`**Stop cramming.** Last-minute marathon sessions produce worse results than short daily sessions. ${studentName}'s personality makes cramming especially ineffective.`);

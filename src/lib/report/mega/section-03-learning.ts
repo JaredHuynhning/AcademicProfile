@@ -26,7 +26,7 @@ export function generateLearningProfileMega(
 	);
 
 	narrative.push(
-		`Every student has a unique learning fingerprint shaped by the interaction between personality traits, cognitive preferences, and environmental factors. Two students with identical intelligence can achieve vastly different outcomes simply because their learning approach matches — or mismatches — the demands of their educational environment. Research consistently shows that alignment between learning style and teaching format can improve retention by 25-40% (Pashler et al., 2008). The goal of this section is to identify ${studentName}'s optimal learning conditions so that parents, teachers, and ${studentName} themselves can engineer more of those conditions into their daily academic life.`
+		`Every student has a unique learning fingerprint shaped by the interaction between personality traits, cognitive preferences, and environmental factors. Two students with identical intelligence can achieve vastly different outcomes simply because their study approach matches — or mismatches — their personality. Note: this is not the discredited "learning styles" theory (visual/auditory/kinesthetic), which lacks scientific support (Pashler et al., 2008). Instead, this section uses personality science to identify the study conditions, methods, and environments where ${studentName} is most likely to achieve deep, lasting learning.`
 	);
 
 	// ─── Learning Style ──────────────────────────────────────────────────────────
