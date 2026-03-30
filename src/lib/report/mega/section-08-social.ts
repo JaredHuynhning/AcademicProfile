@@ -78,6 +78,27 @@ export function generateSocialDynamicsMega(
 		topic: 'Collaboration',
 	});
 
+	// ─── Group Project Strategies ────────────────────────────────────────────────
+	narrative.push('\n### Group Project Success Strategies');
+
+	narrative.push(
+		`Group projects are where personality differences create the most friction — and the most learning. Understanding ${studentName}'s collaborative tendencies allows parents and teachers to set up group work for success rather than hoping it works out. Here are specific strategies:`
+	);
+
+	if (xScore < 2.5) {
+		narrative.push(
+			`**For ${studentName} (introverted):** Request or negotiate defined individual roles within the group. ${studentName} contributes best when given a specific piece to own and execute independently, then bringing their finished work to the group. Avoid open-ended "let's brainstorm together" sessions — send an agenda in advance so ${studentName} can prepare their contributions. The ideal group size is 2-3 people, not 5-6.`
+		);
+	} else if (xScore >= 3.5 && aScore < 2.5) {
+		narrative.push(
+			`**For ${studentName} (assertive extrovert):** The main risk is dominating the group. ${studentName} should practice the "last to speak" technique: in discussions, let every other member share their view before stating their own. This prevents them from anchoring the group to their first idea and ensures they hear alternatives. Their natural leadership is an asset — but only when it includes listening.`
+		);
+	} else {
+		narrative.push(
+			`**For ${studentName}:** Take a proactive approach to role selection at the start of each project. Before the group starts working, spend 5 minutes clarifying: who does what, when it's due, and how we'll communicate. This simple structure prevents the chaos that derails most group projects.`
+		);
+	}
+
 	// ─── Conflict Patterns ───────────────────────────────────────────────────────
 	narrative.push('\n### Conflict Patterns');
 

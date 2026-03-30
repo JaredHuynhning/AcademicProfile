@@ -115,6 +115,12 @@ export function generateBarriersMega(
 		narrative.push(
 			`Good news: ${studentName}'s personality profile does not show any major barriers. Their scores are generally in the moderate-to-high range across all dimensions, meaning there are no strong personality-driven obstacles to academic performance. The focus for ${studentName} should be on leveraging strengths (Section 6) rather than fixing weaknesses.`
 		);
+		narrative.push(
+			`This doesn't mean ${studentName} will never face academic challenges — external factors (teaching quality, curriculum difficulty, peer dynamics, life events) can create barriers regardless of personality. But it does mean that personality is not working against them. When challenges arise, ${studentName} has the psychological resources to address them: reasonable discipline, manageable emotions, adequate social skills, and sufficient curiosity to engage with solutions.`
+		);
+		narrative.push(
+			`The maintenance strategy for a barrier-free profile is simple: keep doing what works. Monitor for changes — adolescent personalities shift over time, and a current strength can moderate or a new vulnerability can emerge. An annual re-assessment provides an updated map of where ${studentName} stands.`
+		);
 		keyFindings.push({ title: 'No Major Barriers', text: `${studentName}'s balanced personality profile means there are no strong personality-driven academic obstacles.`, type: 'strength', color: '#22c55e' });
 
 		return { narrative, keyFindings, researchNotes, scenarios: [], crossReferences: [], actions: [] };
@@ -131,7 +137,9 @@ export function generateBarriersMega(
 		narrative.push(`**Root cause:** ${rc.personalityDetail}`);
 		narrative.push(`**Academic symptom:** ${rc.symptomDetail}`);
 		narrative.push(`**What teachers/parents see:** ${rc.visible}`);
+		narrative.push(`**Why generic advice doesn't work:** This barrier persists despite good intentions because the standard advice ("try harder," "study more," "just focus") targets willpower rather than the underlying personality mechanism. ${studentName}'s challenge isn't a lack of desire to succeed — it's a mismatch between what their personality provides naturally and what the academic environment demands.`);
 		narrative.push(`**Recommended intervention:** ${rc.intervention}`);
+		narrative.push(`**Expected timeline:** Initial improvement visible within 2-3 weeks of consistent intervention. Significant behaviour change typically takes 6-8 weeks. Full habit formation (the intervention becomes automatic) takes 3-6 months. Expect setbacks — they're normal and don't indicate failure. The trajectory matters more than any individual day.`);
 
 		keyFindings.push({
 			title: rc.personality,
