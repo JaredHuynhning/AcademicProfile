@@ -161,6 +161,54 @@ export function generateGuideMega(
 		);
 	}
 
+	// ─── Conversation Scripts ─────────────────────────────────────────────────────
+	narrative.push('\n### Conversation Scripts for Difficult Moments');
+
+	narrative.push(
+		`Some of the most impactful moments in ${studentName}'s academic journey will come from conversations — not lessons. Here are scripts for common challenging situations, calibrated to ${studentName}'s personality:`
+	);
+
+	// After a bad grade
+	if (eScore >= 3.5) {
+		narrative.push(
+			`**After a disappointing result:** "I can see you're upset about this grade, and that's okay — it means you care. Let's look at what happened together. Can you show me the paper?" Then: identify 2 things they did well before discussing what to improve. End with: "What's one thing you'd do differently next time?" This gives ${studentName} emotional validation first, then structures the learning without dwelling on the failure. Avoid: "You should have studied harder" — they already feel bad enough, and shame reduces future effort.`
+		);
+	} else {
+		narrative.push(
+			`**After a disappointing result:** "This wasn't the result you wanted. Let's figure out why. Was it preparation, understanding, or exam technique?" Be direct and problem-solving oriented. ${studentName} doesn't need emotional cushioning — they want to understand what went wrong and fix it. End with a concrete action: "For the next test, we'll try [specific strategy] and see if it helps."`
+		);
+	}
+
+	// About effort
+	if (cScore < 2.5) {
+		narrative.push(
+			`**About effort and consistency:** Avoid "You're so smart, you just don't try." This frames effort as a character flaw and creates a fixed mindset ("I'm the kind of person who doesn't try"). Instead: "I notice you do your best work when [specific condition: you study at the desk, you start early, you work with Sam]. How can we create more of those conditions?" This shifts the conversation from willpower (internal, unchangeable) to environment (external, changeable).`
+		);
+	} else if (cScore >= 3.5 && (C?.facets?.perfectionism?.score || 0) >= 4.0) {
+		narrative.push(
+			`**About perfectionism:** "I notice you spent 4 hours on that 30-minute assignment. Your work is excellent — but what did you not do during those 4 hours? Let's talk about how to match your effort to the task's importance. A 5% assignment doesn't need 95% of your effort." Help ${studentName} build a calibration system: before starting any task, decide how much time it deserves based on its weight.`
+		);
+	}
+
+	// About subject choices
+	narrative.push(
+		`**About subject or career choices:** "What subjects make you lose track of time? What would you do if grades didn't matter?" These questions bypass the "should" thinking that parents and students often get trapped in and reveal genuine interests. Personality data shows ${studentName}'s strongest alignment is with subjects that require ${oScore >= 3.5 ? 'creative thinking and exploration' : cScore >= 3.5 ? 'methodical, structured approaches' : xScore >= 3.5 ? 'social interaction and verbal expression' : 'practical, applied problem-solving'}. Use this as a starting point for discussion, not a prescription.`
+	);
+
+	// Parent-teacher meeting guide
+	narrative.push('\n### Parent-Teacher Meeting Guide');
+
+	narrative.push(
+		`When meeting with ${studentName}'s teachers, bring a copy of this report's Executive Summary and Teacher section. Share ${studentName}'s personality profile and ask these questions:`
+	);
+	narrative.push(`- "How does ${studentName} participate in your class? Is it consistent with the personality profile described here?"`);
+	narrative.push(`- "What classroom strategies have you found work well with ${studentName}?"`);
+	narrative.push(`- "Are there specific situations where ${studentName} struggles that we haven't identified?"`);
+	narrative.push(`- "How can we better coordinate between home and school to support ${studentName}'s learning?"`);
+	narrative.push(
+		`The goal is not to hand the report to teachers as a set of demands, but to open a dialogue about how ${studentName}'s personality shapes their classroom experience. Teachers who understand a student's personality can adapt their approach — seating, participation format, feedback style — in ways that dramatically improve engagement and performance.`
+	);
+
 	// ─── FOR TUTORS ──────────────────────────────────────────────────────────────
 	narrative.push('\n### For Tutors');
 

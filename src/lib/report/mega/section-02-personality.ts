@@ -455,6 +455,55 @@ export function generatePersonalityDeepDive(
 		}
 	}
 
+	// ─── Dimension Interactions ──────────────────────────────────────────────────
+	narrative.push('\n### How Dimensions Interact');
+	narrative.push(
+		`Personality dimensions don't operate in isolation — they interact in ways that create unique behavioural patterns. ${studentName}'s most significant dimension interactions are:`
+	);
+
+	const cScore = dimensions.C?.score || 3.0;
+	const eScore = dimensions.E?.score || 3.0;
+	const oScore = dimensions.O?.score || 3.0;
+	const xScore = dimensions.X?.score || 3.0;
+	const aScore = dimensions.A?.score || 3.0;
+
+	// C × O interaction
+	if (cScore >= 3.5 && oScore >= 3.5) {
+		narrative.push(
+			`**Conscientiousness × Openness (both high):** This is the "curious scholar" combination — ${studentName} both explores ideas enthusiastically AND follows through with disciplined execution. This interaction predicts the highest academic achievement of any personality combination (Poropat, 2009). ${studentName} doesn't just have good ideas — they finish them.`
+		);
+	} else if (cScore < 2.5 && oScore >= 3.5) {
+		narrative.push(
+			`**Low Conscientiousness × High Openness:** This is the "brilliant but scattered" combination. ${studentName} has exceptional curiosity and creative thinking but struggles to channel it into consistent output. They start many projects but may finish few. The intervention: external structure (deadlines, milestones, accountability) that provides the discipline their personality doesn't. Their ideas are excellent — they just need help with execution.`
+		);
+	} else if (cScore >= 3.5 && oScore < 2.5) {
+		narrative.push(
+			`**High Conscientiousness × Low Openness:** This is the "reliable executor" combination. ${studentName} is methodical, consistent, and thorough but may lack creative spark. They excel in structured subjects with clear expectations. For creative tasks, provide templates and examples rather than open-ended prompts — they'll produce excellent work when given a framework to execute within.`
+		);
+	}
+
+	// E × X interaction
+	if (eScore >= 3.5 && xScore < 2.5) {
+		narrative.push(
+			`**High Emotionality × Low Extraversion:** ${studentName} feels deeply but expresses quietly. They may experience intense emotions about academic work (anxiety, pride, frustration) without showing them outwardly. Adults should check in regularly — their calm exterior may mask significant internal struggle. Ask directly: "How are you feeling about [subject]?" rather than relying on visible cues.`
+		);
+	} else if (eScore < 2.5 && xScore >= 3.5) {
+		narrative.push(
+			`**Low Emotionality × High Extraversion:** ${studentName} is socially confident and emotionally steady — the classic "easygoing popular kid" profile. Their social comfort may lead adults to assume everything is fine, even when academic performance is slipping. They're unlikely to show distress about poor grades. Monitor progress data (grades, completion rates) rather than relying on ${studentName}'s self-report, which will almost always be "fine."`
+		);
+	}
+
+	// A × C interaction
+	if (aScore >= 3.5 && cScore >= 3.5) {
+		narrative.push(
+			`**High Agreeableness × High Conscientiousness:** ${studentName} is the ideal group project member — cooperative, reliable, and hardworking. However, this combination can lead to taking on too much responsibility: they agree to extra work (agreeableness) and then feel compelled to deliver it perfectly (conscientiousness). Watch for overcommitment and teach them to set boundaries: "I can do A or B, but not both this week."`
+		);
+	}
+
+	narrative.push(
+		`These interactions are unique to ${studentName}'s specific score combination. They create behavioural patterns that wouldn't be predicted from any single dimension alone, which is why a comprehensive personality assessment is more useful than a single-trait measure.`
+	);
+
 	return {
 		narrative,
 		keyFindings,
