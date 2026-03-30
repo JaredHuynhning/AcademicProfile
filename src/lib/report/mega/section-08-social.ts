@@ -166,6 +166,40 @@ export function generateSocialDynamicsMega(
 
 	keyFindings.push({ title: `Team Role: ${teamRole}`, text: `${studentName} is best suited as a ${teamRole} in group projects.`, type: 'insight', color: '#3b82f6' });
 
+	// ─── Peer Learning Recommendations ───────────────────────────────────────────
+	narrative.push('\n### Peer Learning Recommendations');
+
+	if (xScore >= 3.5 && aScore >= 3.0) {
+		narrative.push(
+			`${studentName} is an ideal candidate for peer tutoring — both as tutor and tutee. As a tutor, explaining concepts to others deepens their own understanding (the "protégé effect"). As a tutee, their social comfort means they're willing to admit confusion and ask follow-up questions. Research shows peer tutoring improves achievement for BOTH the tutor and the tutee by an average of 0.4 standard deviations — equivalent to moving from the 50th to the 66th percentile (Roscoe & Chi, 2007).`
+		);
+	} else if (xScore < 2.5) {
+		narrative.push(
+			`${studentName} benefits most from one-on-one peer interactions rather than group study. A single study partner who is patient and non-judgemental creates the safest learning environment. Online study partnerships (voice chat while working on shared documents) can provide the collaboration benefit while maintaining the physical space ${studentName} needs to feel comfortable.`
+		);
+	} else {
+		narrative.push(
+			`${studentName} can benefit from peer learning in small groups (2-3 people). The key is curating the right group: peers who are at a similar level, take the same subjects, and have complementary strengths. Avoid groups where one person dominates or where social chat overwhelms study time. A simple structure (10 minutes of individual work, 5 minutes of discussion, repeat) keeps the balance.`
+		);
+	}
+
+	// ─── Digital Social Learning ─────────────────────────────────────────────────
+	narrative.push('\n### Digital Social Learning');
+
+	narrative.push(
+		`Modern students have access to social learning tools that didn't exist a decade ago. ${studentName}'s personality shapes how effectively they can use these tools:`
+	);
+
+	if (xScore >= 3.0) {
+		narrative.push(
+			`${studentName} will engage well with collaborative digital platforms: shared note-taking (Google Docs, Notion), study Discord servers, video call study sessions, and peer-teaching through screen sharing. These channels combine social interaction with productive academic work. Set ground rules to prevent sessions from devolving into social chat: start with 5 minutes of social warm-up, then study mode with social breaks scheduled every 25 minutes.`
+		);
+	} else {
+		narrative.push(
+			`${studentName} may prefer asynchronous digital collaboration — shared documents where they can contribute at their own pace, forum-style Q&A platforms, or video recordings of peer explanations they can watch alone. This provides the benefit of peer learning without the energy cost of real-time social interaction.`
+		);
+	}
+
 	return {
 		narrative,
 		keyFindings,

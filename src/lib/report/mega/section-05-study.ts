@@ -80,6 +80,14 @@ export function generateStudyPlaybookMega(
 		narrative.push(`**${i + 1}. ${m.name}** (Fit: ${m.fit}): ${m.why}`);
 	});
 
+	// Interleaving
+	if (oScore >= 3.0) {
+		methods.push({ name: 'Interleaving (mixed practice)', fit: 'Good', why: `${studentName}'s openness makes them comfortable switching between topics. Interleaving — practising different concepts in the same session rather than blocking by topic — improves long-term retention by 20-40% (Rohrer & Taylor, 2007). It feels harder in the moment but produces significantly better results.` });
+	}
+
+	// Elaborative interrogation
+	methods.push({ name: 'Elaborative Interrogation ("Why?")', fit: 'Good', why: `For every fact or concept, ask "Why is this true?" and "How does this connect to what I already know?" This simple technique forces deeper processing and creates memory anchors that make recall easier. Research shows it's particularly effective for factual material in science and history (Dunlosky et al., 2013).` });
+
 	researchNotes.push({
 		text: 'The three most evidence-backed study techniques are: active recall, spaced repetition, and interleaving (mixing different topics in one session). All other techniques are supplementary (Dunlosky et al., 2013).',
 		topic: 'Study methods',
@@ -195,6 +203,25 @@ export function generateStudyPlaybookMega(
 	);
 	narrative.push(
 		`**Weekend:** ${oScore >= 3.5 ? 'Saturday morning: 2-hour deep work block for creative/project work. Sunday: review week\'s material + plan next week.' : 'Saturday: 1.5-hour study block on the week\'s weakest subject. Sunday: organise materials, plan the week ahead, light review.'}`
+	);
+
+	// ─── Study Environment Design ───────────────────────────────────────────────
+	narrative.push('\n### Study Environment Design');
+
+	narrative.push(
+		`The physical environment where ${studentName} studies has a measurable impact on focus, retention, and productivity. Research on environmental psychology shows that mismatched study environments can reduce effective study time by 30-50% (Mehta & Zhu, 2012). Here is the optimal setup for ${studentName}'s personality:`
+	);
+
+	narrative.push(
+		`**Physical space:** ${xScore < 2.5 ? `A private, enclosed space with the door closed. Background noise should be minimal — if others are home, noise-cancelling headphones with ambient sounds (rain, white noise) create an auditory boundary that signals "study mode." Avoid shared spaces like the kitchen table where interruptions are frequent.` : xScore >= 3.5 ? `A semi-public space like a dining table or library where ${studentName} can see others studying nearby. Complete isolation may feel depressing rather than focusing. A coffee shop or library with moderate ambient noise often works better than a silent bedroom. Study groups in the same space (each working on their own material, but together) combines social energy with individual focus.` : `A flexible space that can be either quiet or social depending on the task. Deep thinking (essay writing, complex maths) benefits from quiet isolation; review and recall benefit from low-level social presence.`}`
+	);
+
+	narrative.push(
+		`**Digital environment:** ${cScore < 2.5 ? `Phone should be physically outside the room during study — not on silent, not face-down, but GONE. Research shows that the mere presence of a smartphone reduces cognitive capacity by ~10%, even when it's turned off (Ward et al., 2017). Use a dedicated tablet or laptop with social media blocked for study tasks. Consider an app blocker like Forest or Cold Turkey that makes breaking focus deliberately difficult.` : `${studentName}'s natural discipline allows them to manage digital distractions with reasonable guardrails. A "study mode" that silences non-essential notifications is sufficient. Allow access to learning apps and research tools while blocking social media during study sessions.`}`
+	);
+
+	narrative.push(
+		`**Timing:** The optimal study session length for ${studentName} is ${cScore >= 3.5 && eScore < 3.0 ? '45-60 minutes with 10-minute breaks. Their high focus capacity and steady emotions allow longer sessions before fatigue sets in.' : eScore >= 3.5 ? '20-25 minutes with 5-minute breaks (Pomodoro technique). Shorter sessions prevent emotional fatigue and the anxiety build-up that comes from feeling "trapped" in study mode.' : '25-35 minutes with 5-minute breaks. This matches the average adolescent attention span while allowing enough time for meaningful engagement with material.'} After 3-4 sessions, take a longer break (20-30 minutes) that includes movement — a walk, stretching, or light exercise resets the brain for another focus cycle.`
 	);
 
 	// ─── What NOT To Do ──────────────────────────────────────────────────────────
