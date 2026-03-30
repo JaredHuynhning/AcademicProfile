@@ -200,6 +200,56 @@ export function generateLearningProfileMega(
 		);
 	}
 
+	// ─── Curiosity & Exploration Patterns ────────────────────────────────────────
+	narrative.push('\n### Curiosity & Exploration Patterns');
+
+	if (oScore >= 3.5) {
+		narrative.push(
+			`${studentName} is a naturally curious learner. Their high Openness (${oScore.toFixed(1)}/5) means they are drawn to novel ideas, enjoy intellectual exploration, and frequently go beyond what's required. This curiosity is a powerful academic asset — curious students ask better questions, make more connections between topics, and retain information longer because they're genuinely engaged rather than merely compliant.`
+		);
+		narrative.push(
+			`The challenge with high curiosity is direction. ${studentName} may struggle to stay focused on exam-relevant material when something more interesting catches their attention. They might spend 2 hours researching a tangential topic while leaving core revision undone. The strategy is not to suppress curiosity — that kills the goose that lays golden eggs — but to schedule it. "Exploration time" (30 minutes each weekend to pursue tangents) satisfies the curiosity drive while "syllabus time" stays focused.`
+		);
+	} else if (oScore < 2.5) {
+		narrative.push(
+			`${studentName} is not naturally drawn to academic exploration (Openness ${oScore.toFixed(1)}/5). They learn best when the material has clear, practical relevance and the assessment format is predictable. This is not a deficit — it's a preference for applied rather than theoretical learning that serves many students well, especially in vocational and structured educational pathways.`
+		);
+		narrative.push(
+			`To build engagement, connect every topic to a concrete application: "You'll use this when...", "This is how [career goal] uses this concept...", "This was on last year's exam in this format..." These relevance bridges convert abstract academic obligations into practical investments that ${studentName} can engage with on their own terms.`
+		);
+	} else {
+		narrative.push(
+			`${studentName} shows moderate curiosity (Openness ${oScore.toFixed(1)}/5) — interested in some topics but not driven to explore everything. This selective curiosity is perfectly functional: they engage deeply with subjects that resonate and approach less interesting material pragmatically. The key is identifying which subjects spark genuine interest and investing extra effort there, while maintaining competent performance elsewhere.`
+		);
+	}
+
+	// ─── Technology & Digital Learning ────────────────────────────────────────────
+	narrative.push('\n### Technology & Digital Learning');
+
+	narrative.push(
+		`Modern students learn in hybrid environments — textbooks, videos, apps, online platforms, and AI tools. ${studentName}'s personality shapes how they interact with these digital learning channels.`
+	);
+
+	if (cScore >= 3.5) {
+		narrative.push(
+			`${studentName}'s conscientiousness means they can use digital tools productively — maintaining spaced repetition apps, following online courses to completion, and resisting the pull of social media during study sessions. They are good candidates for structured digital learning: Khan Academy, Anki flashcards, online practice papers, and learning management systems. The technology serves their discipline rather than undermining it.`
+		);
+	} else if (cScore < 2.5) {
+		narrative.push(
+			`Digital devices are a double-edged sword for ${studentName}. Their lower natural discipline means the same phone that hosts a learning app also hosts social media, games, and messaging — and the distracting apps usually win. Strategy: during study time, either remove the device entirely or use dedicated study apps with built-in distraction blocking (Forest, Cold Turkey, Focus@Will). The physical separation of study device from entertainment device is more effective than willpower alone.`
+		);
+	} else {
+		narrative.push(
+			`${studentName} can use digital tools effectively with some guardrails. Set up a "study mode" on their device that blocks distracting apps during designated study times. Curate a short list of approved learning apps and resources so the device becomes a study tool rather than an entertainment portal.`
+		);
+	}
+
+	if (xScore >= 3.5) {
+		narrative.push(
+			`${studentName}'s social nature means they'll engage well with collaborative digital platforms: shared Google Docs for group projects, Discord study servers, video call study sessions, and peer-teaching through screen sharing. These social digital channels combine their need for interaction with productive academic work.`
+		);
+	}
+
 	return {
 		narrative,
 		keyFindings,

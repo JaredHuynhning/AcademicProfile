@@ -94,6 +94,14 @@ export function generateStrengthsMega(
 		`Every student has genuine strengths — personality traits that, when leveraged strategically, become academic superpowers. This section identifies ${studentName}'s strongest traits and provides specific strategies for amplifying them. The goal is not just to acknowledge strengths, but to actively deploy them across subjects, assessments, and learning situations.`
 	);
 
+	narrative.push(
+		`Strengths-based approaches to education produce measurably better outcomes than deficit-focused interventions. Research by Park and Peterson (2009) found that students who consciously apply their personality strengths to academic challenges show 15-20% improvement in both engagement and performance. The reason is straightforward: working with your natural tendencies requires less effort than fighting against them. A conscientious student who builds on their organisational strength will always outperform the same student trying to become more creative — not because creativity doesn't matter, but because building from strength is more efficient than fixing weakness.`
+	);
+
+	narrative.push(
+		`This section identifies ${studentName}'s top personality strengths, maps how they reinforce each other, reveals hidden strengths that aren't obvious from headline scores, and provides specific leverage strategies for each. The goal is to make ${studentName} aware of what they naturally do well, so they can do more of it — deliberately and strategically.`
+	);
+
 	// ─── Cross-Referenced Strengths ───────────────────────────────────────────────
 	narrative.push('\n### Cross-Referenced Strengths');
 

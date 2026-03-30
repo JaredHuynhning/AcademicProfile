@@ -200,12 +200,26 @@ export function generateBarriersMega(
 	// ─── Priority Ranking ────────────────────────────────────────────────────────
 	narrative.push('\n### Priority Intervention Ranking');
 	narrative.push(
-		`Addressing all barriers simultaneously is overwhelming and counterproductive. Here is the recommended priority order for ${studentName}:`
+		`Addressing all barriers simultaneously is overwhelming and counterproductive. Research on behaviour change shows that attempting to change more than two habits at once drops the success rate from ~80% to below 20% (Clear, 2018). Here is the recommended priority order for ${studentName}:`
 	);
 
 	rootCauses.forEach((rc, i) => {
-		narrative.push(`**${i + 1}. ${rc.personality}** — ${rc.intervention.split('.')[0]}. ${i === 0 ? 'Start here — this is the highest-impact change.' : i === 1 ? 'Address this once the first intervention is established.' : 'Tackle this last — it will be easier once the higher-priority barriers are managed.'}`);
+		narrative.push(`**${i + 1}. ${rc.personality}** — ${rc.intervention.split('.')[0]}. ${i === 0 ? 'Start here — this is the highest-impact change.' : i === 1 ? 'Address this once the first intervention is established (typically after 3-4 weeks).' : 'Tackle this last — it will be easier once the higher-priority barriers are managed.'}`);
 	});
+
+	// ─── When to Seek Professional Help ──────────────────────────────────────────
+	narrative.push('\n### When to Seek Professional Help');
+	narrative.push(
+		`Most personality-driven academic barriers respond well to the environmental and behavioural interventions described above. However, some situations warrant professional support. Consider seeking help from a school counsellor, educational psychologist, or learning specialist if:`
+	);
+	narrative.push(`- Academic performance has declined significantly over 2+ terms despite implementing the recommended strategies`);
+	narrative.push(`- ${studentName} shows signs of clinical anxiety or depression (persistent sadness, withdrawal, sleep changes, loss of interest in previously enjoyed activities)`);
+	narrative.push(`- Attention difficulties are pervasive across all subjects and settings (not just boring ones) — this may warrant assessment for ADHD`);
+	narrative.push(`- ${studentName} reports feeling overwhelmed, hopeless, or like "nothing will help" — amotivation can sometimes signal deeper emotional issues`);
+	narrative.push(`- Social difficulties are causing significant distress beyond normal adolescent challenges`);
+	narrative.push(
+		`This report is a personality assessment, not a clinical diagnosis. If any of the patterns described here cause significant distress or functional impairment, a qualified professional can provide the targeted support that goes beyond what personality-based strategies can offer.`
+	);
 
 	return {
 		narrative,
