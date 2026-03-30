@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useQuizStore } from "@/lib/stores/quiz-store";
 import { useReportsStore } from "@/lib/stores/reports-store";
 import { generateReport, generateMegaReport } from "@/lib/report";
-import type { MegaSection, DimensionDetail } from "@/lib/report";
+import type { MegaSection, DimensionDetail, SubjectAlignment } from "@/lib/report";
+import { SubjectFitMatrix } from "@/components/report/SubjectFitMatrix";
 import { ReportSection } from "@/components/report/ReportSection";
 import { StickyNav } from "@/components/report/StickyNav";
 import { FloatingTOC } from "@/components/report/FloatingTOC";
@@ -715,7 +716,7 @@ function CoverSection({ data }: { data: Record<string, unknown> }) {
 
 // ─── Mega-section renderer ───────────────────────────────────────────────────
 
-function MegaSectionBody({ section, studentName, dimensionDetails }: { section: MegaSection; studentName: string; dimensionDetails?: DimensionDetail[] }) {
+function MegaSectionBody({ section, studentName, dimensionDetails, subjectAlignment }: { section: MegaSection; studentName: string; dimensionDetails?: DimensionDetail[]; subjectAlignment?: SubjectAlignment[] }) {
   // Special renderers for specific mega-section types
   if (section.id === 'cover-summary' && section.rawData?.cover) {
     return (
@@ -832,6 +833,14 @@ function MegaSectionBody({ section, studentName, dimensionDetails }: { section: 
         </div>
       )}
 
+      {/* Subject fit matrix for subject-fit section */}
+      {section.id === 'subject-fit' && subjectAlignment && subjectAlignment.length > 0 && (
+        <div className="my-8">
+          <p className="text-[10px] uppercase tracking-widest text-warm-gray/60 mb-3">Subject Alignment Matrix</p>
+          <SubjectFitMatrix subjects={subjectAlignment} />
+        </div>
+      )}
+
       {section.content.keyFindings.map((f, i) => (
         <Callout key={`f${i}`} icon={f.type === 'strength' ? '💪' : f.type === 'barrier' ? '⚠️' : '💡'} title={f.title}>
           {f.text}
@@ -916,7 +925,7 @@ export default function ReportPage() {
               keyTakeaway={section.keyTakeaway}
               sectionNumber={index + 1}
             >
-              <MegaSectionBody section={section} studentName={name || "Student"} dimensionDetails={megaReport.dimensionDetails} />
+              <MegaSectionBody section={section} studentName={name || "Student"} dimensionDetails={megaReport.dimensionDetails} subjectAlignment={megaReport.subjectAlignment} />
             </ReportSection>
           ))}
         </div>

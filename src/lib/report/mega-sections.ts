@@ -72,6 +72,14 @@ export interface DimensionDetail {
 	facets: { name: string; score: number }[];
 }
 
+export interface SubjectAlignment {
+	subject: string;
+	alignment: number;
+	category: 'Excellent' | 'Good' | 'Challenging';
+	passion?: number;
+	confidence?: number;
+}
+
 export interface MegaReport {
 	studentName: string;
 	date: string;
@@ -80,6 +88,7 @@ export interface MegaReport {
 	radarData: { dim: string; score: number; color: string }[];
 	scoreSummary: { dim: string; score: number; percentile: number; level: string; label: string; color: string }[];
 	dimensionDetails: DimensionDetail[];
+	subjectAlignment: SubjectAlignment[];
 	raw: Record<string, unknown>;
 }
 
@@ -210,6 +219,28 @@ export function consolidateToMegaReport(
 				label: interpretiveLabel(d.score),
 				color: DIM_COLORS[key],
 				facets: Object.entries(d.facets).map(([k, f]) => ({ name: f.name, score: f.score })),
+			});
+		}
+	}
+
+	// Calculate subject alignment from dimension scores
+	const subjectAlignment: SubjectAlignment[] = [];
+	if (dims) {
+		const subjDims: Record<string, string[]> = {
+			Mathematics: ['C', 'O'], English: ['O', 'E'], Science: ['O', 'C'],
+			History: ['O', 'A'], Languages: ['X', 'O'], 'Creative Arts': ['O', 'E'],
+			'Physical Education': ['X', 'C'], 'Technology/Computing': ['C', 'O'],
+		};
+		const lp = results.learnerProfile || null;
+		for (const [subj, dimKeys] of Object.entries(subjDims)) {
+			const avg = dimKeys.reduce((sum, k) => sum + (dims[k]?.score || 3), 0) / dimKeys.length;
+			const cat = avg >= 3.5 ? 'Excellent' : avg >= 2.5 ? 'Good' : 'Challenging';
+			const subjLower = subj.toLowerCase().replace(/\s+/g, '_');
+			const sfData = lp?.subjectFit?.[subjLower] || lp?.subjectFit?.[subj.toLowerCase()] || null;
+			subjectAlignment.push({
+				subject: subj, alignment: avg,
+				category: cat as 'Excellent' | 'Good' | 'Challenging',
+				passion: sfData?.passion, confidence: sfData?.confidence,
 			});
 		}
 	}
@@ -375,6 +406,6 @@ export function consolidateToMegaReport(
 	});
 
 	return {
-		studentName, date: dateStr, archetype, sections, radarData, scoreSummary, dimensionDetails, raw: rawReport,
+		studentName, date: dateStr, archetype, sections, radarData, scoreSummary, dimensionDetails, subjectAlignment, raw: rawReport,
 	};
 }
