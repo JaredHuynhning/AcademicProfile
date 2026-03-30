@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useQuizStore } from "@/lib/stores/quiz-store";
 import { useReportsStore } from "@/lib/stores/reports-store";
 import { generateReport, generateMegaReport } from "@/lib/report";
-import type { MegaSection } from "@/lib/report";
+import type { MegaSection, DimensionDetail } from "@/lib/report";
 import { ReportSection } from "@/components/report/ReportSection";
 import { StickyNav } from "@/components/report/StickyNav";
 import { FloatingTOC } from "@/components/report/FloatingTOC";
@@ -14,6 +14,8 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { HexacoRadarChart } from "@/components/report/HexacoRadarChart";
 import { ScoreBar } from "@/components/ui/ScoreBar";
+import { DimensionScoreCard } from "@/components/report/DimensionScoreCard";
+import { BellCurveChart } from "@/components/report/BellCurveChart";
 import { Callout } from "@/components/ui/Callout";
 import { PullQuote } from "@/components/ui/PullQuote";
 import { ActionSheet } from "@/components/report/ActionSheet";
@@ -593,6 +595,47 @@ function SectionContent({ data }: { data: Record<string, unknown> }) {
   );
 }
 
+// ─── Dimension interpretation helper ─────────────────────────────────────────
+
+function getDimensionInterpretation(key: string, score: number, name: string): string {
+  const first = name.split(' ')[0] || 'This student';
+  const interps: Record<string, Record<string, string>> = {
+    H: {
+      high: `${first} demonstrates strong integrity and fairness. They tend to be genuine in interactions, avoid manipulating others, and show little interest in status or material wealth. In academic settings, this translates to honest work habits and collaborative reliability.`,
+      moderate: `${first} shows a balanced approach to fairness and social positioning. They can be cooperative while also recognising when to advocate for their own interests — a pragmatic blend that serves well in competitive academic environments.`,
+      low: `${first} is strategic and competitive, comfortable with self-promotion and navigating social dynamics to achieve goals. In school, they may excel at networking and positioning themselves for opportunities, though they should ensure this drive doesn't compromise relationships.`,
+    },
+    E: {
+      high: `${first} experiences emotions deeply and may be more sensitive to stress and uncertainty. They benefit from structured environments, clear expectations, and emotional support during high-pressure periods like exams.`,
+      moderate: `${first} has a balanced emotional profile — responsive to feelings without being overwhelmed by them. They can handle moderate stress while still being attuned to the emotions of those around them.`,
+      low: `${first} tends to stay calm under pressure and processes emotions independently. They handle academic stress well but may need encouragement to seek support when challenges feel overwhelming.`,
+    },
+    X: {
+      high: `${first} thrives on social interaction and draws energy from group settings. They're likely to be vocal in class discussions, enjoy collaborative projects, and seek leadership roles. They may need to develop strategies for focused solo work.`,
+      moderate: `${first} is comfortable in both social and solitary settings, adapting their energy to the situation. This flexibility is an asset — they can work well in groups and independently.`,
+      low: `${first} prefers quiet, focused environments and may do their best thinking alone. They bring depth of thought to their work and should be given space to process before contributing in group settings.`,
+    },
+    A: {
+      high: `${first} is patient, flexible, and cooperative — a natural mediator in group settings. They prioritise harmony and may need encouragement to assert their own academic needs when they conflict with others'.`,
+      moderate: `${first} balances cooperation with assertiveness. They can work harmoniously with others while standing firm on important issues — a healthy middle ground for academic and social success.`,
+      low: `${first} is direct, independent, and willing to challenge ideas. They bring critical thinking to discussions but may need to develop diplomatic skills for collaborative projects and peer relationships.`,
+    },
+    C: {
+      high: `${first} is highly organised, disciplined, and goal-oriented. They naturally excel at planning, meeting deadlines, and maintaining quality standards. Their perfectionist tendencies are a strength that may occasionally need moderation to prevent burnout.`,
+      moderate: `${first} has adequate organisational skills with room for growth. They can maintain routines when motivated but may benefit from external structure and accountability systems for long-term projects.`,
+      low: `${first} prefers flexibility and spontaneity over rigid structure. They may struggle with long-term planning and routine tasks. Building external systems (planners, reminders, study schedules) is essential for academic success.`,
+    },
+    O: {
+      high: `${first} is intellectually curious, creative, and drawn to novel ideas. They thrive when given freedom to explore topics in depth and may resist overly structured or repetitive learning. Channelling this curiosity into academic pursuits can be transformative.`,
+      moderate: `${first} shows balanced curiosity — open to new ideas while appreciating established approaches. They can engage with creative projects and traditional learning equally well.`,
+      low: `${first} prefers practical, concrete learning and established methods. They excel with clear instructions and familiar formats. Exposure to creative thinking in small doses can broaden their academic toolkit without overwhelming them.`,
+    },
+  };
+
+  const level = score >= 3.5 ? 'high' : score < 2.5 ? 'low' : 'moderate';
+  return interps[key]?.[level] || `${first} shows a distinctive profile on this dimension that shapes their academic approach.`;
+}
+
 // ─── Cover Section ───────────────────────────────────────────────────────────
 
 function CoverSection({ data }: { data: Record<string, unknown> }) {
@@ -672,7 +715,7 @@ function CoverSection({ data }: { data: Record<string, unknown> }) {
 
 // ─── Mega-section renderer ───────────────────────────────────────────────────
 
-function MegaSectionBody({ section, studentName }: { section: MegaSection; studentName: string }) {
+function MegaSectionBody({ section, studentName, dimensionDetails }: { section: MegaSection; studentName: string; dimensionDetails?: DimensionDetail[] }) {
   // Special renderers for specific mega-section types
   if (section.id === 'cover-summary' && section.rawData?.cover) {
     return (
@@ -722,6 +765,9 @@ function MegaSectionBody({ section, studentName }: { section: MegaSection; stude
   // Generic: render narratives + findings, only fall back to rawData when no mega narrative
   const hasRichNarrative = section.content.narrative.length > 2;
 
+  // Determine which dimension cards to show inline
+  const showDimensionCards = section.id === 'personality-deep-dive' && dimensionDetails && dimensionDetails.length > 0;
+
   return (
     <div className="space-y-4">
       {section.content.narrative.length > 0 && (
@@ -745,6 +791,47 @@ function MegaSectionBody({ section, studentName }: { section: MegaSection; stude
           })}
         </div>
       )}
+
+      {/* Dimension score cards with bell curves and facet bars */}
+      {showDimensionCards && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 my-8">
+          {dimensionDetails!.map((dim) => (
+            <DimensionScoreCard
+              key={dim.key}
+              dimensionKey={dim.key}
+              dimensionName={dim.name}
+              score={dim.score}
+              percentile={dim.percentile}
+              level={dim.label}
+              color={dim.color}
+              facets={dim.facets}
+              interpretation={getDimensionInterpretation(dim.key, dim.score, studentName)}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Executive summary — show mini bell curves in a row */}
+      {section.id === 'cover-summary' && dimensionDetails && dimensionDetails.length > 0 && (
+        <div className="my-8">
+          <p className="text-[10px] uppercase tracking-widest text-warm-gray/60 mb-3">Score Distribution</p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {dimensionDetails.map((dim) => (
+              <div key={dim.key} className="bg-white/50 rounded-xl p-3 border border-warm-gray/10">
+                <BellCurveChart
+                  score={dim.score}
+                  color={dim.color}
+                  label={dim.name.split(' ')[0]}
+                  percentile={dim.percentile}
+                  width={280}
+                  height={110}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {section.content.keyFindings.map((f, i) => (
         <Callout key={`f${i}`} icon={f.type === 'strength' ? '💪' : f.type === 'barrier' ? '⚠️' : '💡'} title={f.title}>
           {f.text}
@@ -827,7 +914,7 @@ export default function ReportPage() {
               title={section.subtitle ? `${section.title}: ${section.subtitle}` : section.title}
               isFirst={index === 0}
             >
-              <MegaSectionBody section={section} studentName={name || "Student"} />
+              <MegaSectionBody section={section} studentName={name || "Student"} dimensionDetails={megaReport.dimensionDetails} />
             </ReportSection>
           ))}
         </div>

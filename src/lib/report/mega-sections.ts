@@ -60,6 +60,17 @@ export interface MegaSection {
 	rawData?: Record<string, unknown>;
 }
 
+export interface DimensionDetail {
+	key: string;
+	name: string;
+	score: number;
+	percentile: number;
+	level: string;
+	label: string;
+	color: string;
+	facets: { name: string; score: number }[];
+}
+
 export interface MegaReport {
 	studentName: string;
 	date: string;
@@ -67,6 +78,7 @@ export interface MegaReport {
 	sections: MegaSection[];
 	radarData: { dim: string; score: number; color: string }[];
 	scoreSummary: { dim: string; score: number; percentile: number; level: string; label: string; color: string }[];
+	dimensionDetails: DimensionDetail[];
 	raw: Record<string, unknown>;
 }
 
@@ -104,6 +116,7 @@ export function consolidateToMegaReport(
 
 	const radarData: MegaReport['radarData'] = [];
 	const scoreSummary: MegaReport['scoreSummary'] = [];
+	const dimensionDetails: DimensionDetail[] = [];
 	const hasDims = Array.isArray(results.dimensions) && results.dimensions.length > 0;
 	const dims = hasDims ? toDimensionsMap(results.dimensions) : null;
 	if (dims) {
@@ -115,6 +128,16 @@ export function consolidateToMegaReport(
 				dim: DIM_NAMES[key], score: d.score,
 				percentile: scorePercentile(d.score), level: d.level,
 				label: interpretiveLabel(d.score), color: DIM_COLORS[key],
+			});
+			dimensionDetails.push({
+				key,
+				name: DIM_NAMES[key],
+				score: d.score,
+				percentile: scorePercentile(d.score),
+				level: d.level,
+				label: interpretiveLabel(d.score),
+				color: DIM_COLORS[key],
+				facets: Object.entries(d.facets).map(([k, f]) => ({ name: f.name, score: f.score })),
 			});
 		}
 	}
@@ -269,6 +292,6 @@ export function consolidateToMegaReport(
 	});
 
 	return {
-		studentName, date: dateStr, archetype, sections, radarData, scoreSummary, raw: rawReport,
+		studentName, date: dateStr, archetype, sections, radarData, scoreSummary, dimensionDetails, raw: rawReport,
 	};
 }

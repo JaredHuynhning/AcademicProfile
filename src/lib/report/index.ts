@@ -39,7 +39,7 @@ import { toDimensionsMap } from './helpers';
  * @param {string} name - Student name
  * @returns {object} All section data for rendering
  */
-export type { MegaReport, MegaSection, MegaSectionContent } from './mega-sections';
+export type { MegaReport, MegaSection, MegaSectionContent, DimensionDetail } from './mega-sections';
 import { consolidateToMegaReport } from './mega-sections';
 
 export function generateMegaReport(results: any, name: string) {

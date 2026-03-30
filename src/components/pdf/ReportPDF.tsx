@@ -2,10 +2,13 @@
 import { Document, Page, Text, View, StyleSheet, pdf } from "@react-pdf/renderer";
 import type { TestResults } from "@/lib/types";
 import { PDFRadarChart } from "./PDFRadarChart";
+import { PDFBellCurve } from "./PDFBellCurve";
+import { PDFFacetBarChart } from "./PDFFacetBarChart";
 import { PDFActionSheet } from "./PDFActionSheet";
 import { PDFTableOfContents } from "./PDFTableOfContents";
 import { scorePercentile, interpretiveLabel, POPULATION_MEAN } from "@/lib/report/helpers";
-import { generateMegaReport, type MegaReport, type MegaSection } from "@/lib/report";
+import { generateMegaReport, type MegaReport, type MegaSection, type DimensionDetail } from "@/lib/report";
+import { withAlpha } from "@/lib/chart-geometry";
 
 const CREAM = "#fdfbf7";
 const ESPRESSO = "#2c2417";
@@ -1332,7 +1335,33 @@ interface ReportPDFProps {
   report: Record<string, unknown>;
 }
 
-function MegaSectionContent({ section }: { section: MegaSection }) {
+function PDFDimensionCard({ dim }: { dim: DimensionDetail }) {
+  return (
+    <View style={{ marginBottom: 14, padding: 10, borderRadius: 6, border: `1 solid ${withAlpha(dim.color, 0.25)}`, backgroundColor: withAlpha(dim.color, 0.03) }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
+        <View>
+          <Text style={{ fontSize: 11, fontWeight: 'bold', color: ESPRESSO }}>{dim.name}</Text>
+          <Text style={{ fontSize: 7, color: dim.color, marginTop: 1 }}>{dim.label}</Text>
+        </View>
+        <View style={{ alignItems: 'flex-end' }}>
+          <Text style={{ fontSize: 18, fontWeight: 'bold', color: dim.color }}>{dim.score.toFixed(1)}</Text>
+          <Text style={{ fontSize: 6, color: WARM_GRAY }}>/ 5.0</Text>
+        </View>
+      </View>
+      <View style={{ alignItems: 'center', marginBottom: 6 }}>
+        <PDFBellCurve score={dim.score} color={dim.color} label={dim.name} percentile={dim.percentile} width={220} height={80} />
+      </View>
+      {dim.facets.length > 0 && (
+        <View style={{ marginTop: 4 }}>
+          <Text style={{ fontSize: 6, color: WARM_GRAY, textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 4 }}>Facet Breakdown</Text>
+          <PDFFacetBarChart dimensionColor={dim.color} facets={dim.facets} width={220} />
+        </View>
+      )}
+    </View>
+  );
+}
+
+function MegaSectionContent({ section, dimensionDetails }: { section: MegaSection; dimensionDetails?: DimensionDetail[] }) {
   const hasRichNarrative = section.content.narrative.length > 2;
 
   // If the section has rich mega-narrative content, render that
@@ -1368,6 +1397,38 @@ function MegaSectionContent({ section }: { section: MegaSection }) {
         elements.push(<Text key={`n${i}`} style={[styles.body, { marginBottom: 6 }]}>{para}</Text>);
       }
     });
+
+    // Add dimension score cards for personality deep-dive section
+    if (section.id === 'personality-deep-dive' && dimensionDetails && dimensionDetails.length > 0) {
+      elements.push(
+        <View key="dim-cards" style={{ marginTop: 12, marginBottom: 8 }}>
+          <Text style={{ fontSize: 6, color: WARM_GRAY, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 8 }}>Dimension Score Cards</Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+            {dimensionDetails.map((dim) => (
+              <View key={dim.key} style={{ width: '48%', minWidth: 0 }}>
+                <PDFDimensionCard dim={dim} />
+              </View>
+            ))}
+          </View>
+        </View>
+      );
+    }
+
+    // Add mini bell curves on the cover/executive summary
+    if (section.id === 'cover-summary' && dimensionDetails && dimensionDetails.length > 0) {
+      elements.push(
+        <View key="bell-curves" style={{ marginTop: 10, marginBottom: 8 }}>
+          <Text style={{ fontSize: 6, color: WARM_GRAY, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 6 }}>Score Distribution</Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+            {dimensionDetails.map((dim) => (
+              <View key={dim.key} style={{ width: '32%', minWidth: 0, padding: 6, border: `0.5 solid ${BORDER}`, borderRadius: 4 }}>
+                <PDFBellCurve score={dim.score} color={dim.color} label={dim.name.split(' ')[0]} percentile={dim.percentile} width={150} height={60} />
+              </View>
+            ))}
+          </View>
+        </View>
+      );
+    }
 
     section.content.keyFindings.forEach((f, i) => {
       elements.push(<PDFCallout key={`f${i}`} text={f.text} title={f.title} color={f.color || WARM_GRAY} />);
@@ -1495,6 +1556,9 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
 
       {/* Content: section divider + content for each mega-section */}
       {contentSections.flatMap((section, sectionIndex) => {
+        // Build a key findings summary for the divider page
+        const topFindings = section.content.keyFindings.slice(0, 3);
+
         const dividerPage = (
           <Page key={`divider-${section.id}`} size="A4" style={{
             ...styles.coverPage,
@@ -1512,7 +1576,25 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
                 {section.subtitle}
               </Text>
             )}
-            <View style={{ width: 40, height: 3, backgroundColor: ESPRESSO, alignSelf: 'center' as const }} />
+            <View style={{ width: 40, height: 3, backgroundColor: ESPRESSO, alignSelf: 'center' as const, marginBottom: 20 }} />
+
+            {/* Key findings preview on divider */}
+            {topFindings.length > 0 && (
+              <View style={{ maxWidth: 360, alignSelf: 'center' as const, gap: 6 }}>
+                <Text style={{ fontSize: 7, color: WARM_GRAY, textTransform: 'uppercase', letterSpacing: 1.5, textAlign: 'center' as const, marginBottom: 4 }}>
+                  Key Findings
+                </Text>
+                {topFindings.map((f, i) => (
+                  <View key={i} style={{ flexDirection: 'row', gap: 6, alignItems: 'flex-start', paddingHorizontal: 12 }}>
+                    <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: f.color || WARM_GRAY, marginTop: 3 }} />
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontSize: 8, fontWeight: 'bold', color: ESPRESSO }}>{f.title}</Text>
+                      <Text style={{ fontSize: 7, color: WARM_GRAY, lineHeight: 1.4 }}>{f.text.substring(0, 120)}{f.text.length > 120 ? '...' : ''}</Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            )}
           </Page>
         );
         // Action plan: render mega content (rich narrative), not old ActionSheet
@@ -1520,7 +1602,7 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
           return [
             dividerPage,
             <Page key={section.id} size="A4" style={styles.page} wrap>
-              <MegaSectionContent section={section} />
+              <MegaSectionContent section={section} dimensionDetails={mega.dimensionDetails} />
               <View style={styles.footer} fixed>
                 <Text>{name} — Academic Profile</Text>
                 <Text render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} />
@@ -1532,7 +1614,7 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
         return [
           dividerPage,
           <Page key={section.id} size="A4" style={styles.page} wrap>
-            <MegaSectionContent section={section} />
+            <MegaSectionContent section={section} dimensionDetails={mega.dimensionDetails} />
 
             <View style={styles.footer} fixed>
               <View style={styles.footerRule} />

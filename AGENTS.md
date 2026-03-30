@@ -49,6 +49,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | 14 | PDF rendering bugs — overlapping text, broken wrapping | done | P0 | Shipped 75b673b |
 | 15 | 50-page report — consolidate 23 sections → 12 mega-sections | done | P0 | Shipped: 12 mega-sections, 11 deep generators, 24-page PDF, ~10K words |
 | 16 | Deepen report to 50 pages — expand all generators | done | P0 | Shipped: 44 PDF pages, 14.5K words, section dividers, premium layout |
+| 17 | 10/10 report overhaul — personalisation, visuals, content, UX | active | P0 | Fix name flow, add charts/infographics, remove generic advice, polish web experience |
 
 ## Ticket Details
 
@@ -209,6 +210,15 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - [x] `npm run build` exits 0
 - [x] Zero runtime errors when completing a quiz and viewing the report
 
+### Ticket #17 AC
+- [ ] Student name appears in report header, nav bar, and throughout narrative text (not "Student")
+- [ ] Generic advice (active recall, sleep 8 hours) removed or made conditional
+- [ ] At least 3 visual charts beyond radar (bell curve, facet bars, strength heat map)
+- [ ] Section dividers replaced with visual summary cards showing key metrics
+- [ ] Web report has collapsible sections with "Key Takeaway" summaries
+- [ ] `npm run build` exits 0
+- [ ] Zero runtime errors
+
 ### Ticket #16 AC
 - [ ] PDF output is 40+ pages (measured via page count)
 - [ ] Web report word count is 14,000+ words
@@ -329,26 +339,6 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 
 
-<!-- compaction-checkpoint-start -->
-## Pre-Compaction Checkpoint
-**When**: 2026-03-29 23:33:48 | **Branch**: main | **Activity**: 5 msgs, 0
-0 tools, 0
-0 files
-
-**Recent work**:
-- - - - ### [23:09:32] 💬 User Message
-- - - - ### [23:11:42] 💬 User Message
-- - - - ### [23:14:22] 💬 User Message
-- - - - ### [23:17:42] 💬 User Message
-- - - ### [23:26:28] 💬 User Message
-
-**Modified files**:
-- 
-
-**Dirty files** (7): .claude-project.json,AGENTS.md,AGENTS.md.backup,src/components/pdf/ReportPDF.tsx,.claude/
-
-> Resume context: Read this section + git diff + recent session log to reconstruct state.
-<!-- compaction-checkpoint-end -->
 
 ### 2026-03-29 (session 3 — PDF rendering fixes)
 - Shipped #14: Applied 9 rendering fixes to src/components/pdf/ReportPDF.tsx
@@ -361,3 +351,18 @@ This version has breaking changes — APIs, conventions, and file structure may 
   - renderBarriers: Removed wrap={false} from root-cause cards, converted horizontal layout to vertical (→ to ↓ arrow)
   - All fixes tested against design spec; npm run build passes
   - Commit: 75b673b
+
+<!-- compaction-checkpoint-start -->
+## Pre-Compaction Checkpoint
+**When**: 2026-03-30 19:02:05 | **Branch**: main | **Activity**: 0 msgs, 0 tools, 0 files
+
+**Recent work**:
+- 
+
+**Modified files**:
+- 
+
+**Dirty files** (5): AGENTS.md,samples/,screenshots/,scripts/e2e-report-test.mjs,scripts/run-personas.mjs
+
+> Resume context: Read this section + git diff + recent session log to reconstruct state.
+<!-- compaction-checkpoint-end -->
