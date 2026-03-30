@@ -8,8 +8,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Current State
 
-- **Last session**: 2026-03-30 — Shipped #14 (PDF fixes) + #15 (12 mega-section architecture, 11 deep content generators, 24-page PDF with ~10K words of research-backed personality analysis)
-- **Next action**: #7 (Free summary → paywall → full report with Stripe Checkout) — the last revenue blocker.
+- **Last session**: 2026-03-30 — Shipped #14 (PDF fixes), #15 (12 mega-section architecture), #16 (content depth to 44 PDF pages, 14.5K words). 20 commits.
+- **Next action**: All tickets done. Consider: visual polish, new screenshots for landing page, or new feature work.
 
 ## Launch Readiness
 
@@ -241,7 +241,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Recently Completed
 
-- [2026-03-30] #15 50-page report — 12 mega-sections with 11 deep generators (personality, learning, character, study, strengths, barriers, social, subject fit, guide, action plan). 24-page PDF, ~10K words.
+- [2026-03-30] #16 Content depth — expanded all generators to 14.5K words, 44 PDF pages with section dividers, memory science, conversation scripts, dimension interactions, facet implications
+- [2026-03-30] #15 50-page report — 12 mega-sections with 11 deep generators, MegaReport architecture, web+PDF renderers
 - [2026-03-30] #14 PDF rendering fixes — 9 fixes (wrap, minWidth, vertical layout, lineHeight)
 - [2026-03-29] #12 Trust signals — Guarantee (money-back), Testimonials (3 quotes), enhanced Credibility with parent-friendly HEXACO explainer
 - [2026-03-29] #8b PDF polish B — 3 section-specific renderers (DeepDive, Strengths, Barriers) with dimension cards, two-column strength/weakness, root cause chains, misdiagnosis visualization
@@ -259,6 +260,19 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - [2026-03-25] Quiz navigation fix — faster animation, clear answers on restart
 
 ## Session Log
+
+### 2026-03-30
+- Shipped #14: 9 PDF rendering fixes (wrap={false}, minWidth, vertical root-cause, lineHeight)
+- Shipped #15 Phase 1a: MegaReport architecture — 12 mega-sections consolidating 23 thin sections
+- Shipped #15 Phase 1b: Deep generators for sections 1-4 (ExecSummary, Personality 8p, Learning 6p, Character 4p)
+- Shipped #15 Phase 2: Deep generators for sections 5-8 (Study 6p, Strengths 4p, Barriers 5p, Social 3p)
+- Shipped #15 Phase 3: Deep generators for sections 9-12 (SubjectFit 3p, Guide 5p, ActionPlan 3p, Appendix 1p)
+- Fixed 3 runtime bugs (TDZ on dims, missing oScore, guide n param)
+- Shipped #15 Phase 4: Action plan mega content, PDF threshold fix
+- Shipped #16: Content depth expansion — 14.5K words across 8 expansion rounds
+- Added section divider pages for premium book-like PDF layout
+- Final: 44 PDF pages, 14,477 web words, 12 sections, 0 runtime errors
+- 20 commits, all pushed to main
 
 ### 2026-03-29
 - CEO value audit: product is ~70% of $49 value — cross-reference engine is the moat, presentation gaps were blockers
