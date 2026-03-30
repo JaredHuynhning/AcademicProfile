@@ -7,7 +7,7 @@ import { PDFFacetBarChart } from "./PDFFacetBarChart";
 import { PDFActionSheet } from "./PDFActionSheet";
 import { PDFTableOfContents } from "./PDFTableOfContents";
 import { scorePercentile, interpretiveLabel, POPULATION_MEAN } from "@/lib/report/helpers";
-import { generateMegaReport, type MegaReport, type MegaSection, type DimensionDetail } from "@/lib/report";
+import { generateMegaReport, type MegaReport, type MegaSection, type DimensionDetail, type SubjectAlignment } from "@/lib/report";
 import { withAlpha } from "@/lib/chart-geometry";
 
 const CREAM = "#fdfbf7";
@@ -1361,7 +1361,7 @@ function PDFDimensionCard({ dim }: { dim: DimensionDetail }) {
   );
 }
 
-function MegaSectionContent({ section, dimensionDetails }: { section: MegaSection; dimensionDetails?: DimensionDetail[] }) {
+function MegaSectionContent({ section, dimensionDetails, subjectAlignment }: { section: MegaSection; dimensionDetails?: DimensionDetail[]; subjectAlignment?: SubjectAlignment[] }) {
   const hasRichNarrative = section.content.narrative.length > 0;
 
   // If the section has rich mega-narrative content, render that
@@ -1423,6 +1423,41 @@ function MegaSectionContent({ section, dimensionDetails }: { section: MegaSectio
             {dimensionDetails.map((dim) => (
               <View key={dim.key} style={{ width: '32%', minWidth: 0, padding: 6, border: `0.5 solid ${BORDER}`, borderRadius: 4 }}>
                 <PDFBellCurve score={dim.score} color={dim.color} label={dim.name.split(' ')[0]} percentile={dim.percentile} width={150} height={60} />
+              </View>
+            ))}
+          </View>
+        </View>
+      );
+    }
+
+    // Subject fit matrix for subject-fit section
+    if (section.id === 'subject-fit' && subjectAlignment && subjectAlignment.length > 0) {
+      const catColors: Record<string, string> = { Excellent: '#4a7c59', Good: '#8a7e6b', Challenging: '#c17f59' };
+      const sorted = [...subjectAlignment].sort((a, b) => b.alignment - a.alignment);
+      elements.push(
+        <View key="subj-matrix" style={{ marginTop: 10, marginBottom: 12 }}>
+          <Text style={{ fontSize: 6, color: WARM_GRAY, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 8 }}>Subject Alignment Matrix</Text>
+          {sorted.map((subj, i) => {
+            const pct = Math.max(8, (subj.alignment / 5) * 100);
+            const color = catColors[subj.category] || '#8a7e6b';
+            return (
+              <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 5 }}>
+                <Text style={{ fontSize: 8, color: ESPRESSO, width: 90, textAlign: 'right' }}>{subj.subject}</Text>
+                <View style={{ flex: 1, height: 14, borderRadius: 4, backgroundColor: withAlpha(color, 0.08) }}>
+                  <View style={{ width: `${pct}%`, height: 14, borderRadius: 4, backgroundColor: withAlpha(color, 0.7), justifyContent: 'center', alignItems: 'flex-end', paddingRight: 4 }}>
+                    <Text style={{ fontSize: 6, fontWeight: 'bold', color: '#fff' }}>{subj.alignment.toFixed(1)}</Text>
+                  </View>
+                </View>
+                <Text style={{ fontSize: 7, color, width: 55 }}>{subj.category}</Text>
+              </View>
+            );
+          })}
+          {/* Legend */}
+          <View style={{ flexDirection: 'row', gap: 12, justifyContent: 'center', marginTop: 8 }}>
+            {['Excellent', 'Good', 'Challenging'].map(cat => (
+              <View key={cat} style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
+                <View style={{ width: 6, height: 6, borderRadius: 2, backgroundColor: withAlpha(catColors[cat], 0.7) }} />
+                <Text style={{ fontSize: 6, color: WARM_GRAY }}>{cat}</Text>
               </View>
             ))}
           </View>
@@ -1536,6 +1571,85 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
         </View>
       </Page>
 
+      {/* Profile at a Glance */}
+      {mega.dimensionDetails.length > 0 && (
+        <Page size="A4" style={styles.page}>
+          <Text style={{ fontSize: 16, fontWeight: 'bold', color: ESPRESSO, marginBottom: 14 }}>
+            {name}&apos;s Profile at a Glance
+          </Text>
+
+          {/* Top Strengths */}
+          <Text style={{ fontSize: 7, color: WARM_GRAY, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 6 }}>
+            Top Strengths
+          </Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
+            {[...mega.dimensionDetails].sort((a, b) => b.score - a.score).slice(0, 3).map(d => (
+              <View key={d.key} style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 10, border: `0.5 solid ${withAlpha(d.color, 0.3)}`, backgroundColor: withAlpha(d.color, 0.04) }}>
+                <View style={{ width: 5, height: 5, borderRadius: 3, backgroundColor: d.color }} />
+                <Text style={{ fontSize: 8, fontWeight: 'bold', color: d.color }}>{d.name.split(' ')[0]} {d.score.toFixed(1)}</Text>
+                <Text style={{ fontSize: 6, color: WARM_GRAY }}>top {100 - d.percentile}%</Text>
+              </View>
+            ))}
+          </View>
+
+          {/* Growth Areas */}
+          <Text style={{ fontSize: 7, color: WARM_GRAY, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 6 }}>
+            Growth Areas
+          </Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
+            {[...mega.dimensionDetails].sort((a, b) => a.score - b.score).slice(0, 3).map(d => (
+              <View key={d.key} style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 10, border: `0.5 solid ${BORDER}` }}>
+                <Text style={{ fontSize: 8, color: WARM_GRAY }}>{d.name.split(' ')[0]} {d.score.toFixed(1)}</Text>
+              </View>
+            ))}
+          </View>
+
+          {/* Top strength/barrier callouts */}
+          {(() => {
+            const execSection = mega.sections[0];
+            const topStrength = execSection?.content.keyFindings.find(f => f.type === 'strength');
+            const topBarrier = execSection?.content.keyFindings.find(f => f.type === 'barrier');
+            return (
+              <View style={{ flexDirection: 'row', gap: 10, marginBottom: 16 }}>
+                {topStrength && (
+                  <View style={{ flex: 1, padding: 10, borderRadius: 6, backgroundColor: '#f0fdf4', border: '0.5 solid #bbf7d0' }}>
+                    <Text style={{ fontSize: 6, color: '#16a34a', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 3 }}>Top Strength</Text>
+                    <Text style={{ fontSize: 8, color: ESPRESSO, lineHeight: 1.4 }}>{topStrength.text.substring(0, 200)}</Text>
+                  </View>
+                )}
+                {topBarrier && (
+                  <View style={{ flex: 1, padding: 10, borderRadius: 6, backgroundColor: '#fffbeb', border: '0.5 solid #fde68a' }}>
+                    <Text style={{ fontSize: 6, color: '#d97706', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 3 }}>Priority Barrier</Text>
+                    <Text style={{ fontSize: 8, color: ESPRESSO, lineHeight: 1.4 }}>{topBarrier.text.substring(0, 200)}</Text>
+                  </View>
+                )}
+              </View>
+            );
+          })()}
+
+          {/* Mini bell curves */}
+          <Text style={{ fontSize: 7, color: WARM_GRAY, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 6 }}>
+            Score Distribution
+          </Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+            {mega.dimensionDetails.map(d => (
+              <View key={d.key} style={{ width: '31%', minWidth: 0, padding: 6, border: `0.5 solid ${BORDER}`, borderRadius: 4 }}>
+                <PDFBellCurve score={d.score} color={d.color} label={d.name.split(' ')[0]} percentile={d.percentile} width={140} height={55} />
+              </View>
+            ))}
+          </View>
+
+          <View style={styles.footer} fixed>
+            <View style={styles.footerRule} />
+            <View style={styles.footerRow}>
+              <Text>{name}</Text>
+              <Text style={styles.footerCenter}>Profile at a Glance</Text>
+              <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
+            </View>
+          </View>
+        </Page>
+      )}
+
       {/* Table of Contents */}
       <Page size="A4" style={styles.page}>
         <PDFTableOfContents
@@ -1557,8 +1671,8 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
       {/* Content: inline section headers + content (no separate divider pages) */}
       {contentSections.map((section, sectionIndex) => (
         <Page key={section.id} size="A4" style={styles.page} wrap>
-          {/* Inline section header — replaces wasteful full-page dividers */}
-          <View style={{ marginBottom: 24 }}>
+          {/* Inline section header + key takeaway */}
+          <View style={{ marginBottom: 20 }}>
             <Text style={{ fontSize: 8, color: WARM_GRAY, textTransform: 'uppercase' as const, letterSpacing: 3, marginBottom: 4 }}>
               Section {String(sectionIndex + 1).padStart(2, '0')}
             </Text>
@@ -1570,10 +1684,16 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
                 {section.subtitle}
               </Text>
             )}
-            <View style={{ width: 30, height: 2, backgroundColor: ESPRESSO, marginBottom: 12 }} />
+            <View style={{ width: 30, height: 2, backgroundColor: ESPRESSO, marginBottom: 10 }} />
+            {section.keyTakeaway && (
+              <View style={{ padding: 10, borderRadius: 5, backgroundColor: 'rgba(44,36,23,0.02)', border: `0.5 solid ${BORDER}`, marginTop: 4 }}>
+                <Text style={{ fontSize: 6, color: WARM_GRAY, textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 3 }}>Key Takeaway</Text>
+                <Text style={{ fontSize: 8.5, color: ESPRESSO, lineHeight: 1.5 }}>{section.keyTakeaway}</Text>
+              </View>
+            )}
           </View>
 
-          <MegaSectionContent section={section} dimensionDetails={mega.dimensionDetails} />
+          <MegaSectionContent section={section} dimensionDetails={mega.dimensionDetails} subjectAlignment={mega.subjectAlignment} />
 
           <View style={styles.footer} fixed>
             <View style={styles.footerRule} />
