@@ -55,6 +55,7 @@ export interface MegaSection {
 	title: string;
 	subtitle?: string;
 	icon?: string;
+	keyTakeaway?: string;
 	content: MegaSectionContent;
 	subsections?: { title: string; content: MegaSectionContent }[];
 	rawData?: Record<string, unknown>;
@@ -103,6 +104,77 @@ function pickNarratives(...sources: unknown[]): string[] {
 		if (n.length > 0) return n;
 	}
 	return [];
+}
+
+// ─── Key Takeaway Generator ──────────────────────────────────────────────────
+
+function generateKeyTakeaway(sectionId: string, dims: Record<string, any> | null, studentName: string): string | undefined {
+	if (!dims) return undefined;
+	const n = studentName.split(' ')[0] || 'This student';
+	const C = dims.C; const O = dims.O; const E = dims.E; const X = dims.X; const A = dims.A; const H = dims.H;
+	const cScore = C?.score || 3; const oScore = O?.score || 3; const eScore = E?.score || 3;
+	const xScore = X?.score || 3; const aScore = A?.score || 3; const hScore = H?.score || 3;
+
+	const takeaways: Record<string, () => string> = {
+		'cover-summary': () => {
+			const strongest = [
+				{ k: 'Conscientiousness', s: cScore }, { k: 'Openness', s: oScore },
+				{ k: 'Extraversion', s: xScore }, { k: 'Agreeableness', s: aScore },
+				{ k: 'Emotionality', s: eScore }, { k: 'Honesty-Humility', s: hScore },
+			].sort((a, b) => b.s - a.s)[0];
+			return `${n}'s strongest dimension is ${strongest.k} (${strongest.s.toFixed(1)}/5). This shapes how they approach learning, relate to peers, and handle academic challenges.`;
+		},
+		'personality-deep-dive': () => {
+			const high = [cScore, oScore, xScore, aScore, eScore, hScore].filter(s => s >= 3.5).length;
+			const low = [cScore, oScore, xScore, aScore, eScore, hScore].filter(s => s < 2.5).length;
+			if (high >= 4) return `${n} shows elevated scores across multiple dimensions, indicating a well-developed personality profile. Focus on leveraging strengths while watching for perfectionism or overcommitment.`;
+			if (low >= 3) return `${n} has several areas below average, which isn't a weakness — it's a distinctive profile. The strategies in this report are specifically designed for this combination of traits.`;
+			return `${n}'s personality profile is distinctive — not "average" on everything, but a unique combination that creates both natural advantages and areas needing targeted strategies.`;
+		},
+		'learning-profile': () => {
+			if (oScore >= 3.5 && cScore >= 3.5) return `${n} has the ideal learning combination: curiosity (Openness ${oScore.toFixed(1)}) plus discipline (Conscientiousness ${cScore.toFixed(1)}). They explore deeply AND follow through.`;
+			if (oScore >= 3.5 && cScore < 2.5) return `${n} is highly curious but struggles with follow-through. The key is channelling their intellectual excitement into structured output before interest fades.`;
+			if (oScore < 2.5 && cScore >= 3.5) return `${n} is disciplined but may lack curiosity. They'll do the work reliably, but finding personal relevance in each topic will transform compliance into genuine engagement.`;
+			return `${n}'s learning style is shaped by the interaction between their curiosity and discipline. The strategies below are tailored to this specific balance.`;
+		},
+		'academic-character': () => {
+			if (cScore >= 4.0) return `${n}'s exceptional conscientiousness (${cScore.toFixed(1)}/5) is their academic superpower. They have the self-discipline most students lack — the key is ensuring it doesn't tip into unhealthy perfectionism.`;
+			if (cScore < 2.5) return `${n}'s conscientiousness (${cScore.toFixed(1)}/5) is below average, which means external systems are essential. The right structure can close this gap entirely — many high achievers have low natural conscientiousness but excellent systems.`;
+			return `${n} has moderate self-discipline — enough to function but with room to build better habits. Small, consistent improvements compound dramatically over a school year.`;
+		},
+		'study-playbook': () => {
+			if (xScore >= 3.5) return `${n} learns best through discussion and collaboration. Every strategy below leverages their social energy — study groups, peer teaching, and verbal processing are their most effective tools.`;
+			if (xScore < 2.5) return `${n} does their deepest thinking alone. The strategies below prioritise focused solo methods — active recall, written summaries, and quiet deep-work sessions.`;
+			return `${n}'s study strategies should blend solo focus with selective collaboration. The methods below are ranked by fit for their specific personality combination.`;
+		},
+		'strengths': () => {
+			const top = [
+				{ k: 'discipline', s: cScore }, { k: 'curiosity', s: oScore },
+				{ k: 'social skills', s: xScore }, { k: 'teamwork', s: aScore },
+				{ k: 'emotional awareness', s: eScore }, { k: 'integrity', s: hScore },
+			].sort((a, b) => b.s - a.s).slice(0, 2);
+			return `${n}'s top strengths are ${top[0].k} and ${top[1].k}. These aren't just nice traits — they're competitive academic advantages that should be actively leveraged.`;
+		},
+		'barriers': () => {
+			const weak = [
+				{ k: 'organisation', s: cScore }, { k: 'engagement', s: oScore },
+				{ k: 'participation', s: xScore }, { k: 'collaboration', s: aScore },
+				{ k: 'stress management', s: eScore },
+			].sort((a, b) => a.s - b.s)[0];
+			return `${n}'s primary barrier is likely related to ${weak.k} (${weak.s.toFixed(1)}/5). Addressing this single area will have the biggest impact on overall academic performance.`;
+		},
+		'social-dynamics': () => {
+			if (xScore >= 3.5 && aScore >= 3.5) return `${n} is a natural collaborator — socially confident and cooperative. They thrive in group settings and should seek leadership roles in team projects.`;
+			if (xScore < 2.5 && aScore >= 3.5) return `${n} is cooperative but reserved. They contribute best when given defined roles in small groups, with time to prepare before meetings.`;
+			if (xScore >= 3.5 && aScore < 2.5) return `${n} is socially confident but assertive. They'll take charge in groups — coaching them on inclusive leadership will multiply their impact.`;
+			return `${n}'s social style blends independence with collaboration. The group strategies below are designed for this balanced approach.`;
+		},
+		'subject-fit': () => `The subject alignment below is based on ${n}'s personality profile — not their grades. A subject marked "Excellent" means ${n}'s natural traits align with what that subject demands, even if current grades don't yet reflect it.`,
+		'guide': () => `Every recommendation in this guide is specific to ${n}'s profile. Generic advice like "study harder" or "be more organised" doesn't work — these strategies are designed for someone with exactly this personality combination.`,
+		'action-plan': () => `Start with ONE action from the priority list below. Research shows that implementing a single strategy well beats attempting five poorly. Add the next action only after the first becomes automatic (usually 2-3 weeks).`,
+	};
+
+	return takeaways[sectionId]?.();
 }
 
 // ─── Consolidation ───────────────────────────────────────────────────────────
@@ -162,6 +234,7 @@ export function consolidateToMegaReport(
 		};
 	sections.push({
 		id: 'cover-summary', title: 'Executive Summary', icon: '📊',
+		keyTakeaway: generateKeyTakeaway('cover-summary', dims, studentName),
 		content: execContent,
 		rawData: { executiveSummary: exec, cover, glance: r.glance },
 	});
@@ -172,6 +245,7 @@ export function consolidateToMegaReport(
 		: { ...emptyContent(), narrative: pickNarratives(r.deepDive, r.whoYouAre) };
 	sections.push({
 		id: 'personality-deep-dive', title: 'Who You Are', subtitle: 'Personality Deep Dive', icon: '🧠',
+		keyTakeaway: generateKeyTakeaway('personality-deep-dive', dims, studentName),
 		content: personalityContent,
 		rawData: { deepDive: r.deepDive, whoYouAre: r.whoYouAre },
 	});
@@ -182,6 +256,7 @@ export function consolidateToMegaReport(
 		: { ...emptyContent(), narrative: pickNarratives(r.learning, r.howYouLearn) };
 	sections.push({
 		id: 'learning-profile', title: 'How Your Mind Works', subtitle: 'Learning Profile', icon: '💡',
+		keyTakeaway: generateKeyTakeaway('learning-profile', dims, studentName),
 		content: learningContent,
 		rawData: { learning: r.learning, howYouLearn: r.howYouLearn, studyProfile: r.studyProfile },
 	});
@@ -192,6 +267,7 @@ export function consolidateToMegaReport(
 		: { ...emptyContent(), narrative: pickNarratives(r.academicCharacter, r.drives) };
 	sections.push({
 		id: 'academic-character', title: 'Academic Character & Drive', icon: '🔥',
+		keyTakeaway: generateKeyTakeaway('academic-character', dims, studentName),
 		content: charContent,
 		rawData: { academicCharacter: r.academicCharacter, drives: r.drives },
 	});
@@ -202,6 +278,7 @@ export function consolidateToMegaReport(
 		: { ...emptyContent(), narrative: pickNarratives(r.study, r.whatWorks) };
 	sections.push({
 		id: 'study-playbook', title: 'Study Strategy Playbook', icon: '📚',
+		keyTakeaway: generateKeyTakeaway('study-playbook', dims, studentName),
 		content: studyContent,
 		rawData: { study: r.study, whatWorks: r.whatWorks },
 	});
@@ -212,6 +289,7 @@ export function consolidateToMegaReport(
 		: { ...emptyContent(), narrative: pickNarratives(r.strengths, r.whatsWorking) };
 	sections.push({
 		id: 'strengths', title: 'Strengths & Superpowers', icon: '💪',
+		keyTakeaway: generateKeyTakeaway('strengths', dims, studentName),
 		content: strengthsContent,
 		rawData: { strengths: r.strengths, whatsWorking: r.whatsWorking },
 	});
@@ -222,6 +300,7 @@ export function consolidateToMegaReport(
 		: { ...emptyContent(), narrative: pickNarratives(r.barriers, r.rootCause) };
 	sections.push({
 		id: 'barriers', title: 'Barriers & Root Causes', icon: '🚧',
+		keyTakeaway: generateKeyTakeaway('barriers', dims, studentName),
 		content: barriersContent,
 		rawData: { barriers: r.barriers, rootCause: r.rootCause },
 	});
@@ -232,6 +311,7 @@ export function consolidateToMegaReport(
 		: { ...emptyContent(), narrative: extractNarratives(r.group) };
 	sections.push({
 		id: 'social-dynamics', title: 'Social & Group Dynamics', icon: '👥',
+		keyTakeaway: generateKeyTakeaway('social-dynamics', dims, studentName),
 		content: socialContent,
 		rawData: { group: r.group },
 	});
@@ -242,6 +322,7 @@ export function consolidateToMegaReport(
 		: { ...emptyContent(), narrative: extractNarratives(r.subjectFit) };
 	sections.push({
 		id: 'subject-fit', title: 'Subject Fit & Career Signals', icon: '🎯',
+		keyTakeaway: generateKeyTakeaway('subject-fit', dims, studentName),
 		content: subjectContent,
 		rawData: { subjectFit: r.subjectFit },
 	});
@@ -252,6 +333,7 @@ export function consolidateToMegaReport(
 		: { ...emptyContent(), narrative: pickNarratives(r.unifiedGuide, r.guide) };
 	sections.push({
 		id: 'guide', title: 'Teacher & Parent Guide', icon: '📋',
+		keyTakeaway: generateKeyTakeaway('guide', dims, studentName),
 		content: guideContent,
 		rawData: { guide: r.guide, unifiedGuide: r.unifiedGuide, tutor: r.tutor, academicGuide: r.academicGuide },
 	});
@@ -262,6 +344,7 @@ export function consolidateToMegaReport(
 		: { ...emptyContent(), narrative: extractNarratives(r.actionPlan) };
 	sections.push({
 		id: 'action-plan', title: 'What To Do Monday', subtitle: 'Action Plan', icon: '✅',
+		keyTakeaway: generateKeyTakeaway('action-plan', dims, studentName),
 		content: actionContent,
 		rawData: { actionPlan: r.actionPlan },
 	});

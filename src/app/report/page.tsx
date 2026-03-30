@@ -913,6 +913,8 @@ export default function ReportPage() {
               id={`section-${section.id}`}
               title={section.subtitle ? `${section.title}: ${section.subtitle}` : section.title}
               isFirst={index === 0}
+              keyTakeaway={section.keyTakeaway}
+              sectionNumber={index + 1}
             >
               <MegaSectionBody section={section} studentName={name || "Student"} dimensionDetails={megaReport.dimensionDetails} />
             </ReportSection>
