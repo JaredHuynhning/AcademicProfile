@@ -14,10 +14,10 @@ const BORDER = "#e8e0d4";
 
 const styles = StyleSheet.create({
   page: {
-    padding: 40,
-    paddingBottom: 50,
+    padding: 48,
+    paddingBottom: 56,
     fontFamily: "Helvetica",
-    fontSize: 10,
+    fontSize: 10.5,
     color: ESPRESSO,
     backgroundColor: CREAM,
   },
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   },
   // Section headers
   sectionHeader: {
-    marginBottom: 24,
+    marginBottom: 28,
   },
   sectionEyebrow: {
     fontSize: 8,
@@ -97,10 +97,10 @@ const styles = StyleSheet.create({
   },
   // Content
   body: {
-    fontSize: 10,
-    lineHeight: 1.6,
+    fontSize: 10.5,
+    lineHeight: 1.7,
     color: "#4a3f2f",
-    marginBottom: 8,
+    marginBottom: 10,
   },
   divider: {
     borderBottomWidth: 1,
@@ -112,8 +112,8 @@ const styles = StyleSheet.create({
     border: `1 solid ${BORDER}`,
     borderRadius: 8,
     backgroundColor: "#fff",
-    padding: 10,
-    marginBottom: 8,
+    padding: 12,
+    marginBottom: 10,
   },
   cardTitle: {
     fontSize: 11,
