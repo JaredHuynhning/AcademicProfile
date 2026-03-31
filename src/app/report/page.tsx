@@ -18,6 +18,8 @@ import { ScoreBar } from "@/components/ui/ScoreBar";
 import { DimensionScoreCard } from "@/components/report/DimensionScoreCard";
 import { BellCurveChart } from "@/components/report/BellCurveChart";
 import { ProfileAtAGlance } from "@/components/report/ProfileAtAGlance";
+import { StrengthBarrierSummary } from "@/components/report/StrengthBarrierSummary";
+import { ReadingProgressBar } from "@/components/report/ReadingProgressBar";
 import { Callout } from "@/components/ui/Callout";
 import { 
   SectionContent, 
@@ -427,6 +429,7 @@ export default function ReportPage() {
 
   return (
     <>
+      <ReadingProgressBar />
       <StickyNav studentName={name || "Student Report"} onSave={handleSave} onDownloadPDF={handleDownloadPDF} />
       <FloatingTOC items={tocItems} />
 
@@ -458,6 +461,16 @@ export default function ReportPage() {
           </div>
         )}
 
+        {/* Strength / Barrier summary cards */}
+        {megaReport.dimensionDetails.length > 0 && (
+          <div className="max-w-4xl mx-auto px-6">
+            <StrengthBarrierSummary
+              dimensionDetails={megaReport.dimensionDetails}
+              topInteraction={megaReport.interactions?.[0]}
+            />
+          </div>
+        )}
+
         {/* High-Impact Summary Sections */}
         <div className="max-w-4xl mx-auto px-6 mt-8">
           <SummaryDashboard summary={megaReport.onePageSummary} studentName={name || "Student"} />
@@ -481,6 +494,18 @@ export default function ReportPage() {
           ))}
         </div>
       </main>
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media print {
+          .no-print, nav, [data-sticky-nav], [data-floating-toc],
+          [data-progress-bar], button, .fixed { display: none !important; }
+          body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          section { break-inside: avoid; }
+          details { display: block !important; }
+          details > div, details > section, [data-collapsible-content] {
+            display: block !important; max-height: none !important; overflow: visible !important;
+          }
+        }
+      ` }} />
     </>
   );
 }
