@@ -5,12 +5,14 @@
 import { classifyLevel, scorePercentile, interpretiveLabel, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding, ResearchNote } from '../mega-sections';
 import { StudyProfile, LearnerProfile } from '../../types';
+import type { CrossRefResult } from '../cross-reference-engine';
 
 export function generateLearningProfileMega(
 	dimensions: DimensionsMap,
 	studyProfile: StudyProfile | null,
 	learnerProfile: LearnerProfile | null,
 	studentName: string,
+	crossRefResult: CrossRefResult | null,
 ): MegaSectionContent {
 	const narrative: string[] = [];
 	const keyFindings: Finding[] = [];

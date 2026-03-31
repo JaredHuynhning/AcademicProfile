@@ -5,6 +5,7 @@
 import { DIM_NAMES, classifyLevel, scorePercentile, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding, ResearchNote } from '../mega-sections';
 import { LearnerProfile } from '../../types';
+import type { CrossRefResult } from '../cross-reference-engine';
 
 const SUBJECT_PERSONALITY_FIT: Record<string, { dims: string[]; high: string; low: string }> = {
 	Mathematics: {
@@ -53,6 +54,7 @@ export function generateSubjectFitMega(
 	dimensions: DimensionsMap,
 	learnerProfile: LearnerProfile | null,
 	studentName: string,
+	crossRefResult: CrossRefResult | null,
 ): MegaSectionContent {
 	const narrative: string[] = [];
 	const keyFindings: Finding[] = [];

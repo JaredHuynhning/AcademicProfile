@@ -3,6 +3,7 @@
  * Consolidates 23 thin section generators → 12 mega-sections.
  */
 import { DIM_ORDER, DIM_NAMES, DIM_COLORS, DIM_SHORT, scorePercentile, interpretiveLabel, toDimensionsMap } from './helpers';
+import { detectDimensionInteractions, type InteractionInsight } from './interaction-rules';
 import { generatePersonalityDeepDive } from './mega/section-02-personality';
 import { generateExecutiveSummaryMega } from './mega/section-01-executive';
 import { generateLearningProfileMega } from './mega/section-03-learning';
@@ -87,6 +88,7 @@ export interface MegaReport {
 	date: string;
 	archetype: string;
 	sections: MegaSection[];
+	interactions: InteractionInsight[];
 	radarData: { dim: string; score: number; color: string }[];
 	scoreSummary: { dim: string; score: number; percentile: number; level: string; label: string; color: string }[];
 	dimensionDetails: DimensionDetail[];
@@ -281,7 +283,19 @@ export function consolidateToMegaReport(
 
 	// 1. Cover + Executive Summary
 	const archetype = (exec?.archetype as string) || (cover as any)?.personalityArchetype || 'The Balanced Generalist';
-	const crossRefResult = (r._crossRefResult as any) || null;
+	let crossRefResult = (r._crossRefResult as any) || null;
+
+	// Detect dimension interactions and attach to crossRefResult
+	const interactions = dims ? detectDimensionInteractions(dims, studentName) : [];
+	if (crossRefResult) {
+		crossRefResult.interactions = interactions;
+	} else if (interactions.length > 0) {
+		crossRefResult = {
+			insights: [],
+			byType: { root_cause: [], confirmation: [], contradiction: [], untapped: [] },
+			interactions,
+		};
+	}
 
 	// ─── Extract Summary Data ────────────────────────────────────────────────
 	const topStrengths: Finding[] = [];
@@ -378,7 +392,7 @@ export function consolidateToMegaReport(
 
 	// 2. Who You Are — use deep narrative generator if dimensions available
 	const personalityContent = dims
-		? generatePersonalityDeepDive(dims, studentName)
+		? generatePersonalityDeepDive(dims, studentName, crossRefResult)
 		: { ...emptyContent(), narrative: pickNarratives(r.deepDive, r.whoYouAre) };
 	sections.push({
 		id: 'personality-deep-dive', title: 'Who You Are', subtitle: 'Personality Deep Dive', icon: '🧠',
@@ -389,7 +403,7 @@ export function consolidateToMegaReport(
 
 	// 3. How Your Mind Works
 	const learningContent = dims
-		? generateLearningProfileMega(dims, results.studyProfile || null, results.learnerProfile || null, studentName)
+		? generateLearningProfileMega(dims, results.studyProfile || null, results.learnerProfile || null, studentName, crossRefResult)
 		: { ...emptyContent(), narrative: pickNarratives(r.learning, r.howYouLearn) };
 	sections.push({
 		id: 'learning-profile', title: 'How Your Mind Works', subtitle: 'Learning Profile', icon: '💡',
@@ -400,7 +414,7 @@ export function consolidateToMegaReport(
 
 	// 4. Academic Character & Drive
 	const charContent = dims
-		? generateAcademicCharacterMega(dims, results.studyProfile || null, results.learnerProfile || null, studentName)
+		? generateAcademicCharacterMega(dims, results.studyProfile || null, results.learnerProfile || null, studentName, crossRefResult)
 		: { ...emptyContent(), narrative: pickNarratives(r.academicCharacter, r.drives) };
 	sections.push({
 		id: 'academic-character', title: 'Academic Character & Drive', icon: '🔥',
@@ -411,7 +425,7 @@ export function consolidateToMegaReport(
 
 	// 5. Study Strategy Playbook
 	const studyContent = dims
-		? generateStudyPlaybookMega(dims, results.studyProfile || null, results.learnerProfile || null, studentName)
+		? generateStudyPlaybookMega(dims, results.studyProfile || null, results.learnerProfile || null, studentName, crossRefResult)
 		: { ...emptyContent(), narrative: pickNarratives(r.study, r.whatWorks) };
 	sections.push({
 		id: 'study-playbook', title: 'Study Strategy Playbook', icon: '📚',
@@ -444,7 +458,7 @@ export function consolidateToMegaReport(
 
 	// 8. Social & Group Dynamics
 	const socialContent = dims
-		? generateSocialDynamicsMega(dims, studentName)
+		? generateSocialDynamicsMega(dims, studentName, crossRefResult)
 		: { ...emptyContent(), narrative: extractNarratives(r.group) };
 	sections.push({
 		id: 'social-dynamics', title: 'Social & Group Dynamics', icon: '👥',
@@ -455,7 +469,7 @@ export function consolidateToMegaReport(
 
 	// 9. Subject Fit & Career Signals
 	const subjectContent = dims
-		? generateSubjectFitMega(dims, results.learnerProfile || null, studentName)
+		? generateSubjectFitMega(dims, results.learnerProfile || null, studentName, crossRefResult)
 		: { ...emptyContent(), narrative: extractNarratives(r.subjectFit) };
 	sections.push({
 		id: 'subject-fit', title: 'Subject Fit & Career Signals', icon: '🎯',
@@ -466,7 +480,7 @@ export function consolidateToMegaReport(
 
 	// 10. Teacher & Parent Guide
 	const guideContent = dims
-		? generateGuideMega(dims, studentName)
+		? generateGuideMega(dims, studentName, crossRefResult)
 		: { ...emptyContent(), narrative: pickNarratives(r.unifiedGuide, r.guide) };
 	sections.push({
 		id: 'guide', title: 'Teacher & Parent Guide', icon: '📋',
@@ -477,7 +491,7 @@ export function consolidateToMegaReport(
 
 	// 11. Action Plan
 	const actionContent = dims
-		? generateActionPlanMega(dims, studentName)
+		? generateActionPlanMega(dims, studentName, crossRefResult)
 		: { ...emptyContent(), narrative: extractNarratives(r.actionPlan) };
 	sections.push({
 		id: 'action-plan', title: 'What To Do Monday', subtitle: 'Action Plan', icon: '✅',
@@ -537,14 +551,15 @@ export function consolidateToMegaReport(
 	}
 
 	return {
-		studentName, 
-		date: dateStr, 
-		archetype, 
-		sections, 
-		radarData, 
-		scoreSummary, 
-		dimensionDetails, 
-		subjectAlignment, 
+		studentName,
+		date: dateStr,
+		archetype,
+		sections,
+		interactions,
+		radarData,
+		scoreSummary,
+		dimensionDetails,
+		subjectAlignment,
 		introLetter,
 		onePageSummary: {
 			topStrengths,

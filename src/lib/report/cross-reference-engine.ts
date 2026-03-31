@@ -8,6 +8,7 @@
 
 import { classifyFacetDirection } from './helpers';
 import { ALL_RULES, UNTAPPED_MAPPING, CONFIRMATION_RULES, CrossRefRule, UntappedEntry } from './cross-reference-rules';
+import type { InteractionInsight } from './interaction-rules';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -48,6 +49,7 @@ export interface CrossRefResult {
 		contradiction: Insight[];
 		untapped: Insight[];
 	};
+	interactions: InteractionInsight[];
 }
 
 // ─── Dot-path resolver ────────────────────────────────────────────────────────
@@ -387,5 +389,5 @@ export function runCrossReferenceEngine(
 		untapped: allInsights.filter((i) => i.type === 'untapped')
 	};
 
-	return { insights: allInsights, byType };
+	return { insights: allInsights, byType, interactions: [] };
 }

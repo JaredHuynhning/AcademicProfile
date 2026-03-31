@@ -5,10 +5,12 @@
  */
 import { DIM_NAMES, classifyLevel, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding, Action } from '../mega-sections';
+import type { CrossRefResult } from '../cross-reference-engine';
 
 export function generateActionPlanMega(
 	dimensions: DimensionsMap,
 	studentName: string,
+	crossRefResult: CrossRefResult | null,
 ): MegaSectionContent {
 	const narrative: string[] = [];
 	const keyFindings: Finding[] = [];

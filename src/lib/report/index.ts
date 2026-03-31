@@ -41,6 +41,7 @@ import { TestResults } from '../types';
  * @returns {MegaReport} All section data for rendering
  */
 export type { MegaReport, MegaSection, MegaSectionContent, DimensionDetail, SubjectAlignment } from './mega-sections';
+export type { InteractionInsight } from './interaction-rules';
 import { consolidateToMegaReport, MegaReport } from './mega-sections';
 
 export function generateMegaReport(results: TestResults, name: string): MegaReport {

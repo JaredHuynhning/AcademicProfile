@@ -5,6 +5,7 @@
  */
 import { DIM_ORDER, DIM_NAMES, DIM_COLORS, DIM_SHORT, DIM_ICONS, classifyLevel, scorePercentile, interpretiveLabel, type DimKey, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding, ResearchNote, CrossRef } from '../mega-sections';
+import type { CrossRefResult } from '../cross-reference-engine';
 
 interface DimData {
 	score: number;
@@ -388,6 +389,7 @@ function getAcademicImplication(dimKey: DimKey, facetKey: string, score: number,
 export function generatePersonalityDeepDive(
 	dimensions: DimensionsMap,
 	studentName: string,
+	crossRefResult: CrossRefResult | null,
 ): MegaSectionContent {
 	const narrative: string[] = [];
 	const keyFindings: Finding[] = [];
