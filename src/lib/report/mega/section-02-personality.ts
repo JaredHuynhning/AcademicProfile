@@ -6,7 +6,7 @@
 import { DIM_ORDER, DIM_NAMES, DIM_COLORS, DIM_SHORT, DIM_ICONS, classifyLevel, scorePercentile, interpretiveLabel, type DimKey, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding, ResearchNote, CrossRef } from '../mega-sections';
 import type { CrossRefResult } from '../cross-reference-engine';
-import { pickOpener, renderInteractionCallout, renderInteractionAction, filterByAudience, detectFacetSurprises } from '../prose-variety';
+import { pickOpener, renderInteractionCallout, renderInteractionAction, pickInteractionsForSection, detectFacetSurprises } from '../prose-variety';
 
 interface DimData {
 	score: number;
@@ -403,9 +403,9 @@ export function generatePersonalityDeepDive(
 	);
 
 	// Inject relevant interactions
-	const relevantInteractions = filterByAudience(
-		crossRefResult?.interactions ?? [], ['parent', 'student']
-	).slice(0, 2);
+	const relevantInteractions = pickInteractionsForSection(
+		crossRefResult?.interactions ?? [], 2, 2, ['parent', 'student']
+	);
 	relevantInteractions.forEach(interaction => {
 		narrative.push(renderInteractionCallout(interaction));
 		narrative.push(renderInteractionAction(interaction));

@@ -5,7 +5,7 @@
 import { DIM_ORDER, DIM_NAMES, DIM_COLORS, classifyLevel, scorePercentile, interpretiveLabel, toDimensionsMap, type DimKey, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding } from '../mega-sections';
 import { CrossRefResult } from '../cross-reference-engine';
-import { pickOpener, renderInteractionCallout, filterByAudience } from '../prose-variety';
+import { pickOpener, renderInteractionCallout, pickInteractionsForSection } from '../prose-variety';
 
 const DIM_ACADEMIC_IMPACT: Record<DimKey, { high: string; low: string }> = {
 	H: {
@@ -178,9 +178,9 @@ export function generateExecutiveSummaryMega(
 
 	// ─── Interaction Callouts from cross-reference engine ──────────────────
 	if (crossRefResult?.interactions) {
-		const parentInteractions = filterByAudience(
-			crossRefResult.interactions ?? [], ['parent', 'student']
-		).slice(0, 2);
+		const parentInteractions = pickInteractionsForSection(
+			crossRefResult.interactions ?? [], 1, 2, ['parent', 'student']
+		);
 		parentInteractions.forEach(i => {
 			narrative.push(renderInteractionCallout(i));
 		});

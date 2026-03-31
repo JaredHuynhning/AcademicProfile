@@ -6,7 +6,7 @@
 import { DIM_NAMES, classifyLevel, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding } from '../mega-sections';
 import type { CrossRefResult } from '../cross-reference-engine';
-import { pickOpener, renderInteractionCallout, filterByAudience } from '../prose-variety';
+import { pickOpener, renderInteractionCallout, pickInteractionsForSection } from '../prose-variety';
 
 export function generateGuideMega(
 	dimensions: DimensionsMap,
@@ -358,8 +358,10 @@ export function generateGuideMega(
 
 	// ─── INTERACTION CALLOUTS ─────────────────────────────────────────────────────
 
-	const allInteractions = crossRefResult?.interactions ?? [];
-	allInteractions.slice(0, 2).forEach(i => {
+	const guideInteractions = pickInteractionsForSection(
+		crossRefResult?.interactions ?? [], 10, 2
+	);
+	guideInteractions.forEach(i => {
 		narrative.push(renderInteractionCallout(i));
 	});
 

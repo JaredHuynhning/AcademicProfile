@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { useQuizStore } from "@/lib/stores/quiz-store";
 import { useReportsStore } from "@/lib/stores/reports-store";
@@ -106,6 +107,90 @@ function CoverSection({ data }: { data: Record<string, unknown> }) {
   );
 }
 
+// ─── Narrative paragraph renderer (handles markdown tables) ─────────────────
+
+function renderInlineFormatting(text: string) {
+  if (text.includes('**')) {
+    const parts = text.split(/\*\*(.*?)\*\*/g);
+    return parts.map((part, j) =>
+      j % 2 === 1 ? <strong key={j} className="text-espresso font-semibold">{part}</strong> : part
+    );
+  }
+  return clean(text);
+}
+
+function NarrativeRenderer({ paragraphs }: { paragraphs: string[] }) {
+  const elements: React.ReactNode[] = [];
+  let i = 0;
+  while (i < paragraphs.length) {
+    const para = paragraphs[i];
+
+    // Detect table blocks: consecutive strings starting with |
+    if (para.startsWith('|') && para.includes('|', 1)) {
+      const tableLines: string[] = [];
+      while (i < paragraphs.length && paragraphs[i].startsWith('|')) {
+        tableLines.push(paragraphs[i]);
+        i++;
+      }
+      // Filter out separator lines (|---|---|)
+      const dataRows = tableLines.filter(l => !l.match(/^\|[\s\-:|]+\|$/));
+      if (dataRows.length >= 2) {
+        const headers = dataRows[0].split('|').filter(c => c.trim()).map(c => c.trim());
+        const rows = dataRows.slice(1).map(r => r.split('|').filter(c => c.trim()).map(c => c.trim()));
+        elements.push(
+          <div key={`table-${i}`} className="overflow-x-auto my-4">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="border-b border-warm-gray/20">
+                  {headers.map((h, j) => (
+                    <th key={j} className="text-left py-2 px-3 font-semibold text-espresso/80 text-xs uppercase tracking-wider">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((row, ri) => (
+                  <tr key={ri} className="border-b border-warm-gray/10 last:border-0">
+                    {row.map((cell, ci) => (
+                      <td key={ci} className="py-2 px-3 text-espresso/70">{renderInlineFormatting(cell)}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+      }
+      continue;
+    }
+
+    // Headings
+    if (para.startsWith('\n### ')) {
+      elements.push(<h3 key={`n${i}`} className="font-display text-xl font-bold text-espresso mt-10 mb-2">{para.replace(/^[\n#]+\s*/, '')}</h3>);
+      i++;
+      continue;
+    }
+    if (para.startsWith('\n#### ')) {
+      elements.push(<h4 key={`n${i}`} className="font-display text-base font-semibold text-espresso mt-6 mb-1">{para.replace(/^[\n#]+\s*/, '')}</h4>);
+      i++;
+      continue;
+    }
+
+    // Bold text or regular paragraph
+    if (para.includes('**')) {
+      const parts = para.split(/\*\*(.*?)\*\*/g);
+      elements.push(
+        <p key={`n${i}`} className="text-espresso/80 leading-relaxed text-[15px]">
+          {parts.map((part, j) => j % 2 === 1 ? <strong key={j} className="text-espresso font-semibold">{part}</strong> : part)}
+        </p>
+      );
+    } else {
+      elements.push(<p key={`n${i}`} className="text-espresso/80 leading-relaxed text-[15px]">{clean(para)}</p>);
+    }
+    i++;
+  }
+  return <>{elements}</>;
+}
+
 // ─── Mega-section renderer ───────────────────────────────────────────────────
 
 function MegaSectionBody({ section, studentName, dimensionDetails, subjectAlignment }: { section: MegaSection; studentName: string; dimensionDetails?: DimensionDetail[]; subjectAlignment?: SubjectAlignment[] }) {
@@ -114,13 +199,7 @@ function MegaSectionBody({ section, studentName, dimensionDetails, subjectAlignm
     return (
       <div className="space-y-8">
         <CoverSection data={section.rawData.cover as Record<string, unknown>} />
-        {section.content.narrative.map((para, i) => {
-          if (para.includes('**')) {
-            const parts = para.split(/\*\*(.*?)\*\*/g);
-            return <p key={`n${i}`} className="text-espresso/80 leading-relaxed text-[15px]">{parts.map((part, j) => j % 2 === 1 ? <strong key={j} className="text-espresso font-semibold">{part}</strong> : part)}</p>;
-          }
-          return <p key={`n${i}`} className="text-espresso/80 leading-relaxed text-[15px]">{clean(para)}</p>;
-        })}
+        <NarrativeRenderer paragraphs={section.content.narrative} />
         {section.content.keyFindings.map((f, i) => (
           <Callout key={`f${i}`} icon={f.type === 'strength' ? '💪' : '⚠️'} title={f.title}>
             {f.text}
@@ -140,15 +219,7 @@ function MegaSectionBody({ section, studentName, dimensionDetails, subjectAlignm
       <div className="space-y-4">
         {section.content.narrative.length > 0 && (
           <div className="space-y-4 mb-6">
-            {section.content.narrative.map((para, i) => {
-              if (para.startsWith('\n### ')) return <h3 key={`n${i}`} className="font-display text-xl font-bold text-espresso mt-10 mb-2">{para.replace(/^[\n#]+\s*/, '')}</h3>;
-              if (para.startsWith('\n#### ')) return <h4 key={`n${i}`} className="font-display text-base font-semibold text-espresso mt-6 mb-1">{para.replace(/^[\n#]+\s*/, '')}</h4>;
-              if (para.includes('**')) {
-                const parts = para.split(/\*\*(.*?)\*\*/g);
-                return <p key={`n${i}`} className="text-espresso/80 leading-relaxed text-[15px]">{parts.map((part, j) => j % 2 === 1 ? <strong key={j} className="text-espresso font-semibold">{part}</strong> : part)}</p>;
-              }
-              return <p key={`n${i}`} className="text-espresso/80 leading-relaxed text-[15px]">{clean(para)}</p>;
-            })}
+            <NarrativeRenderer paragraphs={section.content.narrative} />
           </div>
         )}
       </div>
@@ -165,23 +236,7 @@ function MegaSectionBody({ section, studentName, dimensionDetails, subjectAlignm
     <div className="space-y-4">
       {section.content.narrative.length > 0 && (
         <div className="space-y-4 mb-6">
-          {section.content.narrative.map((para, i) => {
-            if (para.startsWith('\n### ')) {
-              return <h3 key={`n${i}`} className="font-display text-xl font-bold text-espresso mt-10 mb-2">{para.replace(/^[\n#]+\s*/, '')}</h3>;
-            }
-            if (para.startsWith('\n#### ')) {
-              return <h4 key={`n${i}`} className="font-display text-base font-semibold text-espresso mt-6 mb-1">{para.replace(/^[\n#]+\s*/, '')}</h4>;
-            }
-            if (para.includes('**')) {
-              const parts = para.split(/\*\*(.*?)\*\*/g);
-              return (
-                <p key={`n${i}`} className="text-espresso/80 leading-relaxed text-[15px]">
-                  {parts.map((part, j) => j % 2 === 1 ? <strong key={j} className="text-espresso font-semibold">{part}</strong> : part)}
-                </p>
-              );
-            }
-            return <p key={`n${i}`} className="text-espresso/80 leading-relaxed text-[15px]">{clean(para)}</p>;
-          })}
+          <NarrativeRenderer paragraphs={section.content.narrative} />
         </div>
       )}
 

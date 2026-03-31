@@ -5,7 +5,7 @@
  */
 import { DIM_ORDER, DIM_NAMES, DIM_COLORS, classifyLevel, scorePercentile, type DimKey, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding, ResearchNote } from '../mega-sections';
-import { pickOpener, renderInteractionCallout, renderInteractionAction, filterByAudience, detectFacetSurprises } from '../prose-variety';
+import { pickOpener, renderInteractionCallout, renderInteractionAction, pickInteractionsForSection, detectFacetSurprises } from '../prose-variety';
 
 const LEVERAGE_STRATEGIES: Record<DimKey, { high: string[]; low: string[] }> = {
 	H: {
@@ -96,9 +96,9 @@ export function generateStrengthsMega(
 	);
 
 	// Inject positive interactions with high impact
-	const relevantInteractions = (crossRefResult?.interactions ?? [])
-		.filter((i: any) => i.impact >= 6)
-		.slice(0, 2);
+	const relevantInteractions = pickInteractionsForSection(
+		(crossRefResult?.interactions ?? []).filter((i: any) => i.impact >= 6), 6, 2
+	);
 	relevantInteractions.forEach((interaction: any) => {
 		narrative.push(renderInteractionCallout(interaction));
 		narrative.push(renderInteractionAction(interaction));

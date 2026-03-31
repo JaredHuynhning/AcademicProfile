@@ -45,6 +45,26 @@ export function filterByAudience(
   return interactions.filter((i) => audiences.includes(i.audience));
 }
 
+/** Pick N interactions relevant to a section, avoiding repeats across sections */
+export function pickInteractionsForSection(
+  interactions: InteractionInsight[],
+  sectionIndex: number,
+  count: number = 2,
+  audienceFilter?: string[],
+): InteractionInsight[] {
+  let filtered = interactions;
+  if (audienceFilter) {
+    filtered = filtered.filter((i) => audienceFilter.includes(i.audience));
+  }
+  if (filtered.length <= count) return filtered;
+  const start = (sectionIndex * 2) % filtered.length;
+  const result: InteractionInsight[] = [];
+  for (let i = 0; i < count && i < filtered.length; i++) {
+    result.push(filtered[(start + i) % filtered.length]);
+  }
+  return result;
+}
+
 export function detectFacetSurprises(dims: DimensionsMap, studentName: string): string[] {
   const surprises: string[] = [];
 

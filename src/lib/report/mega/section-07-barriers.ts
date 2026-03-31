@@ -6,7 +6,7 @@ import { DIM_ORDER, DIM_NAMES, DIM_COLORS, classifyLevel, scorePercentile, type 
 import type { MegaSectionContent, Finding, ResearchNote } from '../mega-sections';
 import { CrossRefResult } from '../cross-reference-engine';
 import { LearnerProfile } from '../../types';
-import { pickOpener, renderInteractionCallout, renderInteractionAction, filterByAudience, detectFacetSurprises } from '../prose-variety';
+import { pickOpener, renderInteractionCallout, renderInteractionAction, pickInteractionsForSection, detectFacetSurprises } from '../prose-variety';
 
 interface RootCause {
 	personality: string;
@@ -104,9 +104,9 @@ export function generateBarriersMega(
 	);
 
 	// Inject high-impact interactions
-	const relevantInteractions = (crossRefResult?.interactions ?? [])
-		.filter(i => i.impact >= 7)
-		.slice(0, 2);
+	const relevantInteractions = pickInteractionsForSection(
+		(crossRefResult?.interactions ?? []).filter(i => i.impact >= 7), 7, 2
+	);
 	relevantInteractions.forEach(interaction => {
 		narrative.push(renderInteractionCallout(interaction));
 		narrative.push(renderInteractionAction(interaction));

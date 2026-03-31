@@ -6,7 +6,7 @@ import { classifyLevel, scorePercentile, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding, ResearchNote } from '../mega-sections';
 import { StudyProfile, LearnerProfile } from '../../types';
 import type { CrossRefResult } from '../cross-reference-engine';
-import { pickOpener, renderInteractionCallout, renderInteractionAction, filterByAudience, detectFacetSurprises } from '../prose-variety';
+import { pickOpener, renderInteractionCallout, renderInteractionAction, pickInteractionsForSection, detectFacetSurprises } from '../prose-variety';
 
 export function generateStudyPlaybookMega(
 	dimensions: DimensionsMap,
@@ -33,9 +33,9 @@ export function generateStudyPlaybookMega(
 	);
 
 	// Inject relevant interactions
-	const relevantInteractions = filterByAudience(
-		crossRefResult?.interactions ?? [], ['parent', 'student']
-	).slice(0, 2);
+	const relevantInteractions = pickInteractionsForSection(
+		crossRefResult?.interactions ?? [], 5, 2, ['parent', 'student']
+	);
 	relevantInteractions.forEach(interaction => {
 		narrative.push(renderInteractionCallout(interaction));
 		narrative.push(renderInteractionAction(interaction));

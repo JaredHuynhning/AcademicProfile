@@ -6,7 +6,7 @@ import { DIM_NAMES, classifyLevel, scorePercentile, type DimensionsMap } from '.
 import type { MegaSectionContent, Finding, ResearchNote } from '../mega-sections';
 import { LearnerProfile } from '../../types';
 import type { CrossRefResult } from '../cross-reference-engine';
-import { pickOpener, renderInteractionCallout, renderInteractionAction, filterByAudience, detectFacetSurprises } from '../prose-variety';
+import { pickOpener, renderInteractionCallout, renderInteractionAction, pickInteractionsForSection, detectFacetSurprises } from '../prose-variety';
 
 const SUBJECT_PERSONALITY_FIT: Record<string, { dims: string[]; high: string; low: string }> = {
 	Mathematics: {
@@ -66,9 +66,9 @@ export function generateSubjectFitMega(
 	);
 
 	// Inject interactions involving O or C dimensions
-	const relevantInteractions = (crossRefResult?.interactions ?? [])
-		.filter(i => i.dims.some(d => d === 'O' || d === 'C'))
-		.slice(0, 2);
+	const relevantInteractions = pickInteractionsForSection(
+		(crossRefResult?.interactions ?? []).filter(i => i.dims.some(d => d === 'O' || d === 'C')), 9, 2
+	);
 	relevantInteractions.forEach(interaction => {
 		narrative.push(renderInteractionCallout(interaction));
 		narrative.push(renderInteractionAction(interaction));

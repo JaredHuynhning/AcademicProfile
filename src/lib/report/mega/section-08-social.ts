@@ -6,7 +6,7 @@
 import { DIM_NAMES, classifyLevel, scorePercentile, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding, ResearchNote } from '../mega-sections';
 import type { CrossRefResult } from '../cross-reference-engine';
-import { pickOpener, renderInteractionCallout, renderInteractionAction, filterByAudience, detectFacetSurprises } from '../prose-variety';
+import { pickOpener, renderInteractionCallout, renderInteractionAction, pickInteractionsForSection, detectFacetSurprises } from '../prose-variety';
 
 export function generateSocialDynamicsMega(
 	dimensions: DimensionsMap,
@@ -36,9 +36,9 @@ export function generateSocialDynamicsMega(
 	);
 
 	// Inject interactions involving X or A dimensions
-	const relevantInteractions = (crossRefResult?.interactions ?? [])
-		.filter(i => i.dims.some(d => d === 'X' || d === 'A'))
-		.slice(0, 2);
+	const relevantInteractions = pickInteractionsForSection(
+		(crossRefResult?.interactions ?? []).filter(i => i.dims.some(d => d === 'X' || d === 'A')), 8, 2
+	);
 	relevantInteractions.forEach(interaction => {
 		narrative.push(renderInteractionCallout(interaction));
 		narrative.push(renderInteractionAction(interaction));
