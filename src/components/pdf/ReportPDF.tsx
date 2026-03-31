@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   coverScoreCard: {
     padding: 12,
     borderRadius: 8,
-    border: `1 solid ${BORDER}`,
+    borderWidth: 1, borderStyle: 'solid', borderColor: BORDER,
     backgroundColor: "#fff",
     minWidth: 75,
     alignItems: "center",
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   },
   // Cards
   card: {
-    border: `1 solid ${BORDER}`,
+    borderWidth: 1, borderStyle: 'solid', borderColor: BORDER,
     borderRadius: 8,
     backgroundColor: "#fff",
     padding: 12,
@@ -1346,7 +1346,7 @@ function PDFSummaryDashboard({ summary, studentName }: { summary: MegaReport['on
     <View style={{ marginBottom: 24 }}>
       <PDFTwoColumn
         left={
-          <View style={[styles.card, { backgroundColor: ESPRESSO, border: 'none' }]}>
+          <View style={[styles.card, { backgroundColor: ESPRESSO, borderWidth: 0, borderStyle: 'solid', borderColor: 'transparent' }]}>
             <Text style={{ fontSize: 6, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 4 }}>The Mantra</Text>
             <Text style={{ fontSize: 13, fontWeight: 'bold', color: '#fff', marginBottom: 6 }}>"{summary.mantra}"</Text>
             <Text style={{ fontSize: 7, color: 'rgba(255,255,255,0.7)', fontStyle: 'italic' }}>Tailored guiding principle for {studentName.split(' ')[0]}.</Text>
@@ -1439,7 +1439,7 @@ interface ReportPDFProps {
 
 function PDFDimensionCard({ dim }: { dim: DimensionDetail }) {
   return (
-    <View style={{ marginBottom: 14, padding: 10, borderRadius: 6, border: `1 solid ${withAlpha(dim.color, 0.25)}`, backgroundColor: withAlpha(dim.color, 0.03) }}>
+    <View style={{ marginBottom: 14, padding: 10, borderRadius: 6, borderWidth: 1, borderStyle: 'solid', borderColor: withAlpha(dim.color, 0.25), backgroundColor: withAlpha(dim.color, 0.03) }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
         <View>
           <Text style={{ fontSize: 11, fontWeight: 'bold', color: ESPRESSO }}>{dim.name}</Text>
@@ -1523,7 +1523,7 @@ function MegaSectionContent({ section, dimensionDetails, subjectAlignment }: { s
           <Text style={{ fontSize: 6, color: WARM_GRAY, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 6 }}>Score Distribution</Text>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
             {dimensionDetails.map((dim) => (
-              <View key={dim.key} style={{ width: '32%', minWidth: 0, padding: 6, border: `0.5 solid ${BORDER}`, borderRadius: 4 }}>
+              <View key={dim.key} style={{ width: '32%', minWidth: 0, padding: 6, borderWidth: 0.5, borderStyle: 'solid', borderColor: BORDER, borderRadius: 4 }}>
                 <PDFBellCurve score={dim.score} color={dim.color} label={dim.name.split(' ')[0]} percentile={dim.percentile} width={150} height={60} />
               </View>
             ))}
@@ -1686,7 +1686,7 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
           </Text>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
             {[...mega.dimensionDetails].sort((a, b) => b.score - a.score).slice(0, 3).map(d => (
-              <View key={d.key} style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 10, border: `0.5 solid ${withAlpha(d.color, 0.3)}`, backgroundColor: withAlpha(d.color, 0.04) }}>
+              <View key={d.key} style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 10, borderWidth: 0.5, borderStyle: 'solid', borderColor: withAlpha(d.color, 0.3), backgroundColor: withAlpha(d.color, 0.04) }}>
                 <View style={{ width: 5, height: 5, borderRadius: 3, backgroundColor: d.color }} />
                 <Text style={{ fontSize: 8, fontWeight: 'bold', color: d.color }}>{d.name.split(' ')[0]} {d.score.toFixed(1)}</Text>
                 <Text style={{ fontSize: 6, color: WARM_GRAY }}>top {100 - d.percentile}%</Text>
@@ -1700,7 +1700,7 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
           </Text>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
             {[...mega.dimensionDetails].sort((a, b) => a.score - b.score).slice(0, 3).map(d => (
-              <View key={d.key} style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 10, border: `0.5 solid ${BORDER}` }}>
+              <View key={d.key} style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 10, borderWidth: 0.5, borderStyle: 'solid', borderColor: BORDER }}>
                 <Text style={{ fontSize: 8, color: WARM_GRAY }}>{d.name.split(' ')[0]} {d.score.toFixed(1)}</Text>
               </View>
             ))}
@@ -1714,13 +1714,13 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
             return (
               <View style={{ flexDirection: 'row', gap: 10, marginBottom: 16 }}>
                 {topStrength && (
-                  <View style={{ flex: 1, padding: 10, borderRadius: 6, backgroundColor: '#f0fdf4', border: '0.5 solid #bbf7d0' }}>
+                  <View style={{ flex: 1, padding: 10, borderRadius: 6, backgroundColor: '#f0fdf4', borderWidth: 0.5, borderStyle: 'solid', borderColor: '#bbf7d0' }}>
                     <Text style={{ fontSize: 6, color: '#16a34a', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 3 }}>Top Strength</Text>
                     <Text style={{ fontSize: 8, color: ESPRESSO, lineHeight: 1.4 }}>{topStrength.text.substring(0, 200)}</Text>
                   </View>
                 )}
                 {topBarrier && (
-                  <View style={{ flex: 1, padding: 10, borderRadius: 6, backgroundColor: '#fffbeb', border: '0.5 solid #fde68a' }}>
+                  <View style={{ flex: 1, padding: 10, borderRadius: 6, backgroundColor: '#fffbeb', borderWidth: 0.5, borderStyle: 'solid', borderColor: '#fde68a' }}>
                     <Text style={{ fontSize: 6, color: '#d97706', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 3 }}>Priority Barrier</Text>
                     <Text style={{ fontSize: 8, color: ESPRESSO, lineHeight: 1.4 }}>{topBarrier.text.substring(0, 200)}</Text>
                   </View>
@@ -1735,7 +1735,7 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
           </Text>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
             {mega.dimensionDetails.map(d => (
-              <View key={d.key} style={{ width: '31%', minWidth: 0, padding: 6, border: `0.5 solid ${BORDER}`, borderRadius: 4 }}>
+              <View key={d.key} style={{ width: '31%', minWidth: 0, padding: 6, borderWidth: 0.5, borderStyle: 'solid', borderColor: BORDER, borderRadius: 4 }}>
                 <PDFBellCurve score={d.score} color={d.color} label={d.name.split(' ')[0]} percentile={d.percentile} width={140} height={55} />
               </View>
             ))}
@@ -1805,7 +1805,7 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
             )}
             <View style={{ width: 30, height: 2, backgroundColor: ESPRESSO, marginBottom: 10 }} />
             {section.keyTakeaway && (
-              <View style={{ padding: 10, borderRadius: 5, backgroundColor: 'rgba(44,36,23,0.02)', border: `0.5 solid ${BORDER}`, marginTop: 4 }}>
+              <View style={{ padding: 10, borderRadius: 5, backgroundColor: 'rgba(44,36,23,0.02)', borderWidth: 0.5, borderStyle: 'solid', borderColor: BORDER, marginTop: 4 }}>
                 <Text style={{ fontSize: 6, color: WARM_GRAY, textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 3 }}>Key Takeaway</Text>
                 <Text style={{ fontSize: 8.5, color: ESPRESSO, lineHeight: 1.5 }}>{section.keyTakeaway}</Text>
               </View>

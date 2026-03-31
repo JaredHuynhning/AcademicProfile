@@ -24,24 +24,24 @@ function getProfile(id: string) {
  * so that rc-11 also fires.
  */
 function makeHighAnxietyProfile() {
-	const amira = getProfile('sample-amira-hassan');
+	const liam = getProfile('sample-liam-torres');
 	return {
-		dimensions: amira.dimensions,
+		dimensions: liam.dimensions,
 		studyProfile: {
-			...(amira.studyProfile as Record<string, unknown>),
+			...(liam.studyProfile as Record<string, unknown>),
 			selfRegulation: {
-				...((amira.studyProfile as Record<string, Record<string, unknown>>).selfRegulation),
+				...((liam.studyProfile as Record<string, Record<string, unknown>>).selfRegulation),
 				selfEfficacy: { score: 2.0, level: 'low', items: 2 } // < 2.5 → fires rc-11
 			}
 		},
 		learnerProfile: {
-			...(amira.learnerProfile as Record<string, unknown>),
+			...(liam.learnerProfile as Record<string, unknown>),
 			focus: {
-				...((amira.learnerProfile as Record<string, Record<string, unknown>>).focus),
+				...((liam.learnerProfile as Record<string, Record<string, unknown>>).focus),
 				procrastination: { score: 3.5, level: 'high', items: 3 } // >= 3.0 → fires rc-01
 			},
 			energy: {
-				...((amira.learnerProfile as Record<string, Record<string, unknown>>).energy),
+				...((liam.learnerProfile as Record<string, Record<string, unknown>>).energy),
 				netEnergy: { score: 2.3, level: 'low' } // < 2.5 → fires rc-06
 			}
 		}
@@ -263,7 +263,7 @@ function makeDualFireProfile() {
 // ─── Test 1: Return shape ───────────────────────────────────────────────────
 describe('runCrossReferenceEngine — return shape', () => {
 	it('result has insights array and byType object', () => {
-		const { dimensions, studyProfile, learnerProfile } = getProfile('sample-sophie-turner');
+		const { dimensions, studyProfile, learnerProfile } = getProfile('sample-ethan-bridges');
 		const result = runCrossReferenceEngine(
 			dimensions as Parameters<typeof runCrossReferenceEngine>[0],
 			studyProfile as Parameters<typeof runCrossReferenceEngine>[1],
@@ -372,9 +372,9 @@ describe('runCrossReferenceEngine — dual-fire detection', () => {
 });
 
 // ─── Test 7: Sophie moderate anxiety does NOT trigger anxiety root_cause ─────
-describe('runCrossReferenceEngine — Sophie moderate anxiety', () => {
-	it('Sophie (anxiety=3.0) does not trigger anxiety root_cause rules (threshold is 3.5)', () => {
-		const { dimensions, studyProfile, learnerProfile } = getProfile('sample-sophie-turner');
+describe('runCrossReferenceEngine — Ethan low anxiety', () => {
+	it('Ethan (anxiety=2.0) does not trigger anxiety root_cause rules (threshold is 3.5)', () => {
+		const { dimensions, studyProfile, learnerProfile } = getProfile('sample-ethan-bridges');
 		const result = runCrossReferenceEngine(
 			dimensions as Parameters<typeof runCrossReferenceEngine>[0],
 			studyProfile as Parameters<typeof runCrossReferenceEngine>[1],
