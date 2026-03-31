@@ -18,8 +18,7 @@ import { HexacoRadarChart } from "@/components/report/HexacoRadarChart";
 import { ScoreBar } from "@/components/ui/ScoreBar";
 import { DimensionScoreCard } from "@/components/report/DimensionScoreCard";
 import { BellCurveChart } from "@/components/report/BellCurveChart";
-import { ProfileAtAGlance } from "@/components/report/ProfileAtAGlance";
-import { StrengthBarrierSummary } from "@/components/report/StrengthBarrierSummary";
+import { ProfileDashboard } from "@/components/report/ProfileDashboard";
 import { ReadingProgressBar } from "@/components/report/ReadingProgressBar";
 import { Callout } from "@/components/ui/Callout";
 import { 
@@ -502,25 +501,16 @@ export default function ReportPage() {
           <IntroLetterCard letter={megaReport.introLetter} />
         </div>
 
-        {/* Profile at a Glance dashboard */}
+        {/* Unified Profile Dashboard */}
         {megaReport.dimensionDetails.length > 0 && (
-          <div className="max-w-4xl mx-auto px-6 mb-4">
-            <ProfileAtAGlance
+          <div className="max-w-4xl mx-auto px-6">
+            <ProfileDashboard
               studentName={name || "Student"}
               archetype={megaReport.archetype}
               radarData={megaReport.radarData.map(d => ({ label: d.dim, value: d.score, color: d.color }))}
               dimensionDetails={megaReport.dimensionDetails}
-              topStrength={megaReport.onePageSummary.topStrengths[0]?.text}
-              topBarrier={megaReport.onePageSummary.topBarriers[0]?.text}
-            />
-          </div>
-        )}
-
-        {/* Strength / Barrier summary cards */}
-        {megaReport.dimensionDetails.length > 0 && (
-          <div className="max-w-4xl mx-auto px-6">
-            <StrengthBarrierSummary
-              dimensionDetails={megaReport.dimensionDetails}
+              mantra={megaReport.onePageSummary.mantra}
+              primaryAction={megaReport.onePageSummary.primaryAction}
               topInteraction={megaReport.interactions?.[0]}
             />
           </div>
@@ -528,7 +518,6 @@ export default function ReportPage() {
 
         {/* High-Impact Summary Sections */}
         <div className="max-w-4xl mx-auto px-6 mt-8">
-          <SummaryDashboard summary={megaReport.onePageSummary} studentName={name || "Student"} />
           <StudentHackCard hack={megaReport.studentHack} studentName={name || "Student"} />
           <TeacherBriefCard brief={megaReport.teacherBrief} studentName={name || "Student"} />
         </div>
