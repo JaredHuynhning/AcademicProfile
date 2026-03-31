@@ -75,7 +75,24 @@ export const useReportsStore = create<ReportsState>()((set, get) => ({
   },
 
   loadReport: (report) => {
-    useQuizStore.getState().setResults(report.results);
+    const results = { ...report.results };
+    // Sample profiles store dimensions as a map ({H: {...}, E: {...}}).
+    // The report generator expects an array ([{name: "H", score: 4.6, facets: [...]}]).
+    if (results.dimensions && !Array.isArray(results.dimensions)) {
+      const dimMap = results.dimensions as unknown as Record<string, { name: string; score: number; level: string; facets: Record<string, { name: string; score: number }> }>;
+      const dimOrder = ["H", "E", "X", "A", "C", "O"];
+      results.dimensions = dimOrder
+        .filter((key) => dimMap[key])
+        .map((key) => ({
+          name: key,
+          score: dimMap[key].score,
+          facets: Object.values(dimMap[key].facets || {}).map((f) => ({
+            name: f.name,
+            score: f.score,
+          })),
+        }));
+    }
+    useQuizStore.getState().setResults(results);
     useQuizStore.getState().setName(report.name);
   },
 
