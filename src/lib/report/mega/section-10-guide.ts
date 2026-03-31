@@ -6,6 +6,7 @@
 import { DIM_NAMES, classifyLevel, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding } from '../mega-sections';
 import type { CrossRefResult } from '../cross-reference-engine';
+import { pickOpener, renderInteractionCallout, filterByAudience } from '../prose-variety';
 
 export function generateGuideMega(
 	dimensions: DimensionsMap,
@@ -29,7 +30,7 @@ export function generateGuideMega(
 	const oScore = O?.score || 3.0;
 
 	narrative.push(
-		`This section provides tailored strategies for the three groups of adults who most influence ${studentName}'s academic journey: teachers, parents, and tutors. Each set of recommendations is calibrated to ${studentName}'s specific personality profile — not generic advice, but strategies that work for a student with exactly these traits.`
+		`${pickOpener(studentName, 10)} — this section provides tailored strategies for the three groups of adults who most influence ${studentName}'s academic journey: teachers, parents, and tutors. Each set of recommendations is calibrated to ${studentName}'s specific personality profile — not generic advice, but strategies that work for a student with exactly these traits.`
 	);
 
 	// ─── FOR TEACHERS ────────────────────────────────────────────────────────────
@@ -107,6 +108,8 @@ export function generateGuideMega(
 
 	// ─── FOR PARENTS ─────────────────────────────────────────────────────────────
 	narrative.push('\n### For Parents');
+
+	narrative.push(`${pickOpener(studentName, 17)} what follows are parent strategies calibrated specifically to ${studentName}'s profile — not generic parenting advice, but tactics that work for a student with this exact combination of traits.`);
 
 	narrative.push('\n#### Understanding Your Child');
 	if (cScore >= 3.5 && eScore < 3.0) {
@@ -232,6 +235,133 @@ export function generateGuideMega(
 	narrative.push(
 		`**About subject or career choices:** "What subjects make you lose track of time? What would you do if grades didn't matter?" These questions bypass the "should" thinking that parents and students often get trapped in and reveal genuine interests. Personality data shows ${studentName}'s strongest alignment is with subjects that require ${oScore >= 3.5 ? 'creative thinking and exploration' : cScore >= 3.5 ? 'methodical, structured approaches' : xScore >= 3.5 ? 'social interaction and verbal expression' : 'practical, applied problem-solving'}. Use this as a starting point for discussion, not a prescription.`
 	);
+
+	// ─── NEW CONVERSATION SCRIPTS ────────────────────────────────────────────────
+
+	// Script 1: After a bad grade (always fires, framed by E score)
+	narrative.push('\n**After a bad grade:**');
+	if (eScore >= 3.5) {
+		narrative.push(`*Parent:* "I can see you're upset — this clearly matters to you, and that's worth acknowledging."`);
+		narrative.push(`*Student:* "I studied so hard. I don't understand what went wrong."`);
+		narrative.push(`*Parent:* "Let's look at the paper together. First, show me two things you got right. Then let's find one thing to improve for next time."`);
+		narrative.push(`**Why it works:** Validating the emotion (High Emotionality) before moving to analysis means ${studentName} is receptive rather than defensive. Finding two positives before one negative respects their emotional sensitivity and sustains motivation.`);
+	} else {
+		narrative.push(`*Parent:* "Okay — let's figure out why. Was it preparation, understanding of the material, or exam technique?"`);
+		narrative.push(`*Student:* "I don't know. I thought I knew it."`);
+		narrative.push(`*Parent:* "Let's go through the paper section by section. We'll find the pattern."`);
+		narrative.push(`**Why it works:** ${studentName} doesn't need emotional cushioning — they respond to direct problem-solving. Framing as a diagnostic (preparation vs. understanding vs. technique) gives them a concrete framework for improvement.`);
+	}
+
+	// Script 2: About effort & consistency (fires when C < 2.5 OR perfectionism >= 4.0)
+	const perfScore = C?.facets?.perfectionism?.score ?? 0;
+	if (cScore < 2.5 || (cScore >= 4.0 && perfScore >= 4.0)) {
+		narrative.push('\n**About effort and consistency:**');
+		if (cScore < 2.5) {
+			narrative.push(`*Parent:* "I notice you do your best work when you're at the kitchen table with your phone in the other room. That's not a fluke — that's your brain working with better conditions."`);
+			narrative.push(`*Student:* "I just can't get started when I'm in my room."`);
+			narrative.push(`*Parent:* "That makes sense. What would make it easier to get started tonight? Do you want me to sit nearby while you do the first 10 minutes?"`);
+			narrative.push(`**Why it works:** This reframes effort as an environmental problem — not a character flaw. ${studentName}'s challenge with consistency (Low Conscientiousness) responds to structural support, not willpower pep talks.`);
+		} else {
+			narrative.push(`*Parent:* "I'm proud of how seriously you take your work. But I noticed you spent four hours on a 30-minute assignment last night."`);
+			narrative.push(`*Student:* "I wanted it to be perfect."`);
+			narrative.push(`*Parent:* "High standards are a genuine strength. Let's build a system: before you start, we'll decide together how much time this assignment deserves based on what it's worth. Does that help?"`);
+			narrative.push(`**Why it works:** Acknowledges ${studentName}'s drive (High Conscientiousness, High Perfectionism) as a strength while introducing a calibration tool — effort proportional to task weight — that prevents the burnout that overwork creates.`);
+		}
+	}
+
+	// Script 3: About subject choices (always fires, framed by O score)
+	narrative.push('\n**About subject or career direction:**');
+	narrative.push(`*Parent:* "What subjects make you completely lose track of time? And — if grades didn't matter at all — what would you actually want to study?"`);
+	narrative.push(`*Student:* "${oScore >= 3.5 ? '"I love when we get to go off-script and explore something unusual."' : '"Honestly, I want something that leads to a clear job."'}"`);
+	if (oScore >= 3.5) {
+		narrative.push(`*Parent:* "That curiosity is a real asset. Let's look at what careers let you keep exploring — research, design, writing, strategy. What's interesting about those?"`);
+		narrative.push(`**Why it works:** ${studentName}'s high Openness means abstract and creative fields are genuinely energising. Framing the conversation as exploration (not decision-making) keeps the dialogue open and honest.`);
+	} else {
+		narrative.push(`*Parent:* "That's completely valid. Knowing what you want from a career is actually really useful information. What kinds of problems do you enjoy solving?"`);
+		narrative.push(`**Why it works:** ${studentName}'s more practical orientation is a strength, not a limitation. Validating their preference for clear outcomes makes them more willing to explore options rather than shutting down.`);
+	}
+
+	// Script 4: When they want to quit an activity (fires when O >= 3.5 OR X >= 3.5)
+	if (oScore >= 3.5 || xScore >= 3.5) {
+		narrative.push('\n**When they want to quit an activity:**');
+		if (oScore >= 3.5) {
+			narrative.push(`*Parent:* "I hear that you're bored with debating right now. Can you tell me more about what's lost its spark?"`);
+			narrative.push(`*Student:* "It feels like we do the same things over and over. There's nothing new."`);
+			narrative.push(`*Parent:* "I understand that. Here's a thought: let's set a checkpoint — stick with it until the regional finals, and then we'll reassess together. If it still feels the same, we'll make a change. Deal?"`);
+			narrative.push(`**Why it works:** ${studentName}'s high Openness means boredom is a real signal, not laziness. Acknowledging it as valid while introducing a checkpoint prevents impulsive quitting while still respecting their need for novelty.`);
+		} else {
+			narrative.push(`*Parent:* "It sounds like the social side of this has changed. What's shifted?"`);
+			narrative.push(`*Student:* "My friends aren't doing it anymore. I don't really know anyone there now."`);
+			narrative.push(`*Parent:* "The social connection was a big part of what made it work for you. That makes sense. Is there a version of this — or something else — that you could do with people you like?"`);
+			narrative.push(`**Why it works:** ${studentName}'s high Extraversion means social motivation is a genuine driver of commitment. Rather than pushing through alone, finding a social alternative preserves the habit while honouring how ${studentName} actually works.`);
+		}
+	}
+
+	// Script 5: About social struggles (fires when X < 2.5 OR A < 2.5)
+	if (xScore < 2.5 || aScore < 2.5) {
+		narrative.push('\n**About social struggles:**');
+		if (xScore < 2.5) {
+			narrative.push(`*Parent:* "I notice you come home from big social events looking drained. That's not unusual — some people genuinely recharge alone."`);
+			narrative.push(`*Student:* "Everyone else seems to love those things. I feel weird for not wanting to go."`);
+			narrative.push(`*Parent:* "It's actually a well-studied personality trait — not a flaw. The question isn't 'how do I become more social?' It's 'do I have enough of the right connections?' Do you feel like you do?"`);
+			narrative.push(`**Why it works:** Normalising introversion as a trait rather than a problem reduces shame and helps ${studentName} focus on quality of connection rather than quantity — which is what actually matters for their wellbeing.`);
+		} else {
+			narrative.push(`*Parent:* "You mentioned there was a conflict with [friend/classmate] today. Can you tell me what happened from your side?"`);
+			narrative.push(`*Student:* "I just said what I thought. Apparently that was wrong."`);
+			narrative.push(`*Parent:* "You were being honest, which is actually a quality I respect. The tricky part is that different people need more softening around difficult truths. Would it help to practise some ways of saying the same thing that might land better?"`);
+			narrative.push(`**Why it works:** ${studentName}'s lower Agreeableness reflects a genuine preference for intellectual honesty — not malice. Framing it as a communication skill (not a personality defect) keeps the relationship strong while building practical tools.`);
+		}
+	}
+
+	// ─── TEACHER-REALITY TABLE ────────────────────────────────────────────────────
+
+	narrative.push('\n### What Teachers See vs What\'s Really Happening');
+	narrative.push(`This table translates ${studentName}'s visible classroom behaviour into the personality drivers behind it. Share it with teachers before or during a parent-teacher meeting.`);
+	narrative.push('| What Teachers See | What\'s Actually Happening | Personality Driver |');
+	narrative.push('|---|---|---|');
+
+	if (xScore < 2.5) {
+		if (eScore >= 3.5) {
+			narrative.push(`| Doesn't participate in class discussion | Introverted and anxious about public errors — they are listening intently but need processing time | Low Extraversion + High Emotionality |`);
+		} else {
+			narrative.push(`| Doesn't participate in class discussion | Introverted — prefers to process internally and contribute in writing or small groups | Low Extraversion |`);
+		}
+	}
+
+	if (cScore < 2.5) {
+		narrative.push(`| Lazy, doesn't try, forgets assignments | Executive function gap — initiation and working memory are genuinely harder; it's not a motivation problem | Low Conscientiousness |`);
+	}
+
+	if (oScore >= 3.5 && cScore < 2.5) {
+		narrative.push(`| Distracted, off-task, drifting | High curiosity constantly pulling attention to tangents — needs novelty and challenge to stay anchored | High Openness + Low Conscientiousness |`);
+	}
+
+	if (cScore >= 4.0 && eScore >= 3.5) {
+		narrative.push(`| Perfect student — no concerns | May be burning out internally; high standards + emotional sensitivity = stress carried silently and invisibly | High Conscientiousness + High Emotionality |`);
+	}
+
+	if (aScore < 2.5) {
+		narrative.push(`| Argumentative, difficult, challenging | Values intellectual honesty and can't comfortably agree with things they believe are wrong — not personal | Low Agreeableness |`);
+	}
+
+	if (xScore >= 4.0 && cScore < 2.5) {
+		narrative.push(`| Class clown, disruptive, seeking attention | High social energy with no structured outlet — needs a role (discussion leader, group organiser) not a reprimand | High Extraversion + Low Conscientiousness |`);
+	}
+
+	if (eScore < 2.5 && cScore < 2.5) {
+		narrative.push(`| Doesn't seem to care about grades | Unmoved by external validation — needs intrinsic connection to the work, not motivational speeches about results | Low Emotionality + Low Conscientiousness |`);
+	}
+
+	if (xScore < 2.5 && aScore < 2.5) {
+		narrative.push(`| Anti-social, unfriendly, loner | Strongly prefers depth over breadth — has genuine connections but doesn't perform social warmth for its own sake | Low Extraversion + Low Agreeableness |`);
+	}
+
+	// ─── INTERACTION CALLOUTS ─────────────────────────────────────────────────────
+
+	const allInteractions = crossRefResult?.interactions ?? [];
+	allInteractions.slice(0, 2).forEach(i => {
+		narrative.push(renderInteractionCallout(i));
+	});
 
 	// Parent-teacher meeting guide
 	narrative.push('\n### Parent-Teacher Meeting Guide');
