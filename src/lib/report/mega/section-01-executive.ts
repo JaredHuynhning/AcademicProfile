@@ -5,6 +5,7 @@
 import { DIM_ORDER, DIM_NAMES, DIM_COLORS, classifyLevel, scorePercentile, interpretiveLabel, toDimensionsMap, type DimKey, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding } from '../mega-sections';
 import { CrossRefResult } from '../cross-reference-engine';
+import { pickOpener, renderInteractionCallout, filterByAudience } from '../prose-variety';
 
 const DIM_ACADEMIC_IMPACT: Record<DimKey, { high: string; low: string }> = {
 	H: {
@@ -52,7 +53,7 @@ export function generateExecutiveSummaryMega(
 
 	// Para 1: Who is this student?
 	narrative.push(
-		`${studentName} is ${archetype} — a personality profile characterised by ${DIM_NAMES[highest.key].toLowerCase()} as their strongest dimension and ${DIM_NAMES[lowest.key].toLowerCase()} as an area for development. Based on their responses to 120 self-report questions, this report provides a comprehensive analysis of how ${studentName}'s personality shapes their academic experience, learning style, study habits, and social dynamics.`
+		`${pickOpener(studentName, 0)} ${archetype} — a personality profile characterised by ${DIM_NAMES[highest.key].toLowerCase()} as their strongest dimension and ${DIM_NAMES[lowest.key].toLowerCase()} as an area for development. Based on their responses to 120 self-report questions, this report provides a comprehensive analysis of how ${studentName}'s personality shapes their academic experience, learning style, study habits, and social dynamics.`
 	);
 
 	// Para 2: Academic personality signature
@@ -61,7 +62,7 @@ export function generateExecutiveSummaryMega(
 		return classifyLevel(d.score) === 'high' ? impact.high : classifyLevel(d.score) === 'low' ? impact.low : impact.high.split(',')[0];
 	});
 	narrative.push(
-		`${studentName}'s academic personality signature combines ${topTwoImpacts[0]} with ${topTwoImpacts[1]}. This combination means ${studentName} brings a distinctive set of strengths to learning — strengths that can be leveraged strategically across different subjects and contexts.`
+		`${pickOpener(studentName, 1)} an academic personality signature that combines ${topTwoImpacts[0]} with ${topTwoImpacts[1]}. This combination means ${studentName} brings a distinctive set of strengths to learning — strengths that can be leveraged strategically across different subjects and contexts.`
 	);
 
 	// Para 3: Cross-reference synthesis (if available)
@@ -98,7 +99,7 @@ export function generateExecutiveSummaryMega(
 		if (aboveAvg.length > 0) parts.push(`scoring above average on ${aboveAvg.join(', ')}`);
 		if (belowAvg.length > 0) parts.push(`with development areas in ${belowAvg.join(', ')}`);
 		narrative.push(
-			`Across the six HEXACO dimensions, ${studentName}'s profile is distinctive — ${parts.join(', ')}. These aren't labels or limitations. They are starting points for understanding how ${studentName} naturally approaches learning, relationships, and challenge. The strategies throughout this report are designed to leverage what's strong and support what's developing.`
+			`${pickOpener(studentName, 2)} a profile that is distinctive across the six HEXACO dimensions — ${parts.join(', ')}. These aren't labels or limitations. They are starting points for understanding how ${studentName} naturally approaches learning, relationships, and challenge. The strategies throughout this report are designed to leverage what's strong and support what's developing.`
 		);
 	}
 
@@ -175,36 +176,104 @@ export function generateExecutiveSummaryMega(
 		narrative.push(`${studentName}'s moderate profile across most dimensions means they don't show the dramatic trait interactions that produce easily recognisable patterns. This is actually an advantage: they're flexible enough to adapt their approach to different situations rather than being locked into one mode. The strategies in this report help ${studentName} consciously choose which mode to activate in each context.`);
 	}
 
+	// ─── Interaction Callouts from cross-reference engine ──────────────────
+	if (crossRefResult?.interactions) {
+		const parentInteractions = filterByAudience(
+			crossRefResult.interactions ?? [], ['parent', 'student']
+		).slice(0, 2);
+		parentInteractions.forEach(i => {
+			narrative.push(renderInteractionCallout(i));
+		});
+	}
+
 	// ─── "What Teachers See vs What's Really Happening" ──────────────────────
 	narrative.push('\n### What Teachers See vs What\'s Really Happening');
 
-	const teacherTable: { visible: string; underlying: string }[] = [];
+	const teacherTableRows: { visible: string; underlying: string; driver: string }[] = [];
 
-	if (xScore < 2.5) {
-		teacherTable.push({ visible: 'Doesn\'t participate in class discussions', underlying: `${studentName} is processing deeply and may have excellent answers — they just don't feel comfortable sharing unprepared thoughts publicly. Give them questions in advance.` });
+	// Low X + High E → anxiety-driven non-participation
+	if (xScore < 2.5 && eScore >= 3.5) {
+		teacherTableRows.push({
+			visible: 'Doesn\'t participate — seems disengaged',
+			underlying: 'Anxiety about being wrong + introversion. Excellent ideas processed privately, never shared.',
+			driver: 'Low Extraversion + High Emotionality',
+		});
+	} else if (xScore < 2.5) {
+		teacherTableRows.push({
+			visible: 'Doesn\'t participate in class discussions',
+			underlying: `${studentName} is processing deeply and may have excellent answers — they just don't feel comfortable sharing unprepared thoughts publicly. Give them questions in advance.`,
+			driver: 'Low Extraversion',
+		});
 	}
+
+	// Low C → misread as lazy
 	if (cScore < 2.5) {
-		teacherTable.push({ visible: 'Homework is late or incomplete', underlying: `${studentName} isn't being defiant — they lack the organisational systems that other students have naturally. A planner with daily check-ins solves 80% of this problem.` });
+		teacherTableRows.push({
+			visible: 'Lazy, doesn\'t try — homework late or incomplete',
+			underlying: 'Executive function gap, not motivation. Lacks the organisational systems other students have naturally.',
+			driver: 'Low Conscientiousness',
+		});
 	}
-	if (eScore >= 3.5) {
-		teacherTable.push({ visible: 'Seems overly anxious before tests', underlying: `${studentName}'s anxiety is genuine, not attention-seeking. They may actually know the material well but the stress response blocks retrieval. Practice tests under realistic conditions build familiarity that reduces this effect.` });
+
+	// High O + Low C → distracted
+	if (oScore >= 3.5 && cScore < 2.5) {
+		teacherTableRows.push({
+			visible: 'Distracted, off-task — follows tangents',
+			underlying: 'Needs novelty, bored by repetition. Intellectual curiosity is real engagement, not defiance.',
+			driver: 'High Openness + Low Conscientiousness',
+		});
+	} else if (oScore >= 3.5 && cScore < 3.0) {
+		teacherTableRows.push({
+			visible: 'Gets distracted easily, goes off-topic',
+			underlying: `${studentName}'s curiosity is genuine intellectual engagement. An "explore later" notebook channels this without disrupting class.`,
+			driver: 'High Openness',
+		});
 	}
-	if (oScore >= 3.5 && cScore < 3.0) {
-		teacherTable.push({ visible: 'Gets distracted easily, goes off-topic', underlying: `${studentName}'s curiosity is genuine intellectual engagement, not defiance. They follow tangents because the tangent is genuinely interesting. An "explore later" notebook channels this without disrupting class.` });
+
+	// High C + High E → appearing fine while burning out
+	if (cScore >= 3.5 && eScore >= 3.5) {
+		teacherTableRows.push({
+			visible: 'Perfect student — no visible concerns',
+			underlying: 'Burning out internally. High standards + high anxiety creates a student who always delivers but at significant personal cost.',
+			driver: 'High Conscientiousness + High Emotionality',
+		});
+	}
+
+	// Remaining conditional rows
+	if (eScore >= 3.5 && !(cScore >= 3.5)) {
+		teacherTableRows.push({
+			visible: 'Seems overly anxious before tests',
+			underlying: `${studentName}'s anxiety is genuine, not attention-seeking. Stress response can block retrieval even when material is known. Practice tests under realistic conditions reduce this.`,
+			driver: 'High Emotionality',
+		});
 	}
 	if (aScore < 2.5) {
-		teacherTable.push({ visible: 'Argues with group members, seems difficult', underlying: `${studentName} is actually trying to improve the work quality — they challenge weak ideas because they care about the outcome. Coaching on constructive framing helps: "What if we tried..." instead of "That won't work."` });
+		teacherTableRows.push({
+			visible: 'Argues with group members, seems difficult',
+			underlying: `${studentName} challenges weak ideas because they care about the outcome — this is quality drive, not aggression. Coaching on constructive framing channels it productively.`,
+			driver: 'Low Agreeableness',
+		});
 	}
 	if (hScore < 2.5 && xScore >= 3.5) {
-		teacherTable.push({ visible: 'Seems to be "playing the system"', underlying: `${studentName} is strategically social — they know how to get what they want. This is a leadership skill when directed constructively. Give them legitimate leadership roles that reward their social intelligence.` });
+		teacherTableRows.push({
+			visible: 'Seems to be "playing the system"',
+			underlying: `${studentName} is strategically social — a leadership skill when directed constructively. Give them legitimate roles that reward their social intelligence.`,
+			driver: 'Low Honesty-Humility + High Extraversion',
+		});
 	}
 	if (eScore < 2.5 && cScore < 2.5) {
-		teacherTable.push({ visible: 'Doesn\'t seem to care about grades', underlying: `${studentName} genuinely doesn't feel academic anxiety — which means they lack the urgency that drives most students. They need externally created stakes (rewards, consequences) because internal motivation is low.` });
+		teacherTableRows.push({
+			visible: 'Doesn\'t seem to care about grades',
+			underlying: `${studentName} genuinely doesn't feel academic anxiety — meaning they lack the urgency that drives most students. External stakes (rewards, consequences) are required.`,
+			driver: 'Low Emotionality + Low Conscientiousness',
+		});
 	}
 
-	if (teacherTable.length > 0) {
-		teacherTable.forEach(row => {
-			narrative.push(`**What teachers see:** "${row.visible}" — **What's really happening:** ${row.underlying}`);
+	if (teacherTableRows.length > 0) {
+		narrative.push('| What Teachers See | What\'s Actually Happening | Personality Driver |');
+		narrative.push('|---|---|---|');
+		teacherTableRows.forEach(row => {
+			narrative.push(`| ${row.visible} | ${row.underlying} | ${row.driver} |`);
 		});
 	}
 
