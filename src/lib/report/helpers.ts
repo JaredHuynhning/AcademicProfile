@@ -395,3 +395,44 @@ export function getLearningArchetype(
 	}
 	return label;
 }
+
+/**
+ * Positive re-framing for all scores (high and low).
+ * Ensures that 'low' scores are seen as alternative styles/strengths rather than deficits.
+ */
+export function traitReframe(dimKey: DimKey, score: number): { style: string; superpower: string } {
+	const level = classifyLevel(score);
+	const reframes: Record<DimKey, Record<Level, { style: string; superpower: string }>> = {
+		H: {
+			high: { style: 'Genuinely Principled', superpower: 'Collaborative Trust' },
+			moderate: { style: 'Balanced & Practical', superpower: 'Pragmatic Cooperation' },
+			low: { style: 'Strategic & Competitive', superpower: 'Competitive Drive' }
+		},
+		E: {
+			high: { style: 'Emotionally Attuned', superpower: 'Empathic Depth' },
+			moderate: { style: 'Emotionally Stable', superpower: 'Steady Focus' },
+			low: { style: 'Calm Under Pressure', superpower: 'Crisis Resilience' }
+		},
+		X: {
+			high: { style: 'Socially Energised', superpower: 'Natural Leadership' },
+			moderate: { style: 'Adaptable Participant', superpower: 'Situational Flexibility' },
+			low: { style: 'Introspectively Focused', superpower: 'Deep Independent Work' }
+		},
+		A: {
+			high: { style: 'Harmoniously Cooperative', superpower: 'Team Cohesion' },
+			moderate: { style: 'Diplomatically Assertive', superpower: 'Balanced Negotiation' },
+			low: { style: 'Critically Independent', superpower: 'Analytical Rigour' }
+		},
+		C: {
+			high: { style: 'Methodically Disciplined', superpower: 'Quality Mastery' },
+			moderate: { style: 'Reliably Practical', superpower: 'Consistent Delivery' },
+			low: { style: 'Spontaneously Adaptable', superpower: 'Rapid Response' }
+		},
+		O: {
+			high: { style: 'Intellectually Curious', superpower: 'Creative Innovation' },
+			moderate: { style: 'Focused & Grounded', superpower: 'Applied Learning' },
+			low: { style: 'Practical & Methodical', superpower: 'Concrete Mastery' }
+		}
+	};
+	return reframes[dimKey][level];
+}

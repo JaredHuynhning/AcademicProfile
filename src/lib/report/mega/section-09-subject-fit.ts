@@ -1,10 +1,10 @@
-// @ts-nocheck
 /**
  * Mega Section 9: Subject Fit & Career Signals
  * Generates ~3 pages: subject alignment, passion/confidence, career signals.
  */
 import { DIM_NAMES, classifyLevel, scorePercentile, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding, ResearchNote } from '../mega-sections';
+import { LearnerProfile } from '../../types';
 
 const SUBJECT_PERSONALITY_FIT: Record<string, { dims: string[]; high: string; low: string }> = {
 	Mathematics: {
@@ -51,7 +51,7 @@ const SUBJECT_PERSONALITY_FIT: Record<string, { dims: string[]; high: string; lo
 
 export function generateSubjectFitMega(
 	dimensions: DimensionsMap,
-	learnerProfile: any | null,
+	learnerProfile: LearnerProfile | null,
 	studentName: string,
 ): MegaSectionContent {
 	const narrative: string[] = [];
@@ -137,12 +137,12 @@ export function generateSubjectFitMega(
 	// ─── Passion & Confidence ────────────────────────────────────────────────────
 	narrative.push('\n### Passion & Confidence Analysis');
 
-	const subjectFit = learnerProfile?.subjectFit;
+	const subjectFit = learnerProfile?.subjectFit as Record<string, any> | undefined;
 	if (subjectFit) {
-		const subjects = ['maths', 'english', 'science'].filter(s => subjectFit[s]);
+		const subjects = ['maths', 'english', 'science'].filter(s => (subjectFit as Record<string, any>)[s]);
 
 		subjects.forEach(s => {
-			const data = subjectFit[s];
+			const data = (subjectFit as Record<string, any>)[s];
 			const passion = data.passion;
 			const confidence = data.confidence;
 			const alignment = data.alignment;

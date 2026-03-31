@@ -1327,6 +1327,108 @@ const STANDALONE_SECTION_ORDER = [
   { key: "academicGuide", title: "Academic Guide" },
 ];
 
+// ─── PDF Summary Components ──────────────────────────────────────────────────
+
+function PDFIntroLetter({ letter }: { letter: MegaReport['introLetter'] }) {
+  return (
+    <View style={{ marginTop: 20, marginBottom: 30, paddingHorizontal: 20 }}>
+      <Text style={{ fontSize: 14, fontWeight: 'bold', color: ESPRESSO, marginBottom: 10 }}>{letter.salutation}</Text>
+      <Text style={{ fontSize: 11, lineHeight: 1.6, color: "#4a3f2f", fontStyle: 'italic' }}>
+        {letter.body}
+      </Text>
+      <Text style={{ fontSize: 12, fontWeight: 'bold', color: ESPRESSO, marginTop: 12 }}>{letter.closing}</Text>
+    </View>
+  );
+}
+
+function PDFSummaryDashboard({ summary, studentName }: { summary: MegaReport['onePageSummary']; studentName: string }) {
+  return (
+    <View style={{ marginBottom: 24 }}>
+      <PDFTwoColumn
+        left={
+          <View style={[styles.card, { backgroundColor: ESPRESSO, border: 'none' }]}>
+            <Text style={{ fontSize: 6, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 4 }}>The Mantra</Text>
+            <Text style={{ fontSize: 13, fontWeight: 'bold', color: '#fff', marginBottom: 6 }}>"{summary.mantra}"</Text>
+            <Text style={{ fontSize: 7, color: 'rgba(255,255,255,0.7)', fontStyle: 'italic' }}>Tailored guiding principle for {studentName.split(' ')[0]}.</Text>
+          </View>
+        }
+        right={
+          <View style={styles.card}>
+            <Text style={{ fontSize: 6, color: WARM_GRAY, textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 4 }}>Top Priority Action</Text>
+            <Text style={{ fontSize: 10, fontWeight: 'bold', color: ESPRESSO, marginBottom: 2 }}>{summary.primaryAction.title}</Text>
+            <Text style={{ fontSize: 8, color: "#4a3f2f", lineHeight: 1.4 }}>{summary.primaryAction.description}</Text>
+          </View>
+        }
+      />
+      <PDFTwoColumn
+        left={
+          <View style={[styles.card, { backgroundColor: '#f0fdf4', borderColor: '#bbf7d0' }]}>
+            <Text style={{ fontSize: 6, color: '#16a34a', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 4 }}>Top Strengths</Text>
+            {summary.topStrengths.map((s, i) => (
+              <Text key={i} style={{ fontSize: 8, color: ESPRESSO, marginBottom: 2 }}>• {s.text}</Text>
+            ))}
+          </View>
+        }
+        right={
+          <View style={[styles.card, { backgroundColor: '#fffbeb', borderColor: '#fde68a' }]}>
+            <Text style={{ fontSize: 6, color: '#d97706', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 4 }}>Focus Areas</Text>
+            {summary.topBarriers.map((b, i) => (
+              <Text key={i} style={{ fontSize: 8, color: ESPRESSO, marginBottom: 2 }}>• {b.text}</Text>
+            ))}
+          </View>
+        }
+      />
+    </View>
+  );
+}
+
+function PDFStudentHack({ hack, studentName }: { hack: MegaReport['studentHack']; studentName: string }) {
+  return (
+    <View style={[styles.card, { backgroundColor: '#eef2ff', borderColor: '#c7d2fe', padding: 15, marginBottom: 20 }]}>
+      <Text style={{ fontSize: 7, color: '#4338ca', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 4 }}>🚀 Student Hack: {hack.title}</Text>
+      <Text style={{ fontSize: 11, fontWeight: 'bold', color: '#1e1b4b', marginBottom: 4 }}>Hey {studentName.split(' ')[0]}, try this:</Text>
+      <Text style={{ fontSize: 10, color: '#1e1b4b', marginBottom: 6, lineHeight: 1.4 }}>"{hack.hack}"</Text>
+      <View style={{ borderTopWidth: 0.5, borderTopColor: '#c7d2fe', paddingTop: 6 }}>
+        <Text style={{ fontSize: 8, color: '#4338ca', fontStyle: 'italic' }}>Why it works: {hack.why}</Text>
+      </View>
+    </View>
+  );
+}
+
+function PDFTeacherBrief({ brief, studentName }: { brief: MegaReport['teacherBrief']; studentName: string }) {
+  return (
+    <View style={[styles.card, { borderStyle: 'dashed', borderWidth: 1, borderColor: WARM_GRAY, padding: 15 }]}>
+      <Text style={{ fontSize: 8, color: ESPRESSO, fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 10 }}>Teacher Briefing</Text>
+      <PDFTwoColumn
+        left={
+          <View>
+            <View style={{ marginBottom: 8 }}>
+              <Text style={{ fontSize: 6, color: WARM_GRAY, textTransform: 'uppercase', marginBottom: 1 }}>Learning Archetype</Text>
+              <Text style={{ fontSize: 9, fontWeight: 'bold', color: ESPRESSO }}>{brief.learningStyle}</Text>
+            </View>
+            <View>
+              <Text style={{ fontSize: 6, color: WARM_GRAY, textTransform: 'uppercase', marginBottom: 1 }}>How to Motivate</Text>
+              <Text style={{ fontSize: 8, color: ESPRESSO, lineHeight: 1.3 }}>{brief.howToMotivate}</Text>
+            </View>
+          </View>
+        }
+        right={
+          <View>
+            <View style={{ marginBottom: 8 }}>
+              <Text style={{ fontSize: 6, color: WARM_GRAY, textTransform: 'uppercase', marginBottom: 1 }}>What to Watch For</Text>
+              <Text style={{ fontSize: 8, color: ESPRESSO, lineHeight: 1.3 }}>{brief.whatToWatchFor}</Text>
+            </View>
+            <View>
+              <Text style={{ fontSize: 6, color: WARM_GRAY, textTransform: 'uppercase', marginBottom: 1 }}>Key Recommendation</Text>
+              <Text style={{ fontSize: 8, color: ESPRESSO, lineHeight: 1.3 }}>{brief.topRecommendation}</Text>
+            </View>
+          </View>
+        }
+      />
+    </View>
+  );
+}
+
 // ─── Main Document ───────────────────────────────────────────────────────────
 
 interface ReportPDFProps {
@@ -1649,6 +1751,23 @@ function ReportPDFDocument({ name, results, report }: ReportPDFProps) {
           </View>
         </Page>
       )}
+
+      {/* High-Impact Summary Page */}
+      <Page size="A4" style={styles.page}>
+        <PDFIntroLetter letter={mega.introLetter} />
+        <PDFSummaryDashboard summary={mega.onePageSummary} studentName={name} />
+        <PDFStudentHack hack={mega.studentHack} studentName={name} />
+        <PDFTeacherBrief brief={mega.teacherBrief} studentName={name} />
+        
+        <View style={styles.footer} fixed>
+          <View style={styles.footerRule} />
+          <View style={styles.footerRow}>
+            <Text>{name}</Text>
+            <Text style={styles.footerCenter}>Executive Summary</Text>
+            <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
+          </View>
+        </View>
+      </Page>
 
       {/* Table of Contents */}
       <Page size="A4" style={styles.page}>

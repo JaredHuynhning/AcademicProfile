@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Mega-section types and consolidation for the 50-page report.
  * Consolidates 23 thin section generators → 12 mega-sections.
@@ -15,6 +14,7 @@ import { generateSocialDynamicsMega } from './mega/section-08-social';
 import { generateSubjectFitMega } from './mega/section-09-subject-fit';
 import { generateGuideMega } from './mega/section-10-guide';
 import { generateActionPlanMega } from './mega/section-11-action';
+import { TestResults } from '../types';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -70,6 +70,8 @@ export interface DimensionDetail {
 	label: string;
 	color: string;
 	facets: { name: string; score: number }[];
+	style: string;
+	superpower: string;
 }
 
 export interface SubjectAlignment {
@@ -89,10 +91,35 @@ export interface MegaReport {
 	scoreSummary: { dim: string; score: number; percentile: number; level: string; label: string; color: string }[];
 	dimensionDetails: DimensionDetail[];
 	subjectAlignment: SubjectAlignment[];
+	introLetter: {
+		salutation: string;
+		body: string;
+		closing: string;
+	};
+	onePageSummary: {
+		topStrengths: Finding[];
+		topBarriers: Finding[];
+		primaryAction: Action;
+		mantra: string;
+	};
+	studentHack: {
+		title: string;
+		hack: string;
+		why: string;
+	};
+	quickWins: { id: string; text: string; completed: boolean }[];
+	teacherBrief: {
+		learningStyle: string;
+		topRecommendation: string;
+		whatToWatchFor: string;
+		howToMotivate: string;
+	};
 	raw: Record<string, unknown>;
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
+
+import { traitReframe, type DimKey } from './helpers';
 
 function extractNarratives(data: unknown): string[] {
 	if (!data || typeof data !== 'object') return [];
@@ -117,7 +144,7 @@ function pickNarratives(...sources: unknown[]): string[] {
 
 // ─── Key Takeaway Generator ──────────────────────────────────────────────────
 
-function generateKeyTakeaway(sectionId: string, dims: Record<string, any> | null, studentName: string): string | undefined {
+function generateKeyTakeaway(sectionId: string, dims: Record<string, { score: number }> | null, studentName: string): string | undefined {
 	if (!dims) return undefined;
 	const n = studentName.split(' ')[0] || 'This student';
 	const C = dims.C; const O = dims.O; const E = dims.E; const X = dims.X; const A = dims.A; const H = dims.H;
@@ -131,30 +158,30 @@ function generateKeyTakeaway(sectionId: string, dims: Record<string, any> | null
 				{ k: 'Extraversion', s: xScore }, { k: 'Agreeableness', s: aScore },
 				{ k: 'Emotionality', s: eScore }, { k: 'Honesty-Humility', s: hScore },
 			].sort((a, b) => b.s - a.s)[0];
-			return `${n}'s strongest dimension is ${strongest.k} (${strongest.s.toFixed(1)}/5). This shapes how they approach learning, relate to peers, and handle academic challenges.`;
+			return `${n}'s stand-out strength is ${strongest.k} (${strongest.s.toFixed(1)}/5). This is like a "default setting" that helps ${n} handle schoolwork and relate to others in a unique way.`;
 		},
 		'personality-deep-dive': () => {
 			const high = [cScore, oScore, xScore, aScore, eScore, hScore].filter(s => s >= 3.5).length;
 			const low = [cScore, oScore, xScore, aScore, eScore, hScore].filter(s => s < 2.5).length;
-			if (high >= 4) return `${n} shows elevated scores across multiple dimensions, indicating a well-developed personality profile. Focus on leveraging strengths while watching for perfectionism or overcommitment.`;
-			if (low >= 3) return `${n} has several areas below average, which isn't a weakness — it's a distinctive profile. The strategies in this report are specifically designed for this combination of traits.`;
-			return `${n}'s personality profile is distinctive — not "average" on everything, but a unique combination that creates both natural advantages and areas needing targeted strategies.`;
+			if (high >= 4) return `${n}'s profile is high-energy and multi-talented. The key is to pick which "superpower" to use for each challenge without burning out.`;
+			if (low >= 3) return `${n}'s profile is unique and focused. It means ${n} works best when things are done a specific way, using the targeted "brain hacks" found in this report.`;
+			return `${n}'s personality is a balanced mix of different traits. This means ${n} is adaptable and can handle many different types of school and social situations.`;
 		},
 		'learning-profile': () => {
-			if (oScore >= 3.5 && cScore >= 3.5) return `${n} has the ideal learning combination: curiosity (Openness ${oScore.toFixed(1)}) plus discipline (Conscientiousness ${cScore.toFixed(1)}). They explore deeply AND follow through.`;
-			if (oScore >= 3.5 && cScore < 2.5) return `${n} is highly curious but struggles with follow-through. The key is channelling their intellectual excitement into structured output before interest fades.`;
-			if (oScore < 2.5 && cScore >= 3.5) return `${n} is disciplined but may lack curiosity. They'll do the work reliably, but finding personal relevance in each topic will transform compliance into genuine engagement.`;
-			return `${n}'s learning style is shaped by the interaction between their curiosity and discipline. The strategies below are tailored to this specific balance.`;
+			if (oScore >= 3.5 && cScore >= 3.5) return `${n} has the "Curious Creator" combo: high curiosity plus the discipline to actually finish things. It's a powerful mix for deep learning.`;
+			if (oScore >= 3.5 && cScore < 2.5) return `${n} is a "Big Idea Thinker." The goal is to capture those great ideas before they fly away and build small systems to help finish them.`;
+			if (oScore < 2.5 && cScore >= 3.5) return `${n} is "The Reliable Pro"—the person who gets the job done. The trick is to find an interesting "hook" in every subject to make the work feel more exciting.`;
+			return `${n}'s learning style is all about balance. By understanding how curiosity and discipline work together, ${n} can work smarter, not harder.`;
 		},
 		'academic-character': () => {
-			if (cScore >= 4.0) return `${n}'s exceptional conscientiousness (${cScore.toFixed(1)}/5) is their academic superpower. They have the self-discipline most students lack — the key is ensuring it doesn't tip into unhealthy perfectionism.`;
-			if (cScore < 2.5) return `${n}'s conscientiousness (${cScore.toFixed(1)}/5) is below average, which means external systems are essential. The right structure can close this gap entirely — many high achievers have low natural conscientiousness but excellent systems.`;
-			return `${n} has moderate self-discipline — enough to function but with room to build better habits. Small, consistent improvements compound dramatically over a school year.`;
+			if (cScore >= 4.0) return `${n}'s self-discipline is a massive advantage. Most students have to work hard just to get started—for ${n}, starting is the easy part. The focus is on quality over quantity.`;
+			if (cScore < 2.5) return `${n} works best when there's an external "system" in place. Many high achievers actually score low here, but they succeed by using planners and timers to close the gap.`;
+			return `${n} has a solid foundation of study habits. Small, consistent tweaks to the daily routine will lead to big improvements over the school year.`;
 		},
 		'study-playbook': () => {
-			if (xScore >= 3.5) return `${n} learns best through discussion and collaboration. Every strategy below leverages their social energy — study groups, peer teaching, and verbal processing are their most effective tools.`;
-			if (xScore < 2.5) return `${n} does their deepest thinking alone. The strategies below prioritise focused solo methods — active recall, written summaries, and quiet deep-work sessions.`;
-			return `${n}'s study strategies should blend solo focus with selective collaboration. The methods below are ranked by fit for their specific personality combination.`;
+			if (xScore >= 3.5) return `${n} is a social learner. Talking through ideas and working with others is the fastest way for ${n} to master new material.`;
+			if (xScore < 2.5) return `${n} is a "Solo Specialist." Deep focus happens in quiet spaces without distractions. Solitary study is ${n}'s secret weapon.`;
+			return `${n} works well both alone and in groups. The strategy is to choose the right mode for the right task—solo for memorising, social for brainstorming.`;
 		},
 		'strengths': () => {
 			const top = [
@@ -162,7 +189,7 @@ function generateKeyTakeaway(sectionId: string, dims: Record<string, any> | null
 				{ k: 'social skills', s: xScore }, { k: 'teamwork', s: aScore },
 				{ k: 'emotional awareness', s: eScore }, { k: 'integrity', s: hScore },
 			].sort((a, b) => b.s - a.s).slice(0, 2);
-			return `${n}'s top strengths are ${top[0].k} and ${top[1].k}. These aren't just nice traits — they're competitive academic advantages that should be actively leveraged.`;
+			return `${n}'s top strengths—${top[0].k} and ${top[1].k}—are more than just traits. They are strategic advantages that ${n} can use to win in any subject.`;
 		},
 		'barriers': () => {
 			const weak = [
@@ -170,13 +197,13 @@ function generateKeyTakeaway(sectionId: string, dims: Record<string, any> | null
 				{ k: 'participation', s: xScore }, { k: 'collaboration', s: aScore },
 				{ k: 'stress management', s: eScore },
 			].sort((a, b) => a.s - b.s)[0];
-			return `${n}'s primary barrier is likely related to ${weak.k} (${weak.s.toFixed(1)}/5). Addressing this single area will have the biggest impact on overall academic performance.`;
+			return `${n}'s biggest challenge is likely related to ${weak.k}. By fixing this one "bottleneck," everything else at school will start to feel easier.`;
 		},
 		'social-dynamics': () => {
-			if (xScore >= 3.5 && aScore >= 3.5) return `${n} is a natural collaborator — socially confident and cooperative. They thrive in group settings and should seek leadership roles in team projects.`;
-			if (xScore < 2.5 && aScore >= 3.5) return `${n} is cooperative but reserved. They contribute best when given defined roles in small groups, with time to prepare before meetings.`;
-			if (xScore >= 3.5 && aScore < 2.5) return `${n} is socially confident but assertive. They'll take charge in groups — coaching them on inclusive leadership will multiply their impact.`;
-			return `${n}'s social style blends independence with collaboration. The group strategies below are designed for this balanced approach.`;
+			if (xScore >= 3.5 && aScore >= 3.5) return `${n} is a natural team player who brings people together. Leading group projects or mentoring others is a great way to grow.`;
+			if (xScore < 2.5 && aScore >= 3.5) return `${n} is a "Supportive Specialist"—someone who works best in small teams with a clear role and time to prepare.`;
+			if (xScore >= 3.5 && aScore < 2.5) return `${n} is a "Confident Driver." In groups, ${n} takes charge. The key is using that energy to help the whole team move forward.`;
+			return `${n} balances independence with teamwork. This means ${n} can lead when needed, but also work well as a reliable contributor.`;
 		},
 		'subject-fit': () => `The subject alignment below is based on ${n}'s personality profile — not their grades. A subject marked "Excellent" means ${n}'s natural traits align with what that subject demands, even if current grades don't yet reflect it.`,
 		'guide': () => `Every recommendation in this guide is specific to ${n}'s profile. Generic advice like "study harder" or "be more organised" doesn't work — these strategies are designed for someone with exactly this personality combination.`,
@@ -190,7 +217,7 @@ function generateKeyTakeaway(sectionId: string, dims: Record<string, any> | null
 
 export function consolidateToMegaReport(
 	rawReport: Record<string, unknown>,
-	results: any,
+	results: TestResults,
 	studentName: string,
 ): MegaReport {
 	const sections: MegaSection[] = [];
@@ -199,17 +226,19 @@ export function consolidateToMegaReport(
 	const scoreSummary: MegaReport['scoreSummary'] = [];
 	const dimensionDetails: DimensionDetail[] = [];
 	const hasDims = Array.isArray(results.dimensions) && results.dimensions.length > 0;
-	const dims = hasDims ? toDimensionsMap(results.dimensions) : null;
+	const dims = hasDims ? toDimensionsMap(results.dimensions!) : null;
 	if (dims) {
 		for (const key of DIM_ORDER) {
 			const d = dims[key];
 			if (!d) continue;
+			const reframe = traitReframe(key as DimKey, d.score);
 			radarData.push({ dim: DIM_SHORT[key], score: d.score, color: DIM_COLORS[key] });
 			scoreSummary.push({
 				dim: DIM_NAMES[key], score: d.score,
 				percentile: scorePercentile(d.score), level: d.level,
 				label: interpretiveLabel(d.score), color: DIM_COLORS[key],
-			});
+				style: reframe.style, superpower: reframe.superpower,
+			} as any);
 			dimensionDetails.push({
 				key,
 				name: DIM_NAMES[key],
@@ -219,7 +248,8 @@ export function consolidateToMegaReport(
 				label: interpretiveLabel(d.score),
 				color: DIM_COLORS[key],
 				facets: Object.entries(d.facets).map(([k, f]) => ({ name: f.name, score: f.score })),
-			});
+				style: reframe.style, superpower: reframe.superpower,
+			} as any);
 		}
 	}
 
@@ -236,7 +266,7 @@ export function consolidateToMegaReport(
 			const avg = dimKeys.reduce((sum, k) => sum + (dims[k]?.score || 3), 0) / dimKeys.length;
 			const cat = avg >= 3.5 ? 'Excellent' : avg >= 2.5 ? 'Good' : 'Challenging';
 			const subjLower = subj.toLowerCase().replace(/\s+/g, '_');
-			const sfData = lp?.subjectFit?.[subjLower] || lp?.subjectFit?.[subj.toLowerCase()] || null;
+			const sfData = (lp?.subjectFit as Record<string, any>)?.[subjLower] || (lp?.subjectFit as Record<string, any>)?.[subj.toLowerCase()] || null;
 			subjectAlignment.push({
 				subject: subj, alignment: avg,
 				category: cat as 'Excellent' | 'Good' | 'Challenging',
@@ -251,7 +281,83 @@ export function consolidateToMegaReport(
 
 	// 1. Cover + Executive Summary
 	const archetype = (exec?.archetype as string) || (cover as any)?.personalityArchetype || 'The Balanced Generalist';
-	const crossRefResult = r._crossRefResult || null;
+	const crossRefResult = (r._crossRefResult as any) || null;
+
+	// ─── Extract Summary Data ────────────────────────────────────────────────
+	const topStrengths: Finding[] = [];
+	const topBarriers: Finding[] = [];
+	let primaryAction: Action = { title: 'Focus on Consistency', description: 'Establish a small, repeatable daily habit.', priority: 1 };
+
+	// ─── Mantra Generator ───────────────────────────────────────────────────
+	const C = dims?.C?.score || 3;
+	const O = dims?.O?.score || 3;
+	const E = dims?.E?.score || 3;
+	const X = dims?.X?.score || 3;
+
+	let mantra = 'Progress over perfection.';
+	if (C >= 4 && O >= 4) mantra = 'Channel curiosity into disciplined creation.';
+	else if (C < 3 && O >= 4) mantra = 'Structure the sparks — systems for your ideas.';
+	else if (C >= 4 && E >= 4) mantra = 'Diligence is your shield against anxiety.';
+	else if (X < 3 && C >= 4) mantra = 'Quiet focus is your ultimate academic weapon.';
+	else if (X >= 4 && C < 3) mantra = 'Leverage the group to stay accountable.';
+
+	// ─── Teacher Brief ──────────────────────────────────────────────────────
+	const teacherBrief = {
+		learningStyle: archetype,
+		topRecommendation: 'Provide clear, structured deadlines and rubrics.',
+		whatToWatchFor: 'Avoidance of difficult tasks due to fear of failure.',
+		howToMotivate: 'Connect learning to their personal interests and curiosities.',
+	};
+
+	if (C >= 4) {
+		teacherBrief.topRecommendation = 'Give autonomy on "how" — they already have the "when" handled.';
+		teacherBrief.whatToWatchFor = 'Burnout and over-commitment to minor details.';
+		teacherBrief.howToMotivate = 'Acknowledge the quality and reliability of their work.';
+	} else if (C < 3) {
+		teacherBrief.topRecommendation = 'Scaffold large projects with frequent, small milestones.';
+		teacherBrief.whatToWatchFor = 'Last-minute rushing and missed organisational steps.';
+		teacherBrief.howToMotivate = 'Gamify tasks and use short-term rewards.';
+	}
+
+	if (X >= 4) {
+		teacherBrief.howToMotivate += ' Use peer-teaching and group discussion roles.';
+	} else if (X < 3) {
+		teacherBrief.howToMotivate += ' Allow for independent processing time before group work.';
+	}
+
+	// ─── Student Hack ───────────────────────────────────────────────────────
+	const studentHack = {
+		title: 'The Brain Hack',
+		hack: 'Use the "10-Minute Dash": set a timer for 10 minutes and work only on one task. When it rings, you have permission to stop.',
+		why: 'This bypasses your brain\'s resistance to starting large tasks by making the "entry cost" very low.',
+	};
+
+	if (C < 3 && O >= 4) {
+		studentHack.title = 'The Idea Capture Hack';
+		studentHack.hack = 'Keep a "Parking Lot" notebook. When a cool but unrelated idea hits you during study, write it down immediately then return to your work.';
+		studentHack.why = 'Your high curiosity means you get distracted by your own great ideas. Writing them down tells your brain "I won\'t forget this," allowing you to refocus.';
+	} else if (E >= 4 && C >= 4) {
+		studentHack.title = 'The Perfectionist Reset';
+		studentHack.hack = 'Purposefully do a "Draft 0" where you aren\'t allowed to use the backspace key. Just get the words out, no matter how bad they are.';
+		studentHack.why = 'Your high standards can paralyse you. Draft 0 separates "creating" from "editing," which reduces the anxiety of the blank page.';
+	} else if (X < 3) {
+		studentHack.title = 'The Solo-Sprint Hack';
+		studentHack.hack = 'Use "Body Doubling" — study in a library or cafe where others are working, but you don\'t have to talk to them.';
+		studentHack.why = 'You work best alone, but the presence of other productive people provides a subtle "accountability field" that keeps you off your phone.';
+	} else if (X >= 4 && C < 3) {
+		studentHack.title = 'The Social Pressure Hack';
+		studentHack.hack = 'Tell a friend what you\'re going to finish by 8 PM. Ask them to text you at 8:01 to ask for a photo of the work.';
+		studentHack.why = 'You are motivated by social connection. Using that "positive peer pressure" provides the discipline your personality doesn\'t always naturally have.';
+	}
+
+	// ─── Intro Letter ───────────────────────────────────────────────────────
+	const firstName = studentName.split(' ')[0] || 'Student';
+	const introLetter = {
+		salutation: `Hi ${firstName},`,
+		body: `This report is all about how you tick. We've looked at your personality and your study habits to create a map of your "default settings." Being ${archetype.toLowerCase()} means you have a unique way of processing ideas and getting things done. Some of this will feel like your secret superpower, and some of it might explain why certain things at school feel like a struggle. Remember: this isn't a list of things you "can't" do—it's a guide to how you can do things your own way.`,
+		closing: `Let's dive in.`,
+	};
+
 	const execContent = dims
 		? generateExecutiveSummaryMega(dims, studentName, archetype, crossRefResult)
 		: {
@@ -395,6 +501,8 @@ export function consolidateToMegaReport(
 				'The HEXACO model has been validated across 12+ languages and cultures, with population norms established through large-scale studies. The percentile rankings in this report are based on these norms, meaning a score at the 75th percentile indicates the student scores higher than approximately 75% of the general population on that dimension.',
 				'\n### Score Summary',
 				scoreTable || 'Scores not available.',
+				'\n### Growth Mindset & Neuroplasticity',
+				'It is essential to remember that the personality traits and learning patterns described in this report are "default settings," not fixed destinies. The teenage brain is highly plastic — meaning it is still physically restructuring itself. Habits of conscientiousness, emotional regulation, and social confidence can be built through deliberate practice, just like a muscle. This report is a map of your starting point, but you choose the destination.',
 				'\n### Methodology',
 				'All personality scores are self-reported. Self-report measures are the gold standard for personality assessment because personality traits are internal states that the individual has the most direct access to. However, self-report can be influenced by social desirability (answering how you think you "should" rather than how you actually are) and self-knowledge (some teenagers are still developing self-awareness). For this reason, the report emphasises patterns and trends rather than treating any single score as definitive.',
 				'The cross-reference engine in this report maps personality traits to academic outcomes using evidence-based rules derived from published research on personality and academic achievement. These are correlational patterns, not causal certainties — personality predicts tendencies, not guarantees.',
@@ -405,7 +513,48 @@ export function consolidateToMegaReport(
 		rawData: {},
 	});
 
+	// ─── Post-processing: Extract Top Findings ──────────────────────────────
+	const mainFindings = sections[0]?.content.keyFindings || [];
+	mainFindings.forEach(f => {
+		if (f.type === 'strength' && topStrengths.length < 3) topStrengths.push(f);
+		if (f.type === 'barrier' && topBarriers.length < 3) topBarriers.push(f);
+	});
+	// Fallback to searching other sections if executive is empty
+	if (topStrengths.length < 2) {
+		sections.forEach(s => s.content.keyFindings.forEach(f => {
+			if (f.type === 'strength' && topStrengths.length < 3 && !topStrengths.find(x => x.text === f.text)) topStrengths.push(f);
+		}));
+	}
+	if (topBarriers.length < 2) {
+		sections.forEach(s => s.content.keyFindings.forEach(f => {
+			if (f.type === 'barrier' && topBarriers.length < 3 && !topBarriers.find(x => x.text === f.text)) topBarriers.push(f);
+		}));
+	}
+
+	const allActions = sections.flatMap(s => s.content.actions);
+	if (allActions.length > 0) {
+		primaryAction = allActions.sort((a, b) => a.priority - b.priority)[0];
+	}
+
 	return {
-		studentName, date: dateStr, archetype, sections, radarData, scoreSummary, dimensionDetails, subjectAlignment, raw: rawReport,
+		studentName, 
+		date: dateStr, 
+		archetype, 
+		sections, 
+		radarData, 
+		scoreSummary, 
+		dimensionDetails, 
+		subjectAlignment, 
+		introLetter,
+		onePageSummary: {
+			topStrengths,
+			topBarriers,
+			primaryAction,
+			mantra,
+		},
+		studentHack,
+		quickWins: [],
+		teacherBrief,
+		raw: rawReport,
 	};
 }

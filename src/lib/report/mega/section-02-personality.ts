@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Mega Section 2: Who You Are — Personality Deep Dive
  * Generates ~8 pages of flowing, research-backed narrative for all 6 HEXACO dimensions.

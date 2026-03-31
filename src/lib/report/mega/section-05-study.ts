@@ -1,15 +1,15 @@
-// @ts-nocheck
 /**
  * Mega Section 5: Study Strategy Playbook
  * Generates ~6 pages: optimal methods, subject strategies, exam prep, weekly schedule, environment.
  */
 import { classifyLevel, scorePercentile, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding, ResearchNote } from '../mega-sections';
+import { StudyProfile, LearnerProfile } from '../../types';
 
 export function generateStudyPlaybookMega(
 	dimensions: DimensionsMap,
-	studyProfile: any | null,
-	learnerProfile: any | null,
+	studyProfile: StudyProfile | null,
+	learnerProfile: LearnerProfile | null,
 	studentName: string,
 ): MegaSectionContent {
 	const narrative: string[] = [];

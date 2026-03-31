@@ -1,3 +1,5 @@
+import { Answers } from "../types";
+
 const BASE = '/api/hexaco';
 
 export async function fetchItems() {
@@ -6,7 +8,7 @@ export async function fetchItems() {
 	return res.json();
 }
 
-export async function submitAnswers(answers) {
+export async function submitAnswers(answers: Answers) {
 	const res = await fetch(`${BASE}/score`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },

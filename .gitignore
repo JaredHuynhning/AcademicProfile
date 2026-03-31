@@ -42,3 +42,9 @@ yarn-error.log*
 next-env.d.ts
 .claude/worktrees/
 .superpowers/
+
+# dev artifacts
+samples/
+screenshots/
+*.bak
+*.orig

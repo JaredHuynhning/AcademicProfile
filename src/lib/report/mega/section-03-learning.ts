@@ -1,15 +1,15 @@
-// @ts-nocheck
 /**
  * Mega Section 3: How Your Mind Works — Learning Profile
  * Generates ~6 pages: learning style, attention, motivation, curiosity, environment, cross-ref.
  */
 import { classifyLevel, scorePercentile, interpretiveLabel, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding, ResearchNote } from '../mega-sections';
+import { StudyProfile, LearnerProfile } from '../../types';
 
 export function generateLearningProfileMega(
 	dimensions: DimensionsMap,
-	studyProfile: any | null,
-	learnerProfile: any | null,
+	studyProfile: StudyProfile | null,
+	learnerProfile: LearnerProfile | null,
 	studentName: string,
 ): MegaSectionContent {
 	const narrative: string[] = [];

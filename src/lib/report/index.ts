@@ -26,7 +26,8 @@ import { generateBarriers } from './section-c5-barriers';
 import { generateActionPlan } from './section-c6-action-plan';
 import { generateUnifiedGuide } from './section-c7-guide';
 import { runCrossReferenceEngine } from './cross-reference-engine';
-import { toDimensionsMap } from './helpers';
+import { toDimensionsMap, type DimensionsMap } from './helpers';
+import { TestResults } from '../types';
 
 /**
  * Generate the full report.
@@ -35,19 +36,19 @@ import { toDimensionsMap } from './helpers';
  *   - Learning sections (11-14) require studyProfile/learnerProfile
  *   - Cross-system insights require both
  *
- * @param {object} results - Results with dimensions, studyProfile, learnerProfile
+ * @param {TestResults} results - Results with dimensions, studyProfile, learnerProfile
  * @param {string} name - Student name
- * @returns {object} All section data for rendering
+ * @returns {MegaReport} All section data for rendering
  */
 export type { MegaReport, MegaSection, MegaSectionContent, DimensionDetail, SubjectAlignment } from './mega-sections';
-import { consolidateToMegaReport } from './mega-sections';
+import { consolidateToMegaReport, MegaReport } from './mega-sections';
 
-export function generateMegaReport(results: any, name: string) {
+export function generateMegaReport(results: TestResults, name: string): MegaReport {
 	const rawReport = generateReport(results, name);
 	return consolidateToMegaReport(rawReport, results, name);
 }
 
-export function generateReport(results: any, name: string) {
+export function generateReport(results: TestResults, name: string) {
 	const hasPersonality = !!results.dimensions && Array.isArray(results.dimensions) && results.dimensions.length > 0;
 	const hasStudy = !!results.studyProfile;
 	const hasLearner = !!results.learnerProfile;
@@ -56,35 +57,41 @@ export function generateReport(results: any, name: string) {
 	// Convert scorer's dimension array to the map format expected by report templates
 	// Inject studentName (first name) so all generators can personalize narratives
 	const first = name ? name.split(' ')[0] : 'This student';
-	const enriched = hasPersonality
-		? { ...results, dimensions: toDimensionsMap(results.dimensions), studentName: first }
-		: { ...results, studentName: first };
+	const enriched = {
+		...results, 
+		...(hasPersonality && { dimensions: toDimensionsMap(results.dimensions!) }),
+		studentName: first,
+		narrative: { summary: '', dimension_insights: {} }
+	};
 
 	let crossRefResult = null;
 	if (hasComplete) {
-		crossRefResult = runCrossReferenceEngine(enriched.dimensions, enriched.studyProfile, enriched.learnerProfile);
+		const dimensions = enriched.dimensions as DimensionsMap;
+		const studyProfile = enriched.studyProfile as any;
+		const learnerProfile = enriched.learnerProfile as any;
+		crossRefResult = runCrossReferenceEngine(dimensions, studyProfile, learnerProfile);
 	}
 
 	return {
 		// Personality sections (require HEXACO)
-		cover: hasPersonality ? generateCover(enriched, name) : null,
-		glance: hasPersonality ? generateGlance(enriched) : null,
-		deepDive: hasPersonality ? generateDeepDive(enriched) : null,
-		learning: hasPersonality ? generateLearning(enriched) : null,
-		drives: hasPersonality ? generateDrives(enriched) : null,
-		study: hasPersonality ? generateStudy(enriched) : null,
-		group: hasPersonality ? generateGroup(enriched) : null,
-		strengths: hasPersonality ? generateStrengths(enriched) : null,
-		guide: hasPersonality ? generateGuide(enriched) : null,
-		tutor: hasPersonality ? generateTutor(enriched) : null,
+		cover: hasPersonality ? generateCover(enriched as any, name) : null,
+		glance: hasPersonality ? generateGlance(enriched as any) : null,
+		deepDive: hasPersonality ? generateDeepDive(enriched as any) : null,
+		learning: hasPersonality ? generateLearning(enriched as any) : null,
+		drives: hasPersonality ? generateDrives(enriched as any) : null,
+		study: hasPersonality ? generateStudy(enriched as any) : null,
+		group: hasPersonality ? generateGroup(enriched as any) : null,
+		strengths: hasPersonality ? generateStrengths(enriched as any) : null,
+		guide: hasPersonality ? generateGuide(enriched as any) : null,
+		tutor: hasPersonality ? generateTutor(enriched as any) : null,
 
 		// Learning sections (require studyProfile / learnerProfile)
-		studyProfile: hasStudy ? generateStudyProfile(enriched) : null,
-		academicCharacter: hasLearner ? generateAcademicCharacter(enriched) : null,
-		subjectFit: hasLearner ? generateSubjectFit(enriched) : null,
-		whatWorks: hasLearner ? generateWhatWorks(enriched) : null,
-		rootCause: hasLearner ? generateRootCause(enriched) : null,
-		academicGuide: (hasStudy || hasLearner) ? generateAcademicGuide(enriched) : null,
+		studyProfile: hasStudy ? generateStudyProfile(enriched as any) : null,
+		academicCharacter: hasLearner ? generateAcademicCharacter(enriched as any) : null,
+		subjectFit: hasLearner ? generateSubjectFit(enriched as any) : null,
+		whatWorks: hasLearner ? generateWhatWorks(enriched as any) : null,
+		rootCause: hasLearner ? generateRootCause(enriched as any) : null,
+		academicGuide: (hasStudy || hasLearner) ? generateAcademicGuide(enriched as any) : null,
 
 		// Complete Profile sections (require all three datasets)
 		executiveSummary: hasComplete ? generateExecutiveSummary(enriched, crossRefResult) : null,

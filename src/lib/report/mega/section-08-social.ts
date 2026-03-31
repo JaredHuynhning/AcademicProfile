@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 /**
  * Mega Section 8: Social & Group Dynamics
  * Generates ~3 pages: collaboration style, conflict patterns, friendship, leadership, team role.

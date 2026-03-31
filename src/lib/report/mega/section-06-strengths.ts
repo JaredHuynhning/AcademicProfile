@@ -134,15 +134,17 @@ export function generateStrengthsMega(
 	});
 
 	// Cross-ref confirmations
-	if (crossRefResult?.byType?.confirmation?.length > 0) {
+	const confirmationList = crossRefResult?.byType?.confirmation;
+	if (confirmationList && confirmationList.length > 0) {
 		narrative.push('\n#### Personality-Academic Confirmation Patterns');
-		const confirmations = [...crossRefResult.byType.confirmation].sort((a, b) => b.impact - a.impact).slice(0, 3);
+		const confirmations = [...confirmationList].sort((a, b) => b.impact - a.impact).slice(0, 3);
 		confirmations.forEach((c, i) => {
 			narrative.push(
 				`**Pattern ${i + 1}:** ${c.insight} (Impact: ${c.impact}/10)`
 			);
 		});
 	}
+
 
 	// ─── Leverage Strategies ─────────────────────────────────────────────────────
 	narrative.push('\n### How To Leverage These Strengths');

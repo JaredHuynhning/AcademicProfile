@@ -1,15 +1,15 @@
-// @ts-nocheck
 /**
  * Mega Section 4: Academic Character & Drive
  * Generates ~4 pages: work ethic, persistence, goal orientation, motivation deep dive.
  */
 import { classifyLevel, scorePercentile, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding, ResearchNote } from '../mega-sections';
+import { StudyProfile, LearnerProfile } from '../../types';
 
 export function generateAcademicCharacterMega(
 	dimensions: DimensionsMap,
-	studyProfile: any | null,
-	learnerProfile: any | null,
+	studyProfile: StudyProfile | null,
+	learnerProfile: LearnerProfile | null,
 	studentName: string,
 ): MegaSectionContent {
 	const narrative: string[] = [];

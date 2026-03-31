@@ -1,10 +1,10 @@
-// @ts-nocheck
 /**
  * Mega Section 1: Cover + Executive Summary
  * Generates ~3 pages: expanded narrative summary + key metrics + headline findings.
  */
 import { DIM_ORDER, DIM_NAMES, DIM_COLORS, classifyLevel, scorePercentile, interpretiveLabel, toDimensionsMap, type DimKey, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding } from '../mega-sections';
+import { CrossRefResult } from '../cross-reference-engine';
 
 const DIM_ACADEMIC_IMPACT: Record<DimKey, { high: string; low: string }> = {
 	H: {
@@ -37,7 +37,7 @@ export function generateExecutiveSummaryMega(
 	dimensions: DimensionsMap,
 	studentName: string,
 	archetype: string,
-	crossRefResult: any | null,
+	crossRefResult: CrossRefResult | null,
 ): MegaSectionContent {
 	const narrative: string[] = [];
 	const keyFindings: Finding[] = [];

@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 /**
  * Mega Section 11: Action Plan — What To Do Monday
  * Generates ~3 pages: priority actions, 30/60/90 day plan, weekly rhythm, stop doing.

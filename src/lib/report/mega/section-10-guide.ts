@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 /**
  * Mega Section 10: Teacher & Parent Guide
  * Generates ~5 pages: teacher strategies, parent strategies, tutor matching.
@@ -146,7 +146,43 @@ export function generateGuideMega(
 	}
 
 	// Conversation guides
-	narrative.push('\n#### Talking About Grades and Effort');
+	narrative.push('\n#### Conversation Scripts');
+	narrative.push(
+		`How you talk to ${studentName} about school matters as much as the advice you give. Use these scripts to navigate common challenges based on their specific personality profile.`
+	);
+
+	if (eScore >= 3.5) {
+		narrative.push('\n**When they are overwhelmed by a big task:**');
+		narrative.push(`*Parent:* "I can see you're feeling really stressed about this assignment. It looks like a lot to handle at once."`);
+		narrative.push(`*Student:* "It's impossible. I'll never finish it."`);
+		narrative.push(`*Parent:* "I hear that. Let's just look at the first page together. We don't have to do it, let's just see what the first step is."`);
+		narrative.push(`**Why it works:** You validated the emotion (High Emotionality) before moving to the solution.`);
+	}
+
+	if (cScore < 2.5) {
+		narrative.push('\n**When they are procrastinating:**');
+		narrative.push(`*Parent:* "${studentName.split(' ')[0]}, I noticed the science project is due Friday and you haven't started. What's the plan for getting the research done?"`);
+		narrative.push(`*Student:* "I'll do it later. I've got time."`);
+		narrative.push(`*Parent:* "I'm worried 'later' will turn into a late night on Thursday. Let's set a timer for 15 minutes now just to get the tabs open. If you want to stop after 15 minutes, you can."`);
+		narrative.push(`**Why it works:** You provided external structure (Low Conscientiousness) and a "low friction" entry point.`);
+	}
+
+	if (oScore >= 3.5 && cScore < 3.0) {
+		narrative.push('\n**When they have a "great idea" but no follow-through:**');
+		narrative.push(`*Parent:* "That's a fascinating angle for your history essay! How are you going to make sure you have time to actually write the conclusion?"`);
+		narrative.push(`*Student:* "I'm still researching the first part, it's so interesting."`);
+		narrative.push(`*Parent:* "It's clearly a great topic. To make sure the teacher sees how much you know, let's set a 'pencils down' time for research so you have at least two days for the writing."`);
+		narrative.push(`**Why it works:** You praised the curiosity (High Openness) while enforcing the necessary discipline (Low Conscientiousness).`);
+	}
+
+	if (cScore >= 4.0) {
+		narrative.push('\n**When they are being too hard on themselves:**');
+		narrative.push(`*Parent:* "I'm impressed by how much effort you've put into this. But I'm worried you're spending too much time on the details and not enough time resting."`);
+		narrative.push(`*Student:* "It has to be perfect or it's not worth doing."`);
+		narrative.push(`*Parent:* "High standards are a strength, but burnout is a real risk. Let's decide together what 'good enough' looks like for this specific task so you can get to bed by 10."`);
+		narrative.push(`**Why it works:** You acknowledged their drive (High Conscientiousness) while setting a boundary for their wellbeing.`);
+	}
+
 	narrative.push(
 		`The most important thing parents can do is separate effort feedback from outcome feedback. "I noticed you studied consistently this week — that discipline will pay off" is more powerful than "Great grade!" because it reinforces the behaviour, not the result.`
 	);

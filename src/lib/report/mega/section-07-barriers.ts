@@ -1,10 +1,11 @@
-// @ts-nocheck
 /**
  * Mega Section 7: Barriers & Root Causes
  * Generates ~5 pages: root cause chains, misdiagnosis table, negative cycles, intervention plan.
  */
 import { DIM_ORDER, DIM_NAMES, DIM_COLORS, classifyLevel, scorePercentile, type DimKey, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding, ResearchNote } from '../mega-sections';
+import { CrossRefResult } from '../cross-reference-engine';
+import { LearnerProfile } from '../../types';
 
 interface RootCause {
 	personality: string;
@@ -89,8 +90,8 @@ function identifyRootCauses(dimensions: DimensionsMap, studentName: string): Roo
 
 export function generateBarriersMega(
 	dimensions: DimensionsMap,
-	crossRefResult: any | null,
-	learnerProfile: any | null,
+	crossRefResult: CrossRefResult | null,
+	learnerProfile: LearnerProfile | null,
 	studentName: string,
 ): MegaSectionContent {
 	const narrative: string[] = [];
