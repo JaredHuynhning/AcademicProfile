@@ -6,6 +6,7 @@
 import { DIM_NAMES, classifyLevel, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding, Action } from '../mega-sections';
 import type { CrossRefResult } from '../cross-reference-engine';
+import { pickOpener, renderInteractionCallout } from '../prose-variety';
 
 export function generateActionPlanMega(
 	dimensions: DimensionsMap,
@@ -28,7 +29,7 @@ export function generateActionPlanMega(
 	const oScore = O?.score || 3.0;
 
 	narrative.push(
-		`Everything in the preceding 10 sections leads to this: specific, actionable steps ${studentName} can take starting this week. These aren't aspirational goals — they're concrete changes calibrated to ${studentName}'s personality profile. Start with Action 1. Don't try to implement everything at once.`
+		`${pickOpener(studentName, 11)} everything in the preceding 10 sections leads to this: specific, actionable steps ${studentName} can take starting this week. These aren't aspirational goals — they're concrete changes calibrated to ${studentName}'s personality profile. Start with Action 1. Don't try to implement everything at once.`
 	);
 
 	if (cScore < 3.0) {
@@ -42,8 +43,22 @@ export function generateActionPlanMega(
 	}
 
 	narrative.push(
-		`The order matters. Actions are ranked by expected impact for ${studentName}'s specific personality profile. The highest-impact change comes first because early wins build momentum, and momentum sustains effort through the harder changes that follow. Do not skip ahead — each action builds the foundation for the next.`
+		`${pickOpener(studentName, 110)} the order matters. Actions are ranked by expected impact for ${studentName}'s specific personality profile. The highest-impact change comes first because early wins build momentum, and momentum sustains effort through the harder changes that follow. Do not skip ahead — each action builds the foundation for the next.`
 	);
+
+	// ─── Interaction-Driven Priorities ───────────────────────────────────────────
+	const interactions = crossRefResult?.interactions ?? [];
+	if (interactions.length > 0) {
+		narrative.push('\n### Priority Actions Based on Your Personality Interactions');
+		narrative.push(
+			`${pickOpener(studentName, 11)} the way different personality traits interact with each other creates specific priorities that generic advice would miss.`
+		);
+		interactions.slice(0, 3).forEach((interaction, i) => {
+			narrative.push(`\n**Priority ${i + 1}: ${interaction.label}**`);
+			narrative.push(interaction.insight);
+			narrative.push(`**Action:** ${interaction.action}`);
+		});
+	}
 
 	// ─── Priority Actions ────────────────────────────────────────────────────────
 	narrative.push('\n### Priority Actions');
