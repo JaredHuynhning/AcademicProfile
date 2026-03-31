@@ -6,6 +6,7 @@ import { DIM_NAMES, classifyLevel, scorePercentile, type DimensionsMap } from '.
 import type { MegaSectionContent, Finding, ResearchNote } from '../mega-sections';
 import { LearnerProfile } from '../../types';
 import type { CrossRefResult } from '../cross-reference-engine';
+import { pickOpener, renderInteractionCallout, renderInteractionAction, filterByAudience, detectFacetSurprises } from '../prose-variety';
 
 const SUBJECT_PERSONALITY_FIT: Record<string, { dims: string[]; high: string; low: string }> = {
 	Mathematics: {
@@ -61,8 +62,17 @@ export function generateSubjectFitMega(
 	const researchNotes: ResearchNote[] = [];
 
 	narrative.push(
-		`Which subjects naturally align with ${studentName}'s personality — and which will require more effort? This section maps the fit between their personality traits and major subject areas, helping parents and teachers understand why some subjects feel easy and others feel like pushing uphill.`
+		`${pickOpener(studentName, 9)} how personality aligns with different subjects. Which subjects naturally fit ${studentName}'s profile — and which will require more effort? This section maps the fit between their personality traits and major subject areas, helping parents and teachers understand why some subjects feel easy and others feel like pushing uphill.`
 	);
+
+	// Inject interactions involving O or C dimensions
+	const relevantInteractions = (crossRefResult?.interactions ?? [])
+		.filter(i => i.dims.some(d => d === 'O' || d === 'C'))
+		.slice(0, 2);
+	relevantInteractions.forEach(interaction => {
+		narrative.push(renderInteractionCallout(interaction));
+		narrative.push(renderInteractionAction(interaction));
+	});
 
 	narrative.push(
 		`Research on personality-subject fit explains approximately 10-15% of the variance in subject grades beyond general ability (Vedel, 2014). This means two students of equal intelligence may receive different grades in the same subject simply because their personality is more or less aligned with the subject's demands. Understanding this alignment helps set realistic expectations, choose appropriate support strategies, and make informed decisions about subject selection.`
@@ -172,7 +182,7 @@ export function generateSubjectFitMega(
 	narrative.push('\n### Early Career Signals');
 
 	narrative.push(
-		`While it's far too early for career counselling, personality research reveals interesting patterns between HEXACO profiles and career satisfaction. These are not predictions — they're data points worth exploring as ${studentName} discovers their interests over time. The strongest career signal at this age is not what personality data says, but what makes ${studentName} lose track of time — whatever that is, it's worth exploring further.`
+		`${pickOpener(studentName, 19)} early career signals that personality research reveals — interesting patterns between HEXACO profiles and career satisfaction. These are not predictions — they're data points worth exploring as ${studentName} discovers their interests over time. The strongest career signal at this age is not what personality data says, but what makes ${studentName} lose track of time — whatever that is, it's worth exploring further.`
 	);
 
 	narrative.push(
@@ -208,6 +218,13 @@ export function generateSubjectFitMega(
 		text: 'Holland\'s career typology and HEXACO personality dimensions show meaningful overlap: Openness predicts Artistic/Investigative careers, Extraversion predicts Social/Enterprising careers, and Conscientiousness predicts Conventional careers (McKay & Tokar, 2012).',
 		topic: 'Career signals',
 	});
+
+	// ─── Facet Surprises ────────────────────────────────────────────────────────
+	const surprises = detectFacetSurprises(dimensions, studentName);
+	if (surprises.length > 0) {
+		narrative.push('\n#### Hidden Details in the Data');
+		surprises.slice(0, 2).forEach(s => narrative.push(s));
+	}
 
 	return {
 		narrative,

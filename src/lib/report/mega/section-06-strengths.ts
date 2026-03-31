@@ -5,6 +5,7 @@
  */
 import { DIM_ORDER, DIM_NAMES, DIM_COLORS, classifyLevel, scorePercentile, type DimKey, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding, ResearchNote } from '../mega-sections';
+import { pickOpener, renderInteractionCallout, renderInteractionAction, filterByAudience, detectFacetSurprises } from '../prose-variety';
 
 const LEVERAGE_STRATEGIES: Record<DimKey, { high: string[]; low: string[] }> = {
 	H: {
@@ -91,8 +92,17 @@ export function generateStrengthsMega(
 	const researchNotes: ResearchNote[] = [];
 
 	narrative.push(
-		`Every student has genuine strengths — personality traits that, when leveraged strategically, become academic superpowers. This section identifies ${studentName}'s strongest traits and provides specific strategies for amplifying them. The goal is not just to acknowledge strengths, but to actively deploy them across subjects, assessments, and learning situations.`
+		`${pickOpener(studentName, 6)} genuine strengths — personality traits that, when leveraged strategically, become academic superpowers. This section identifies ${studentName}'s strongest traits and provides specific strategies for amplifying them. The goal is not just to acknowledge strengths, but to actively deploy them across subjects, assessments, and learning situations.`
 	);
+
+	// Inject positive interactions with high impact
+	const relevantInteractions = (crossRefResult?.interactions ?? [])
+		.filter((i: any) => i.impact >= 6)
+		.slice(0, 2);
+	relevantInteractions.forEach((interaction: any) => {
+		narrative.push(renderInteractionCallout(interaction));
+		narrative.push(renderInteractionAction(interaction));
+	});
 
 	narrative.push(
 		`Strengths-based approaches to education produce measurably better outcomes than deficit-focused interventions. Research by Park and Peterson (2009) found that students who consciously apply their personality strengths to academic challenges show 15-20% improvement in both engagement and performance. The reason is straightforward: working with your natural tendencies requires less effort than fighting against them. A conscientious student who builds on their organisational strength will always outperform the same student trying to become more creative — not because creativity doesn't matter, but because building from strength is more efficient than fixing weakness.`
@@ -229,7 +239,7 @@ export function generateStrengthsMega(
 	narrative.push('\n### Putting Strengths to Work');
 
 	narrative.push(
-		`Knowing your strengths is only the first step — deploying them strategically is what creates results. Here is a practical guide for ${studentName} to apply their top personality strengths across different academic situations:`
+		`${pickOpener(studentName, 16)} that knowing your strengths is only the first step — deploying them strategically is what creates results. Here is a practical guide to apply their top personality strengths across different academic situations:`
 	);
 
 	narrative.push(
@@ -247,6 +257,13 @@ export function generateStrengthsMega(
 	narrative.push(
 		`**When motivation is low:** Return to the strengths identified in this section. Ask: "How can I use my top strength to make this task more engaging?" A highly conscientious student can turn any task into a challenge against their own best time. A highly open student can find an interesting angle on any topic. An extraverted student can turn study into a social event. Strengths are not just descriptions — they are tools.`
 	);
+
+	// ─── Facet Surprises ────────────────────────────────────────────────────────
+	const surprises = detectFacetSurprises(dimensions, studentName);
+	if (surprises.length > 0) {
+		narrative.push('\n#### Hidden Details in the Data');
+		surprises.slice(0, 2).forEach(s => narrative.push(s));
+	}
 
 	return {
 		narrative,

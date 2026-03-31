@@ -6,6 +6,7 @@
 import { DIM_ORDER, DIM_NAMES, DIM_COLORS, DIM_SHORT, DIM_ICONS, classifyLevel, scorePercentile, interpretiveLabel, type DimKey, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding, ResearchNote, CrossRef } from '../mega-sections';
 import type { CrossRefResult } from '../cross-reference-engine';
+import { pickOpener, renderInteractionCallout, renderInteractionAction, filterByAudience, detectFacetSurprises } from '../prose-variety';
 
 interface DimData {
 	score: number;
@@ -398,8 +399,17 @@ export function generatePersonalityDeepDive(
 
 	// Intro paragraph
 	narrative.push(
-		`This section provides a detailed analysis of ${studentName}'s personality across all six HEXACO dimensions. Each dimension is explored in depth — what the score means, how each facet manifests in daily academic life, what research tells us about students with similar profiles, and how this dimension is likely to develop over time. Understanding these patterns is the foundation for every recommendation in this report.`
+		`${pickOpener(studentName, 2)} a personality profile that shapes every aspect of their academic experience. This section provides a detailed analysis across all six HEXACO dimensions — what the scores mean, how each facet manifests in daily academic life, what research tells us about students with similar profiles, and how this dimension is likely to develop over time. Understanding these patterns is the foundation for every recommendation in this report.`
 	);
+
+	// Inject relevant interactions
+	const relevantInteractions = filterByAudience(
+		crossRefResult?.interactions ?? [], ['parent', 'student']
+	).slice(0, 2);
+	relevantInteractions.forEach(interaction => {
+		narrative.push(renderInteractionCallout(interaction));
+		narrative.push(renderInteractionAction(interaction));
+	});
 
 	for (const key of DIM_ORDER) {
 		const dim = dimensions[key];
@@ -456,10 +466,17 @@ export function generatePersonalityDeepDive(
 		}
 	}
 
+	// ─── Facet Surprises ────────────────────────────────────────────────────────
+	const surprises = detectFacetSurprises(dimensions, studentName);
+	if (surprises.length > 0) {
+		narrative.push('\n#### Hidden Details in the Data');
+		surprises.slice(0, 4).forEach(s => narrative.push(s));
+	}
+
 	// ─── Dimension Interactions ──────────────────────────────────────────────────
 	narrative.push('\n### How Dimensions Interact');
 	narrative.push(
-		`Personality dimensions don't operate in isolation — they interact in ways that create unique behavioural patterns. ${studentName}'s most significant dimension interactions are:`
+		`${pickOpener(studentName, 12)} that personality dimensions don't operate in isolation — they interact in ways that create unique behavioural patterns. ${studentName}'s most significant dimension interactions are:`
 	);
 
 	const cScore = dimensions.C?.score || 3.0;

@@ -6,6 +6,7 @@
 import { DIM_NAMES, classifyLevel, scorePercentile, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding, ResearchNote } from '../mega-sections';
 import type { CrossRefResult } from '../cross-reference-engine';
+import { pickOpener, renderInteractionCallout, renderInteractionAction, filterByAudience, detectFacetSurprises } from '../prose-variety';
 
 export function generateSocialDynamicsMega(
 	dimensions: DimensionsMap,
@@ -31,8 +32,17 @@ export function generateSocialDynamicsMega(
 	const hScore = H?.score || 3.0;
 
 	narrative.push(
-		`Academic success doesn't happen in isolation. How ${studentName} interacts with classmates, collaborates on projects, handles conflict, and builds relationships all affect their learning outcomes. This section maps their social patterns based on the personality traits that drive interpersonal behaviour.`
+		`${pickOpener(studentName, 8)} the way they interact with classmates, collaborate on projects, handle conflict, and build relationships — all of which affect their learning outcomes. Academic success doesn't happen in isolation. This section maps their social patterns based on the personality traits that drive interpersonal behaviour.`
 	);
+
+	// Inject interactions involving X or A dimensions
+	const relevantInteractions = (crossRefResult?.interactions ?? [])
+		.filter(i => i.dims.some(d => d === 'X' || d === 'A'))
+		.slice(0, 2);
+	relevantInteractions.forEach(interaction => {
+		narrative.push(renderInteractionCallout(interaction));
+		narrative.push(renderInteractionAction(interaction));
+	});
 
 	narrative.push(
 		`Research on social learning shows that peer interaction accounts for approximately 20% of academic learning in secondary school (Hattie, 2009). Students who collaborate effectively don't just learn from teachers — they learn from each other through discussion, debate, explanation, and shared problem-solving. Understanding ${studentName}'s social style is essential for optimising this peer learning channel.`
@@ -210,7 +220,7 @@ export function generateSocialDynamicsMega(
 	narrative.push('\n### Digital Social Learning');
 
 	narrative.push(
-		`Modern students have access to social learning tools that didn't exist a decade ago. ${studentName}'s personality shapes how effectively they can use these tools:`
+		`${pickOpener(studentName, 18)} how they engage with social learning tools that didn't exist a decade ago. Their personality shapes how effectively they can use these channels:`
 	);
 
 	if (xScore >= 3.0) {
@@ -221,6 +231,13 @@ export function generateSocialDynamicsMega(
 		narrative.push(
 			`${studentName} may prefer asynchronous digital collaboration — shared documents where they can contribute at their own pace, forum-style Q&A platforms, or video recordings of peer explanations they can watch alone. This provides the benefit of peer learning without the energy cost of real-time social interaction.`
 		);
+	}
+
+	// ─── Facet Surprises ────────────────────────────────────────────────────────
+	const surprises = detectFacetSurprises(dimensions, studentName);
+	if (surprises.length > 0) {
+		narrative.push('\n#### Hidden Details in the Data');
+		surprises.slice(0, 2).forEach(s => narrative.push(s));
 	}
 
 	return {

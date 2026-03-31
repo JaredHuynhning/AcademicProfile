@@ -6,6 +6,7 @@ import { classifyLevel, scorePercentile, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding, ResearchNote } from '../mega-sections';
 import { StudyProfile, LearnerProfile } from '../../types';
 import type { CrossRefResult } from '../cross-reference-engine';
+import { pickOpener, renderInteractionCallout, renderInteractionAction, filterByAudience, detectFacetSurprises } from '../prose-variety';
 
 export function generateStudyPlaybookMega(
 	dimensions: DimensionsMap,
@@ -28,8 +29,17 @@ export function generateStudyPlaybookMega(
 	const xScore = X?.score || 3.0;
 
 	narrative.push(
-		`This section translates ${studentName}'s personality and learning profile into specific, actionable study strategies. Every recommendation is calibrated to their unique combination of traits — not generic advice, but strategies that work for someone with exactly ${studentName}'s profile.`
+		`${pickOpener(studentName, 5)} a study profile that calls for specific, actionable strategies. This section translates their personality and learning data into recommendations calibrated to their unique combination of traits — not generic advice, but strategies that work for someone with exactly ${studentName}'s profile.`
 	);
+
+	// Inject relevant interactions
+	const relevantInteractions = filterByAudience(
+		crossRefResult?.interactions ?? [], ['parent', 'student']
+	).slice(0, 2);
+	relevantInteractions.forEach(interaction => {
+		narrative.push(renderInteractionCallout(interaction));
+		narrative.push(renderInteractionAction(interaction));
+	});
 
 	narrative.push(
 		`The science of effective studying has advanced dramatically in the last two decades. Research from cognitive psychology has identified which techniques actually work (active recall, spaced repetition, interleaving) and which are popular but ineffective (re-reading, highlighting, summarising). What's less well-known is that personality type moderates which effective techniques are most sustainable for a given student. A technique that works brilliantly for a highly conscientious introvert may be abandoned within a week by an extraverted student with lower natural discipline. This section matches the right technique to the right personality.`
@@ -188,7 +198,7 @@ export function generateStudyPlaybookMega(
 	narrative.push('\n### Memory & Retention Science');
 
 	narrative.push(
-		`How ${studentName} remembers information is shaped by both their personality and their study technique. Understanding the science of memory helps explain why some methods work and others don't, and why different personality types benefit from different approaches.`
+		`${pickOpener(studentName, 15)} a memory profile shaped by both personality and study technique. Understanding the science of memory helps explain why some methods work and others don't, and why different personality types benefit from different approaches.`
 	);
 
 	narrative.push(
@@ -275,6 +285,13 @@ export function generateStudyPlaybookMega(
 	}
 
 	antiPatterns.forEach(p => narrative.push(p));
+
+	// ─── Facet Surprises ────────────────────────────────────────────────────────
+	const surprises = detectFacetSurprises(dimensions, studentName);
+	if (surprises.length > 0) {
+		narrative.push('\n#### Hidden Details in the Data');
+		surprises.slice(0, 2).forEach(s => narrative.push(s));
+	}
 
 	return {
 		narrative,

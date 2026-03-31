@@ -6,6 +6,7 @@ import { classifyLevel, scorePercentile, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding, ResearchNote } from '../mega-sections';
 import { StudyProfile, LearnerProfile } from '../../types';
 import type { CrossRefResult } from '../cross-reference-engine';
+import { pickOpener, renderInteractionCallout, renderInteractionAction, filterByAudience, detectFacetSurprises } from '../prose-variety';
 
 export function generateAcademicCharacterMega(
 	dimensions: DimensionsMap,
@@ -37,8 +38,17 @@ export function generateAcademicCharacterMega(
 	const prudence = cFacets.prudence?.score || 3.0;
 
 	narrative.push(
-		`Academic character is the set of personality-driven behaviours that determine how ${studentName} approaches their schoolwork day after day. It's not about intelligence — it's about what they do with their intelligence. Research consistently shows that character traits like persistence, organisation, and self-regulation account for more of the variance in academic achievement than cognitive ability alone (Duckworth et al., 2007).`
+		`${pickOpener(studentName, 4)} a set of personality-driven behaviours that determine how they approach schoolwork day after day. Academic character is not about intelligence — it's about what they do with their intelligence. Research consistently shows that character traits like persistence, organisation, and self-regulation account for more of the variance in academic achievement than cognitive ability alone (Duckworth et al., 2007).`
 	);
+
+	// Inject relevant interactions
+	const relevantInteractions = filterByAudience(
+		crossRefResult?.interactions ?? [], ['parent', 'student']
+	).slice(0, 2);
+	relevantInteractions.forEach(interaction => {
+		narrative.push(renderInteractionCallout(interaction));
+		narrative.push(renderInteractionAction(interaction));
+	});
 
 	narrative.push(
 		`The concept of "academic character" encompasses four interrelated components: work ethic (how hard and consistently a student works), persistence (how they handle difficulty and setbacks), goal orientation (what success means to them), and self-regulation (how well they manage their own learning process). Each component is measurable through personality data, and each is developable through targeted intervention. This section analyses all four for ${studentName}, providing both a diagnostic understanding and actionable recommendations.`
@@ -192,7 +202,7 @@ export function generateAcademicCharacterMega(
 	narrative.push('\n### What Truly Drives This Student');
 
 	narrative.push(
-		`Understanding what genuinely motivates ${studentName} — not what adults think should motivate them — is the key to sustainable academic effort. Motivation research identifies four sources of drive: autonomy (choice and control), competence (getting better at things), relatedness (connection to people), and purpose (feeling that the work matters). ${studentName}'s personality profile suggests which of these sources is most powerful for them.`
+		`${pickOpener(studentName, 14)} what genuinely motivates them — not what adults think should motivate them — and that's the key to sustainable academic effort. Motivation research identifies four sources of drive: autonomy (choice and control), competence (getting better at things), relatedness (connection to people), and purpose (feeling that the work matters). ${studentName}'s personality profile suggests which of these sources is most powerful for them.`
 	);
 
 	if (hScore < 2.5 && cScore >= 3.0) {
@@ -220,6 +230,13 @@ export function generateAcademicCharacterMega(
 	narrative.push(
 		`Whatever ${studentName}'s primary drive, one principle applies universally: motivation follows action, not the other way around. Waiting to "feel motivated" before starting is a trap that leads to chronic procrastination. Instead, commit to starting — even for just 5 minutes. Research consistently shows that motivation increases after beginning a task, not before (Baumeister & Tierney, 2011). The hardest part is the first minute.`
 	);
+
+	// ─── Facet Surprises ────────────────────────────────────────────────────────
+	const surprises = detectFacetSurprises(dimensions, studentName);
+	if (surprises.length > 0) {
+		narrative.push('\n#### Hidden Details in the Data');
+		surprises.slice(0, 2).forEach(s => narrative.push(s));
+	}
 
 	return {
 		narrative,

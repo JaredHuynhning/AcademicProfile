@@ -6,6 +6,7 @@ import { DIM_ORDER, DIM_NAMES, DIM_COLORS, classifyLevel, scorePercentile, type 
 import type { MegaSectionContent, Finding, ResearchNote } from '../mega-sections';
 import { CrossRefResult } from '../cross-reference-engine';
 import { LearnerProfile } from '../../types';
+import { pickOpener, renderInteractionCallout, renderInteractionAction, filterByAudience, detectFacetSurprises } from '../prose-variety';
 
 interface RootCause {
 	personality: string;
@@ -99,8 +100,17 @@ export function generateBarriersMega(
 	const researchNotes: ResearchNote[] = [];
 
 	narrative.push(
-		`Understanding barriers is not about labelling weaknesses — it's about identifying the specific personality-driven patterns that prevent ${studentName} from reaching their potential, and providing targeted interventions for each one. Every barrier in this section is traced back to its root cause, because fixing the symptom without addressing the cause is a waste of everyone's effort.`
+		`${pickOpener(studentName, 7)} the specific personality-driven patterns that may prevent them from reaching their potential. Understanding barriers is not about labelling weaknesses — it's about identifying these patterns and providing targeted interventions for each one. Every barrier in this section is traced back to its root cause, because fixing the symptom without addressing the cause is a waste of everyone's effort.`
 	);
+
+	// Inject high-impact interactions
+	const relevantInteractions = (crossRefResult?.interactions ?? [])
+		.filter(i => i.impact >= 7)
+		.slice(0, 2);
+	relevantInteractions.forEach(interaction => {
+		narrative.push(renderInteractionCallout(interaction));
+		narrative.push(renderInteractionAction(interaction));
+	});
 
 	narrative.push(
 		`Most academic interventions fail because they target the visible behaviour rather than the underlying personality driver. Telling a disorganised student to "get organised" is like telling a short person to "be taller" — it describes the desired outcome without providing a mechanism. The root cause approach in this section identifies the personality trait driving the behaviour, explains why the student acts this way, and provides interventions that work WITH their personality rather than against it.`
@@ -153,7 +163,7 @@ export function generateBarriersMega(
 	// ─── Misdiagnosis Table ──────────────────────────────────────────────────────
 	narrative.push('\n### Common Misdiagnoses');
 	narrative.push(
-		`One of the most valuable aspects of a personality-based assessment is identifying when behaviour is being misinterpreted. Adults often label behaviour based on what they see, not what's driving it. Here are the most common misreadings for ${studentName}'s profile:`
+		`${pickOpener(studentName, 17)} how adults often mislabel behaviour based on what they see, not what's driving it. One of the most valuable aspects of a personality-based assessment is identifying when behaviour is being misinterpreted. Here are the most common misreadings for ${studentName}'s profile:`
 	);
 
 	rootCauses.forEach(rc => {
@@ -229,6 +239,13 @@ export function generateBarriersMega(
 	narrative.push(
 		`This report is a personality assessment, not a clinical diagnosis. If any of the patterns described here cause significant distress or functional impairment, a qualified professional can provide the targeted support that goes beyond what personality-based strategies can offer.`
 	);
+
+	// ─── Facet Surprises ────────────────────────────────────────────────────────
+	const surprises = detectFacetSurprises(dimensions, studentName);
+	if (surprises.length > 0) {
+		narrative.push('\n#### Hidden Details in the Data');
+		surprises.slice(0, 2).forEach(s => narrative.push(s));
+	}
 
 	return {
 		narrative,

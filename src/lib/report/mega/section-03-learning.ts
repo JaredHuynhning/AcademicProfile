@@ -6,6 +6,7 @@ import { classifyLevel, scorePercentile, interpretiveLabel, type DimensionsMap }
 import type { MegaSectionContent, Finding, ResearchNote } from '../mega-sections';
 import { StudyProfile, LearnerProfile } from '../../types';
 import type { CrossRefResult } from '../cross-reference-engine';
+import { pickOpener, renderInteractionCallout, renderInteractionAction, filterByAudience, detectFacetSurprises } from '../prose-variety';
 
 export function generateLearningProfileMega(
 	dimensions: DimensionsMap,
@@ -24,8 +25,17 @@ export function generateLearningProfileMega(
 	const X = dimensions.X;
 
 	narrative.push(
-		`Understanding how ${studentName} learns — not just what they know — is the key to unlocking their academic potential. This section maps their learning style, attention patterns, motivation drivers, and ideal study environment, all derived from the intersection of their personality profile and academic learning data.`
+		`${pickOpener(studentName, 3)} a learning fingerprint unlike any other student's. Understanding how ${studentName} learns — not just what they know — is the key to unlocking their academic potential. This section maps their learning style, attention patterns, motivation drivers, and ideal study environment, all derived from the intersection of their personality profile and academic learning data.`
 	);
+
+	// Inject relevant interactions
+	const relevantInteractions = filterByAudience(
+		crossRefResult?.interactions ?? [], ['parent', 'student']
+	).slice(0, 2);
+	relevantInteractions.forEach(interaction => {
+		narrative.push(renderInteractionCallout(interaction));
+		narrative.push(renderInteractionAction(interaction));
+	});
 
 	narrative.push(
 		`Every student has a unique learning fingerprint shaped by the interaction between personality traits, cognitive preferences, and environmental factors. Two students with identical intelligence can achieve vastly different outcomes simply because their study approach matches — or mismatches — their personality. Note: this is not the discredited "learning styles" theory (visual/auditory/kinesthetic), which lacks scientific support (Pashler et al., 2008). Instead, this section uses personality science to identify the study conditions, methods, and environments where ${studentName} is most likely to achieve deep, lasting learning.`
@@ -229,7 +239,7 @@ export function generateLearningProfileMega(
 	narrative.push('\n### Technology & Digital Learning');
 
 	narrative.push(
-		`Modern students learn in hybrid environments — textbooks, videos, apps, online platforms, and AI tools. ${studentName}'s personality shapes how they interact with these digital learning channels.`
+		`${pickOpener(studentName, 13)} the way they interact with digital learning channels. Modern students learn in hybrid environments — textbooks, videos, apps, online platforms, and AI tools — and personality shapes how effectively each channel works.`
 	);
 
 	if (cScore >= 3.5) {
@@ -250,6 +260,13 @@ export function generateLearningProfileMega(
 		narrative.push(
 			`${studentName}'s social nature means they'll engage well with collaborative digital platforms: shared Google Docs for group projects, Discord study servers, video call study sessions, and peer-teaching through screen sharing. These social digital channels combine their need for interaction with productive academic work.`
 		);
+	}
+
+	// ─── Facet Surprises ────────────────────────────────────────────────────────
+	const surprises = detectFacetSurprises(dimensions, studentName);
+	if (surprises.length > 0) {
+		narrative.push('\n#### Hidden Details in the Data');
+		surprises.slice(0, 2).forEach(s => narrative.push(s));
 	}
 
 	return {
