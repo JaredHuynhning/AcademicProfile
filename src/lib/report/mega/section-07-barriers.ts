@@ -107,9 +107,9 @@ export function generateBarriersMega(
 	const relevantInteractions = pickInteractionsForSection(
 		(crossRefResult?.interactions ?? []).filter(i => i.impact >= 7), 7, 2
 	);
-	relevantInteractions.forEach(interaction => {
-		narrative.push(renderInteractionCallout(interaction));
-		narrative.push(renderInteractionAction(interaction));
+	relevantInteractions.forEach((interaction, idx) => {
+		narrative.push(renderInteractionCallout(interaction, 7 + idx));
+		narrative.push(renderInteractionAction(interaction, idx));
 	});
 
 	narrative.push(

@@ -69,9 +69,9 @@ export function generateSubjectFitMega(
 	const relevantInteractions = pickInteractionsForSection(
 		(crossRefResult?.interactions ?? []).filter(i => i.dims.some(d => d === 'O' || d === 'C')), 9, 2
 	);
-	relevantInteractions.forEach(interaction => {
-		narrative.push(renderInteractionCallout(interaction));
-		narrative.push(renderInteractionAction(interaction));
+	relevantInteractions.forEach((interaction, idx) => {
+		narrative.push(renderInteractionCallout(interaction, 9 + idx));
+		narrative.push(renderInteractionAction(interaction, idx));
 	});
 
 	narrative.push(

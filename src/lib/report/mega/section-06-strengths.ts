@@ -99,9 +99,9 @@ export function generateStrengthsMega(
 	const relevantInteractions = pickInteractionsForSection(
 		(crossRefResult?.interactions ?? []).filter((i: any) => i.impact >= 6), 6, 2
 	);
-	relevantInteractions.forEach((interaction: any) => {
-		narrative.push(renderInteractionCallout(interaction));
-		narrative.push(renderInteractionAction(interaction));
+	relevantInteractions.forEach((interaction: any, idx: number) => {
+		narrative.push(renderInteractionCallout(interaction, 6 + idx));
+		narrative.push(renderInteractionAction(interaction, idx));
 	});
 
 	narrative.push(

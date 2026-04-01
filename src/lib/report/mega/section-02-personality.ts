@@ -406,9 +406,9 @@ export function generatePersonalityDeepDive(
 	const relevantInteractions = pickInteractionsForSection(
 		crossRefResult?.interactions ?? [], 2, 2, ['parent', 'student']
 	);
-	relevantInteractions.forEach(interaction => {
-		narrative.push(renderInteractionCallout(interaction));
-		narrative.push(renderInteractionAction(interaction));
+	relevantInteractions.forEach((interaction, idx) => {
+		narrative.push(renderInteractionCallout(interaction, 2 + idx));
+		narrative.push(renderInteractionAction(interaction, idx));
 	});
 
 	for (const key of DIM_ORDER) {

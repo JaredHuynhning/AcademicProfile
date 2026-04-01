@@ -6,7 +6,7 @@ import { classifyLevel, scorePercentile, interpretiveLabel, type DimensionsMap }
 import type { MegaSectionContent, Finding, ResearchNote } from '../mega-sections';
 import { StudyProfile, LearnerProfile } from '../../types';
 import type { CrossRefResult } from '../cross-reference-engine';
-import { pickOpener, renderInteractionCallout, renderInteractionAction, pickInteractionsForSection, detectFacetSurprises } from '../prose-variety';
+import { pickOpener, pickBridge, renderInteractionCallout, renderInteractionAction, pickInteractionsForSection, detectFacetSurprises } from '../prose-variety';
 
 export function generateLearningProfileMega(
 	dimensions: DimensionsMap,
@@ -32,9 +32,9 @@ export function generateLearningProfileMega(
 	const relevantInteractions = pickInteractionsForSection(
 		crossRefResult?.interactions ?? [], 3, 2, ['parent', 'student']
 	);
-	relevantInteractions.forEach(interaction => {
-		narrative.push(renderInteractionCallout(interaction));
-		narrative.push(renderInteractionAction(interaction));
+	relevantInteractions.forEach((interaction, idx) => {
+		narrative.push(renderInteractionCallout(interaction, 3 + idx));
+		narrative.push(renderInteractionAction(interaction, idx));
 	});
 
 	narrative.push(
@@ -89,6 +89,7 @@ export function generateLearningProfileMega(
 	});
 
 	// ─── Attention & Focus ───────────────────────────────────────────────────────
+	narrative.push(pickBridge(studentName, 3, 1, 'attention and focus'));
 	narrative.push('\n### Attention & Focus');
 
 	const eScore = E?.score || 3.0;
@@ -119,6 +120,7 @@ export function generateLearningProfileMega(
 	}
 
 	// ─── Motivation Drivers ──────────────────────────────────────────────────────
+	narrative.push(pickBridge(studentName, 3, 2, 'motivation'));
 	narrative.push('\n### Motivation Drivers');
 
 	const motivData = studyProfile?.motivation;
@@ -174,6 +176,7 @@ export function generateLearningProfileMega(
 	});
 
 	// ─── Ideal Environment ───────────────────────────────────────────────────────
+	narrative.push(pickBridge(studentName, 3, 3, 'their ideal learning environment'));
 	narrative.push('\n### Ideal Learning Environment');
 
 	const envParts: string[] = [];
@@ -236,6 +239,7 @@ export function generateLearningProfileMega(
 	}
 
 	// ─── Technology & Digital Learning ────────────────────────────────────────────
+	narrative.push(pickBridge(studentName, 3, 5, 'technology and digital learning'));
 	narrative.push('\n### Technology & Digital Learning');
 
 	narrative.push(

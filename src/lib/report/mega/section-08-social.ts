@@ -6,7 +6,7 @@
 import { DIM_NAMES, classifyLevel, scorePercentile, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding, ResearchNote } from '../mega-sections';
 import type { CrossRefResult } from '../cross-reference-engine';
-import { pickOpener, renderInteractionCallout, renderInteractionAction, pickInteractionsForSection, detectFacetSurprises } from '../prose-variety';
+import { pickOpener, pickBridge, renderInteractionCallout, renderInteractionAction, pickInteractionsForSection, detectFacetSurprises } from '../prose-variety';
 
 export function generateSocialDynamicsMega(
 	dimensions: DimensionsMap,
@@ -39,9 +39,9 @@ export function generateSocialDynamicsMega(
 	const relevantInteractions = pickInteractionsForSection(
 		(crossRefResult?.interactions ?? []).filter(i => i.dims.some(d => d === 'X' || d === 'A')), 8, 2
 	);
-	relevantInteractions.forEach(interaction => {
-		narrative.push(renderInteractionCallout(interaction));
-		narrative.push(renderInteractionAction(interaction));
+	relevantInteractions.forEach((interaction, idx) => {
+		narrative.push(renderInteractionCallout(interaction, 8 + idx));
+		narrative.push(renderInteractionAction(interaction, idx));
 	});
 
 	narrative.push(
@@ -91,6 +91,7 @@ export function generateSocialDynamicsMega(
 	});
 
 	// ─── Group Project Strategies ────────────────────────────────────────────────
+	narrative.push(pickBridge(studentName, 8, 1, 'group projects'));
 	narrative.push('\n### Group Project Success Strategies');
 
 	narrative.push(
@@ -112,6 +113,7 @@ export function generateSocialDynamicsMega(
 	}
 
 	// ─── Conflict Patterns ───────────────────────────────────────────────────────
+	narrative.push(pickBridge(studentName, 8, 2, 'conflict resolution'));
 	narrative.push('\n### Conflict Patterns');
 
 	if (aScore >= 3.5 && A?.facets?.patience?.score >= 3.5) {
@@ -132,6 +134,7 @@ export function generateSocialDynamicsMega(
 	}
 
 	// ─── Friendship & Social Dynamics ────────────────────────────────────────────
+	narrative.push(pickBridge(studentName, 8, 3, 'friendships and social energy'));
 	narrative.push('\n### Friendship & Social Energy');
 
 	if (xScore >= 3.5 && eScore >= 3.0) {
@@ -152,6 +155,7 @@ export function generateSocialDynamicsMega(
 	}
 
 	// ─── Leadership Profile ──────────────────────────────────────────────────────
+	narrative.push(pickBridge(studentName, 8, 4, 'leadership'));
 	narrative.push('\n### Leadership Profile');
 
 	if (xScore >= 3.5 && cScore >= 3.5) {

@@ -6,7 +6,7 @@
 import { DIM_NAMES, classifyLevel, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding } from '../mega-sections';
 import type { CrossRefResult } from '../cross-reference-engine';
-import { pickOpener, renderInteractionCallout, pickInteractionsForSection } from '../prose-variety';
+import { pickOpener, pickBridge, renderInteractionCallout, renderInteractionAction, pickInteractionsForSection } from '../prose-variety';
 
 export function generateGuideMega(
 	dimensions: DimensionsMap,
@@ -107,6 +107,7 @@ export function generateGuideMega(
 	}
 
 	// ─── FOR PARENTS ─────────────────────────────────────────────────────────────
+	narrative.push(pickBridge(studentName, 10, 1, 'what parents can do at home'));
 	narrative.push('\n### For Parents');
 
 	narrative.push(`${pickOpener(studentName, 17)} what follows are parent strategies calibrated specifically to ${studentName}'s profile — not generic parenting advice, but tactics that work for a student with this exact combination of traits.`);
@@ -203,6 +204,7 @@ export function generateGuideMega(
 	}
 
 	// ─── Conversation Scripts ─────────────────────────────────────────────────────
+	narrative.push(pickBridge(studentName, 10, 2, 'navigating difficult conversations'));
 	narrative.push('\n### Conversation Scripts for Difficult Moments');
 
 	narrative.push(
@@ -361,11 +363,13 @@ export function generateGuideMega(
 	const guideInteractions = pickInteractionsForSection(
 		crossRefResult?.interactions ?? [], 10, 2
 	);
-	guideInteractions.forEach(i => {
-		narrative.push(renderInteractionCallout(i));
+	guideInteractions.forEach((i, idx) => {
+		narrative.push(renderInteractionCallout(i, 10 + idx));
+		narrative.push(renderInteractionAction(i, idx));
 	});
 
 	// Parent-teacher meeting guide
+	narrative.push(pickBridge(studentName, 10, 4, 'parent-teacher meetings'));
 	narrative.push('\n### Parent-Teacher Meeting Guide');
 
 	narrative.push(

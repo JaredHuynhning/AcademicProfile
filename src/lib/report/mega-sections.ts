@@ -148,7 +148,7 @@ function pickNarratives(...sources: unknown[]): string[] {
 
 function generateKeyTakeaway(sectionId: string, dims: Record<string, { score: number }> | null, studentName: string): string | undefined {
 	if (!dims) return undefined;
-	const n = studentName.split(' ')[0] || 'This student';
+	const n = studentName.split(' ')[0] || 'your child';
 	const C = dims.C; const O = dims.O; const E = dims.E; const X = dims.X; const A = dims.A; const H = dims.H;
 	const cScore = C?.score || 3; const oScore = O?.score || 3; const eScore = E?.score || 3;
 	const xScore = X?.score || 3; const aScore = A?.score || 3; const hScore = H?.score || 3;

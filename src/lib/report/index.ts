@@ -57,7 +57,7 @@ export function generateReport(results: TestResults, name: string) {
 
 	// Convert scorer's dimension array to the map format expected by report templates
 	// Inject studentName (first name) so all generators can personalize narratives
-	const first = name ? name.split(' ')[0] : 'This student';
+	const first = name ? name.split(' ')[0] : 'your child';
 	const enriched = {
 		...results, 
 		...(hasPersonality && { dimensions: toDimensionsMap(results.dimensions!) }),

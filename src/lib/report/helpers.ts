@@ -91,8 +91,8 @@ export function scorePercentile(score: number, mean = 3.0, sd = 0.7): number {
 
 /** Extract first name from full name, or return fallback. */
 export function firstName(fullName?: string): string {
-	if (!fullName) return 'This student';
-	return fullName.split(' ')[0] || 'This student';
+	if (!fullName) return 'your child';
+	return fullName.split(' ')[0] || 'your child';
 }
 
 /** Population mean for HEXACO-PI-R (1-5 scale). */

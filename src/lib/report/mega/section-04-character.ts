@@ -6,7 +6,7 @@ import { classifyLevel, scorePercentile, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding, ResearchNote } from '../mega-sections';
 import { StudyProfile, LearnerProfile } from '../../types';
 import type { CrossRefResult } from '../cross-reference-engine';
-import { pickOpener, renderInteractionCallout, renderInteractionAction, pickInteractionsForSection, detectFacetSurprises } from '../prose-variety';
+import { pickOpener, pickBridge, renderInteractionCallout, renderInteractionAction, pickInteractionsForSection, detectFacetSurprises } from '../prose-variety';
 
 export function generateAcademicCharacterMega(
 	dimensions: DimensionsMap,
@@ -45,9 +45,9 @@ export function generateAcademicCharacterMega(
 	const relevantInteractions = pickInteractionsForSection(
 		crossRefResult?.interactions ?? [], 4, 2, ['parent', 'student']
 	);
-	relevantInteractions.forEach(interaction => {
-		narrative.push(renderInteractionCallout(interaction));
-		narrative.push(renderInteractionAction(interaction));
+	relevantInteractions.forEach((interaction, idx) => {
+		narrative.push(renderInteractionCallout(interaction, 4 + idx));
+		narrative.push(renderInteractionAction(interaction, idx));
 	});
 
 	narrative.push(
@@ -94,6 +94,7 @@ export function generateAcademicCharacterMega(
 	});
 
 	// ─── Persistence & Grit ──────────────────────────────────────────────────────
+	narrative.push(pickBridge(studentName, 4, 1, 'persistence and grit'));
 	narrative.push('\n### Persistence & Grit');
 
 	const gritData = learnerProfile?.grit;
@@ -142,6 +143,7 @@ export function generateAcademicCharacterMega(
 	}
 
 	// ─── Goal Orientation ────────────────────────────────────────────────────────
+	narrative.push(pickBridge(studentName, 4, 2, 'goal setting'));
 	narrative.push('\n### Goal Orientation');
 
 	if (hScore < 2.5 && cScore >= 3.0) {
@@ -165,6 +167,7 @@ export function generateAcademicCharacterMega(
 	}
 
 	// ─── Self-Assessment Accuracy ────────────────────────────────────────────────
+	narrative.push(pickBridge(studentName, 4, 3, 'self-awareness'));
 	narrative.push('\n### Self-Assessment & Self-Regulation');
 
 	const selfReg = studyProfile?.selfRegulation;

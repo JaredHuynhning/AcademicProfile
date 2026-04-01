@@ -96,7 +96,7 @@ export function isInternalLabel(text: string): boolean {
 // ─── Dimension interpretation helper ─────────────────────────────────────────
 
 export function getDimensionInterpretation(key: string, score: number, name: string): string {
-  const first = name.split(' ')[0] || 'This student';
+  const first = name.split(' ')[0] || 'your child';
   const interps: Record<string, Record<string, string>> = {
     H: {
       high: `${first} demonstrates strong integrity and fairness. They tend to be genuine in interactions, avoid manipulating others, and show little interest in status or material wealth. In academic settings, this translates to honest work habits and collaborative reliability.`,

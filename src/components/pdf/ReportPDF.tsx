@@ -1484,17 +1484,40 @@ function MegaSectionContent({ section, dimensionDetails, subjectAlignment }: { s
             {para.replace(/^[\n#]+\s*/, '')}
           </Text>
         );
+      } else if (para.startsWith('> **')) {
+        // Quote-style interaction callout: > **Label** — insight
+        const cleaned = para.replace(/^>\s*/, '');
+        const match = cleaned.match(/^\*\*(.*?)\*\*\s*[-—]\s*(.*)/);
+        if (match) {
+          elements.push(<PDFCallout key={`iq-${i}`} text={match[2]} title={match[1]} color="#d97706" />);
+        } else {
+          elements.push(<PDFCallout key={`iq-${i}`} text={cleaned.replace(/\*\*/g, '')} color="#d97706" />);
+        }
+      } else if (/^(What to do:|__Action step:__|The practical takeaway:|For parents and teachers:)/.test(para) || /^\*\*Action step:\*\*/.test(para)) {
+        // Action callout
+        const text = para.replace(/^\*\*Action step:\*\*\s*/, '').replace(/^(What to do:|The practical takeaway:|For parents and teachers:)\s*/, '');
+        elements.push(<PDFCallout key={`ia-${i}`} text={text} title="Action" color="#3b82f6" />);
+      } else if (/^\*\*Why does this matter\?\*\*/.test(para)) {
+        // Question-style interaction callout
+        const text = para.replace(/^\*\*Why does this matter\?\*\*\s*/, '');
+        elements.push(<PDFCallout key={`iwhy-${i}`} text={text} title="Why This Matters" color="#d97706" />);
       } else if (para.includes('**')) {
-        // Bold text: split on ** and render inline
-        const parts = para.split(/\*\*(.*?)\*\*/g);
-        elements.push(
-          <Text key={`n${i}`} style={[styles.body, { marginBottom: 6 }]}>
-            {parts.map((part, j) => j % 2 === 1
-              ? <Text key={j} style={{ fontWeight: 'bold', color: ESPRESSO }}>{part}</Text>
-              : part
-            )}
-          </Text>
-        );
+        // Check for interaction callout pattern: **Label:** insight
+        const calloutMatch = para.match(/^\*\*([^*]+):\*\*\s+(.*)/);
+        if (calloutMatch && calloutMatch[1].length < 60) {
+          elements.push(<PDFCallout key={`ic-${i}`} text={calloutMatch[2]} title={calloutMatch[1]} color="#d97706" />);
+        } else {
+          // Regular bold text: split on ** and render inline
+          const parts = para.split(/\*\*(.*?)\*\*/g);
+          elements.push(
+            <Text key={`n${i}`} style={[styles.body, { marginBottom: 6 }]}>
+              {parts.map((part, j) => j % 2 === 1
+                ? <Text key={j} style={{ fontWeight: 'bold', color: ESPRESSO }}>{part}</Text>
+                : part
+              )}
+            </Text>
+          );
+        }
       } else {
         elements.push(<Text key={`n${i}`} style={[styles.body, { marginBottom: 6 }]}>{para}</Text>);
       }
@@ -1567,12 +1590,34 @@ function MegaSectionContent({ section, dimensionDetails, subjectAlignment }: { s
       );
     }
 
+    const findingTypeColors: Record<string, string> = {
+      strength: '#4a7c59', barrier: '#d97706', insight: '#7c3aed',
+      warning: '#dc2626', action: '#3b82f6',
+    };
+    const findingTypeLabels: Record<string, string> = {
+      strength: 'STRENGTH', barrier: 'WATCH FOR', insight: 'KEY INSIGHT',
+      warning: 'WARNING', action: 'ACTION',
+    };
     section.content.keyFindings.forEach((f, i) => {
-      elements.push(<PDFCallout key={`f${i}`} text={f.text} title={f.title} color={f.color || WARM_GRAY} />);
+      const color = f.color || findingTypeColors[f.type] || WARM_GRAY;
+      const title = f.title || findingTypeLabels[f.type] || '';
+      elements.push(<PDFCallout key={`f${i}`} text={f.text} title={title} color={color} />);
     });
 
     section.content.actions.forEach((a, i) => {
-      elements.push(<PDFCallout key={`a${i}`} text={a.description} title={a.title} color="#3b82f6" />);
+      const isHighPriority = a.priority <= 1;
+      const color = isHighPriority ? '#1d4ed8' : a.priority <= 2 ? '#3b82f6' : '#6b7280';
+      elements.push(
+        <View key={`a${i}`} style={{ flexDirection: 'row', marginBottom: 8, alignItems: 'flex-start' }}>
+          <View style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: color, justifyContent: 'center', alignItems: 'center', marginRight: 8, marginTop: 1 }}>
+            <Text style={{ fontSize: 8, fontWeight: 'bold', color: '#fff' }}>{a.priority}</Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: isHighPriority ? 10 : 9, fontWeight: 'bold', color: ESPRESSO, marginBottom: 2 }}>{a.title}</Text>
+            <Text style={{ fontSize: 9, lineHeight: 1.4, color: '#4a3f2f' }}>{a.description}</Text>
+          </View>
+        </View>
+      );
     });
 
     return <>{elements}</>;

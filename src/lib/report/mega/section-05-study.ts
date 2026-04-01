@@ -6,7 +6,7 @@ import { classifyLevel, scorePercentile, type DimensionsMap } from '../helpers';
 import type { MegaSectionContent, Finding, ResearchNote } from '../mega-sections';
 import { StudyProfile, LearnerProfile } from '../../types';
 import type { CrossRefResult } from '../cross-reference-engine';
-import { pickOpener, renderInteractionCallout, renderInteractionAction, pickInteractionsForSection, detectFacetSurprises } from '../prose-variety';
+import { pickOpener, pickBridge, renderInteractionCallout, renderInteractionAction, pickInteractionsForSection, detectFacetSurprises } from '../prose-variety';
 
 export function generateStudyPlaybookMega(
 	dimensions: DimensionsMap,
@@ -36,9 +36,9 @@ export function generateStudyPlaybookMega(
 	const relevantInteractions = pickInteractionsForSection(
 		crossRefResult?.interactions ?? [], 5, 2, ['parent', 'student']
 	);
-	relevantInteractions.forEach(interaction => {
-		narrative.push(renderInteractionCallout(interaction));
-		narrative.push(renderInteractionAction(interaction));
+	relevantInteractions.forEach((interaction, idx) => {
+		narrative.push(renderInteractionCallout(interaction, 5 + idx));
+		narrative.push(renderInteractionAction(interaction, idx));
 	});
 
 	narrative.push(
@@ -106,6 +106,7 @@ export function generateStudyPlaybookMega(
 	});
 
 	// ─── Subject Strategies ──────────────────────────────────────────────────────
+	narrative.push(pickBridge(studentName, 5, 1, 'subject-specific strategies'));
 	narrative.push('\n### Subject-Specific Strategies');
 
 	// STEM
@@ -150,6 +151,7 @@ export function generateStudyPlaybookMega(
 	}
 
 	// ─── Exam Preparation ────────────────────────────────────────────────────────
+	narrative.push(pickBridge(studentName, 5, 2, 'exam preparation'));
 	narrative.push('\n### Exam Preparation Timeline');
 
 	if (eScore >= 3.5) {
@@ -195,6 +197,7 @@ export function generateStudyPlaybookMega(
 	});
 
 	// ─── Memory & Retention ──────────────────────────────────────────────────────
+	narrative.push(pickBridge(studentName, 5, 3, 'memory and retention'));
 	narrative.push('\n### Memory & Retention Science');
 
 	narrative.push(
@@ -241,6 +244,7 @@ export function generateStudyPlaybookMega(
 	);
 
 	// ─── Study Environment Design ───────────────────────────────────────────────
+	narrative.push(pickBridge(studentName, 5, 5, 'the physical study environment'));
 	narrative.push('\n### Study Environment Design');
 
 	narrative.push(
